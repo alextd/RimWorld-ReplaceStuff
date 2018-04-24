@@ -1,0 +1,5 @@
+.vs
+*.cache
+Source/obj
+/Assemblies/*
+*.csproj.user
