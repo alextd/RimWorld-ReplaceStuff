@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/DesignationCategoryDef[defName="Structure"]/specialDesignatorClasses</xpath>
+		<value>
+			<li>Replace_Stuff.Designator_ReplaceStuff</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationRemove">
+		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/building/canPlaceOverWall</xpath>
+	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/building</xpath>
+		<value>
+			<isEdifice>false</isEdifice>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/altitudeLayer</xpath>
+		<value>
+			<altitudeLayer>BuildingOnTop</altitudeLayer>
+		</value>
+	</Operation>
+</Patch>
