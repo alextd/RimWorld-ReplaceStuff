@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Patch>
 
+	<!--
 	<Operation Class="PatchOperationRemove">
 		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/building/canPlaceOverWall</xpath>
 	</Operation>
@@ -11,7 +12,6 @@
 			<isEdifice>false</isEdifice>
 		</value>
 	</Operation>
-	-
 
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/altitudeLayer</xpath>
@@ -21,7 +21,6 @@
 	</Operation>
 
 
-	<!--
 		TODO: sub-def of cooler and vent for over-the-wall cooler
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[defName="Cooler" or defName="Vent"]/fillPercent</xpath>

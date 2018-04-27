@@ -9,9 +9,10 @@ using Verse;
 namespace Replace_Stuff
 {
 	[DefOf]
-	public static class VentDefOf
+	public static class OverDefOf
 	{
-		public static ThingDef Vent;
+		public static ThingDef Cooler_Over;
+		public static ThingDef Vent_Over;
 	}
 
 	[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
@@ -28,8 +29,8 @@ namespace Replace_Stuff
 
 			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
 			if (thingDef.entityDefToBuild is ThingDef def
-				&& (def == ThingDefOf.Wall && (t.def == ThingDefOf.Cooler || t.def == VentDefOf.Vent)
-				|| t.def == ThingDefOf.Wall && (def == ThingDefOf.Cooler || def == VentDefOf.Vent)))
+				&& (def == ThingDefOf.Wall && (t.def == OverDefOf.Cooler_Over || t.def == OverDefOf.Vent_Over)
+				|| t.def == ThingDefOf.Wall && (def == OverDefOf.Cooler_Over || def == OverDefOf.Vent_Over)))
 				__result = false;
 		}
 	}
@@ -46,8 +47,8 @@ namespace Replace_Stuff
 			if (oldDef.category == ThingCategory.Building || oldDef.IsBlueprint || oldDef.IsFrame)
 			{
 				//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
-				if ((newDef == ThingDefOf.Cooler && oldBuildDef == ThingDefOf.Wall) || (newDef == VentDefOf.Vent && oldBuildDef == ThingDefOf.Wall)
-					|| (newDef == ThingDefOf.Wall && oldBuildDef == ThingDefOf.Cooler) || (newDef == ThingDefOf.Wall && oldBuildDef == VentDefOf.Vent))
+				if ((newDef == OverDefOf.Cooler_Over && oldBuildDef == ThingDefOf.Wall) || (newDef == OverDefOf.Vent_Over && oldBuildDef == ThingDefOf.Wall)
+					|| (newDef == ThingDefOf.Wall && oldBuildDef == OverDefOf.Cooler_Over) || (newDef == ThingDefOf.Wall && oldBuildDef == OverDefOf.Vent_Over))
 				{
 					__result = true;
 				}
@@ -70,8 +71,8 @@ namespace Replace_Stuff
 			BuildableDef oldBuiltDef = GenConstruct.BuiltDefOf(oldDef);
 			
 			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
-			if ((newBuiltDef == ThingDefOf.Cooler && oldBuiltDef == ThingDefOf.Wall) || (newBuiltDef == VentDefOf.Vent && oldBuiltDef == ThingDefOf.Wall)
-				|| (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == ThingDefOf.Cooler) || (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == VentDefOf.Vent))
+			if ((newBuiltDef == OverDefOf.Cooler_Over && oldBuiltDef == ThingDefOf.Wall) || (newBuiltDef == OverDefOf.Vent_Over && oldBuiltDef == ThingDefOf.Wall)
+				|| (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == OverDefOf.Cooler_Over) || (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == OverDefOf.Vent_Over))
 			{
 				__result = false;	
 			}

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>Cooler_Over</defName>
+			<label>cooler</label>
+    <thingClass>Building_Cooler</thingClass>
+    <graphicData>
+      <texPath>Cooler_Over</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <blockWind>false</blockWind>
+    <fillPercent>.6</fillPercent>
+    <coversFloor>false</coversFloor>
+    <blockLight>false</blockLight>
+			<canOverlapZones>false</canOverlapZones>
+			<castEdgeShadows>true</castEdgeShadows>
+		<staticSunShadowHeight>.6</staticSunShadowHeight>
+			<statBases>
+				<WorkToBuild>1600</WorkToBuild>
+				<MaxHitPoints>100</MaxHitPoints>
+				<Flammability>1.0</Flammability>
+			</statBases>
+			<tickerType>Rare</tickerType>
+			<description>An electrical device that fits into a wall and pushes cold air into a room. Its exhaust port generates a lot of heat. Can be used to cool down rooms during summer, or to create a walk-in freezer. </description>
+			<costList>
+				<Steel>90</Steel>
+				<Component>3</Component>
+			</costList>
+			<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+			<placeWorkers>
+				<li>PlaceWorker_Cooler</li>
+			</placeWorkers>
+			<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+    <building>
+      <canPlaceOverWall>false</canPlaceOverWall>
+			<isEdifice>false</isEdifice>
+    </building>
+			<comps>
+				<li Class="CompProperties_Power">
+					<compClass>CompPowerTrader</compClass>
+					<basePowerConsumption>200</basePowerConsumption>
+				</li>
+				<li Class="CompProperties_Flickable"/>
+				<li Class="CompProperties_TempControl">
+					<energyPerSecond>-21</energyPerSecond>
+				</li>
+				<li Class="CompProperties_Breakdownable"/>
+			</comps>
+			<designationCategory>Temperature</designationCategory>
+    <designationHotKey>Misc6</designationHotKey>
+			<researchPrerequisites>
+				<li>AirConditioning</li>
+			</researchPrerequisites>
+  </ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>Vent_Over</defName>
+		<label>vent</label>
+		<thingClass>Building_Vent</thingClass>
+    <graphicData>
+      <texPath>Vent_Over</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <damageData>
+        <cornerTL>Damage/Corner</cornerTL>
+        <cornerTR>Damage/Corner</cornerTR>
+        <cornerBL>Damage/Corner</cornerBL>
+        <cornerBR>Damage/Corner</cornerBR>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+    <blockWind>false</blockWind>
+		<fillPercent>.6</fillPercent>
+    <coversFloor>false</coversFloor>
+    <blockLight>false</blockLight>
+    <castEdgeShadows>false</castEdgeShadows>
+			<canOverlapZones>false</canOverlapZones>
+    <staticSunShadowHeight>1.0</staticSunShadowHeight>
+			<statBases>
+				<WorkToBuild>400</WorkToBuild>
+				<MaxHitPoints>100</MaxHitPoints>
+				<Flammability>1.0</Flammability>
+			</statBases>
+			<tickerType>Rare</tickerType>
+			<description>A simple vent for equalizing the temperature between two rooms without allowing people to walk between them.</description>
+			<costList>
+				<Steel>30</Steel>
+			</costList>
+			<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+			<placeWorkers>
+				<li>PlaceWorker_Vent</li>
+			</placeWorkers>
+			<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<building>
+			<canPlaceOverWall>false</canPlaceOverWall>
+			<isEdifice>false</isEdifice>
+		</building>
+			<designationCategory>Temperature</designationCategory>
+    <designationHotKey>Misc7</designationHotKey>
+			<comps>
+				<li Class="CompProperties_Flickable">
+					<commandTexture>UI/Commands/Vent</commandTexture>
+					<commandLabelKey>CommandDesignateOpenCloseVentLabel</commandLabelKey>
+					<commandDescKey>CommandDesignateOpenCloseVentDesc</commandDescKey>
+				</li>
+			</comps>
+  </ThingDef>
+	
+</Defs>
