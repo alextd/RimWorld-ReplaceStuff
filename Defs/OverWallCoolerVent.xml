@@ -3,7 +3,7 @@
 
   <ThingDef ParentName="BuildingBase">
     <defName>Cooler_Over</defName>
-			<label>cooler</label>
+		<label>over-wall cooler</label>
     <thingClass>Building_Cooler</thingClass>
     <graphicData>
       <texPath>Cooler_Over</texPath>
@@ -64,7 +64,7 @@
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>Vent_Over</defName>
-		<label>vent</label>
+		<label>over-wall vent</label>
 		<thingClass>Building_Vent</thingClass>
     <graphicData>
       <texPath>Vent_Over</texPath>
