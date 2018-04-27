@@ -85,7 +85,7 @@ namespace Replace_Stuff
 		{
 			if (oldThing != null && oldThing.Spawned)
 			{
-				FinalizeReplace(oldThing, Stuff);
+				FinalizeReplace(oldThing, Stuff, worker);
 
 				this.resourceContainer.ClearAndDestroyContents(DestroyMode.Vanish);
 				this.Destroy(DestroyMode.Vanish);
@@ -120,7 +120,7 @@ namespace Replace_Stuff
 			}
 		}
 
-		public static void FinalizeReplace(Thing thing, ThingDef stuff)
+		public static void FinalizeReplace(Thing thing, ThingDef stuff, Pawn worker = null)
 		{
 			LeaveStuff(thing);
 
@@ -129,6 +129,12 @@ namespace Replace_Stuff
 			thing.HitPoints = thing.MaxHitPoints - damage;
 			thing.Notify_ColorChanged();
 			thing.Map.mapDrawer.SectionAt(thing.Position).RegenerateLayers(MapMeshFlag.Things);
+
+			if (worker != null && thing.TryGetComp<CompQuality>() is CompQuality compQuality)
+			{
+				int level = worker.skills.GetSkill(SkillDefOf.Construction).Level;
+				compQuality.SetQuality(QualityUtility.RandomCreationQuality(level), ArtGenerationContext.Colony);
+			}
 		}
 
 		public override string GetInspectString()
