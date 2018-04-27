@@ -100,7 +100,7 @@ namespace Replace_Stuff
 			}
 		}
 
-		public static void LeaveStuff(Thing oldThing)
+		public static void DeconstructDropStuff(Thing oldThing)
 		{
 			if (Current.ProgramState != ProgramState.Playing)	return;
 
@@ -122,7 +122,7 @@ namespace Replace_Stuff
 
 		public static void FinalizeReplace(Thing thing, ThingDef stuff, Pawn worker = null)
 		{
-			LeaveStuff(thing);
+			DeconstructDropStuff(thing);
 
 			int damage = thing.MaxHitPoints - thing.HitPoints;
 			thing.SetStuffDirect(stuff);
