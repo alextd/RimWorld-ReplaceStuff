@@ -54,4 +54,27 @@ namespace Replace_Stuff
 			}
 		}
 	}
+
+
+	[HarmonyPatch(typeof(GenSpawn), "SpawningWipes")]
+	class CoolerWallShare_Wipes
+	{
+		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
+		public static void Postfix(BuildableDef newEntDef, BuildableDef oldEntDef, ref bool __result)
+		{
+			if (!__result) return;
+
+			ThingDef newDef = newEntDef as ThingDef;
+			ThingDef oldDef = oldEntDef as ThingDef;
+			BuildableDef newBuiltDef = GenConstruct.BuiltDefOf(newDef);
+			BuildableDef oldBuiltDef = GenConstruct.BuiltDefOf(oldDef);
+			
+			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
+			if ((newBuiltDef == ThingDefOf.Cooler && oldBuiltDef == ThingDefOf.Wall) || (newBuiltDef == VentDefOf.Vent && oldBuiltDef == ThingDefOf.Wall)
+				|| (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == ThingDefOf.Cooler) || (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == VentDefOf.Vent))
+			{
+				__result = false;	
+			}
+		}
+	}
 }
