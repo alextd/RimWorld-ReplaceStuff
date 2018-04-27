@@ -10,12 +10,12 @@ namespace Replace_Stuff
 {
 	static class GenReplace
 	{
-		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing, Faction faction, ThingDef stuff)
+		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing,ThingDef stuff)
 		{
 			ThingDef replaceFrameDef = ThingDefGenerator_ReplaceFrame.ReplaceFrameDefFor(oldThing.def);
 
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
-			replaceFrame.SetFactionDirect(faction);
+			replaceFrame.SetFactionDirect(Faction.OfPlayer);
 			replaceFrame.oldThing = oldThing;
 			replaceFrame.oldStuff = oldThing.Stuff;
 			GenSpawn.Spawn(replaceFrame, oldThing.Position, oldThing.Map, oldThing.Rotation);

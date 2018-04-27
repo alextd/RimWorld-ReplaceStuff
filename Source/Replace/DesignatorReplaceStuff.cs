@@ -63,30 +63,20 @@ namespace Replace_Stuff
 			base.DrawMouseAttachments();
 			if (!ArchitectCategoryTab.InfoRect.Contains(UI.MousePositionOnUIInverted))
 			{
-				DesignationDragger dragger = Find.DesignatorManager.Dragger;
-				int cellCount = dragger.Dragging ? cellCount = dragger.DragCells.Count<IntVec3>() : 1;
-				float yNext = 0f;
+				int cost = 0;
+				foreach (IntVec3 cell in Find.DesignatorManager.Dragger.DragCells)
+					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t)).Sum(t => t.def.costStuffCount);
 				Vector2 drawPoint = Event.current.mousePosition + DragPriceDrawOffset;
+				Rect iconRect = new Rect(drawPoint.x, drawPoint.y, 27f, 27f);
+				GUI.DrawTexture(iconRect, stuffDef.uiIcon);
 
-				List<ThingCountClass> list = new List<ThingCountClass>();
-				list.Add(new ThingCountClass(ThingDefOf.WoodLog, 5));
-				for (int i = 0; i < list.Count; i++)
-				{
-					ThingCountClass thingCountClass = list[i];
-					float y = drawPoint.y + yNext;
-					Rect position = new Rect(drawPoint.x, y, 27f, 27f);
-					GUI.DrawTexture(position, thingCountClass.thingDef.uiIcon);
-					Rect rect = new Rect(drawPoint.x + 29f, y, 999f, 29f);
-					int num3 = cellCount * thingCountClass.count;
-
-					string text = "Stuff";
-					Text.Font = GameFont.Small;
-					Text.Anchor = TextAnchor.MiddleLeft;
-					Widgets.Label(rect, text);
-					Text.Anchor = TextAnchor.UpperLeft;
-					GUI.color = Color.white;
-					yNext += 29f;
-				}
+				Rect textRect = new Rect(drawPoint.x + 29f, drawPoint.y, 999f, 29f);
+				string text = cost.ToString();
+				Text.Font = GameFont.Small;
+				Text.Anchor = TextAnchor.MiddleLeft;
+				Widgets.Label(textRect, text);
+				Text.Anchor = TextAnchor.UpperLeft;
+				GUI.color = Color.white;
 			}
 		}
 
@@ -159,7 +149,10 @@ namespace Replace_Stuff
 
 		public static bool CanReplaceStuffFor(ThingDef stuff, Thing thing)
 		{
-			if (thing.Faction != Faction.OfPlayer || thing.Stuff == stuff || !thing.def.IsBuildingArtificial || thing.def.IsFrame || thing.def.designationCategory == null)
+			if (thing.Faction != Faction.OfPlayer && thing.Faction != null)
+				return false;
+
+			if (thing.Stuff == stuff || !thing.def.IsBuildingArtificial || thing.def.IsFrame || thing.def.designationCategory == null)
 				return false;
 
 			foreach (ThingDef def in GenStuff.AllowedStuffsFor(thing.def))
@@ -174,13 +167,14 @@ namespace Replace_Stuff
 			for(int i=0; i<things.Count; i++)
 			{
 				Thing t = things[i];
+				t.SetFaction(Faction.OfPlayer);
 				if (DebugSettings.godMode)
 				{
 					ReplaceFrame.FinalizeReplace(t, stuffDef);
 				}
 				else
 				{
-					ReplaceFrame frame = GenReplace.PlaceReplaceFrame(t, Faction.OfPlayer, stuffDef);
+					ReplaceFrame frame = GenReplace.PlaceReplaceFrame(t, stuffDef);
 				}
 			}
 		}
