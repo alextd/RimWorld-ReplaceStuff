@@ -18,9 +18,6 @@
     <None Include="Sounds\**" />
     <None Include="Textures\**" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Patches\CoolverOverWallPatches.xml" />
-  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="Build">
     <RemoveDir Directories="obj" />
     <Exec WorkingDirectory="$(ProjectDir)" Command="$(PostBuildEvent)" />
