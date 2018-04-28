@@ -118,17 +118,9 @@ namespace Replace_Stuff
 			GenDraw.DrawNoBuildEdgeLines();
 			if (!ArchitectCategoryTab.InfoRect.Contains(UI.MousePositionOnUIInverted))
 			{
-				IntVec3 intVec = UI.MouseCell();
-				Color ghostCol;
-				if (CanDesignateCell(intVec).Accepted)
-				{
-					ghostCol = new Color(0.5f, 1f, 0.6f, 0.4f);
-				}
-				else
-				{
-					ghostCol = new Color(1f, 0f, 0f, 0.4f);
-				}
-				DrawGhost(ghostCol);
+				IntVec3 mousePos = UI.MouseCell();
+				if (mousePos.InBounds(Map))
+					DrawGhost(CanDesignateCell(mousePos).Accepted ? new Color(0.5f, 1f, 0.6f, 0.4f) : new Color(1f, 0f, 0f, 0.4f));
 			}
 		}
 
