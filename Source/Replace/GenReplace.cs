@@ -10,7 +10,7 @@ namespace Replace_Stuff
 {
 	static class GenReplace
 	{
-		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing,ThingDef stuff)
+		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing, ThingDef stuff)
 		{
 			ThingDef replaceFrameDef = ThingDefGenerator_ReplaceFrame.ReplaceFrameDefFor(oldThing.def);
 
