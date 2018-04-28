@@ -32,7 +32,7 @@ namespace Replace_Stuff
 //
 //		public override string SettingsCategory()
 //		{
-//			return "Replace Stuff";
+//			return "TD.ReplaceStuff".Translate();
 //		}
 	}
 }

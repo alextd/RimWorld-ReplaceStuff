@@ -61,7 +61,7 @@ namespace Replace_Stuff
 		{
 			ThingDef thingDef = ThingDefGenerator_ReplaceFrame.BaseFrameDef();
 			thingDef.defName = def.defName + "_ReplaceStuff";
-			thingDef.label = def.label + "(Replacing)";//Not entirely sure if this is needed since ReplaceFrame.Label doesn't use it, but, this is vanilla Frame code.
+			thingDef.label = def.label + "TD.ReplacingTag".Translate();//Not entirely sure if this is needed since ReplaceFrame.Label doesn't use it, but, this is vanilla Frame code.
 			thingDef.size = def.size;
 			thingDef.SetStatBaseValue(StatDefOf.MaxHitPoints, (float)def.BaseMaxHitPoints * 0.25f);
 			thingDef.SetStatBaseValue(StatDefOf.Beauty, -8f);

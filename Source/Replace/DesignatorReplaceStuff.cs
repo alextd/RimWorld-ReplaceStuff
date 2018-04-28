@@ -33,8 +33,8 @@ namespace Replace_Stuff
 			this.soundDragChanged = SoundDefOf.DesignateDragBuildingChanged;
 			this.soundSucceeded = SoundDefOf.DesignatePlaceBuilding;
 
-			this.defaultLabel = "Replace";
-			this.defaultDesc = "Replace stuff of a thing, e.g. replace a wood wall with stone";
+			this.defaultLabel = "TD.Replace".Translate();
+			this.defaultDesc = "TD.ReplaceDesc".Translate();
 			this.icon = TexDefOf.replaceIcon;
 			this.iconProportions = new Vector2(1f, 1f);
 			this.iconDrawScale = 1f;

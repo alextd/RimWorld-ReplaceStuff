@@ -48,7 +48,7 @@ namespace Replace_Stuff
 		{
 			get
 			{
-				string text = this.def.entityDefToBuild.label + " (Replacing)";
+				string text = this.def.entityDefToBuild.label + "TD.ReplacingTag".Translate();
 				if (base.Stuff != null)
 				{
 					return base.Stuff.label + " " + text;
