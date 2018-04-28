@@ -44,6 +44,19 @@ namespace Replace_Stuff
 			}
 		}
 
+		public override string Label
+		{
+			get
+			{
+				string text = this.def.entityDefToBuild.label + " (Replacing)";
+				if (base.Stuff != null)
+				{
+					return base.Stuff.label + " " + text;
+				}
+				return text;
+			}
+		}
+
 		public int TotalStuffNeeded()
 		{
 			return TotalStuffNeeded(def.entityDefToBuild, Stuff);
