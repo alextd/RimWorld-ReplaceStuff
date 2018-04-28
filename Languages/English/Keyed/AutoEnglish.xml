@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>Replace</TD.Replace>
+	<TD.ReplaceDesc>Replace stuff of a thing, e.g. replace a wood wall with stone</TD.ReplaceDesc>
+	<TD.ReplacingTag> (Replacing)</TD.ReplacingTag>
+	
+</LanguageData>
