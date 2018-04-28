@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+  <TD.Replace>建て替える</TD.Replace>
+  <TD.ReplaceDesc>建築物の材料を交換します、例えば木の壁を石材でできた壁に置き換えます。</TD.ReplaceDesc>
+  <TD.ReplacingTag> (建て替え中)</TD.ReplacingTag>
+
+</LanguageData>
