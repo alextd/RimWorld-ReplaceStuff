@@ -3,6 +3,22 @@
 	<name>Replace Stuff</name>
 	<author>Uuugggg</author>
 	<targetVersion>0.18.0</targetVersion>
-	<description>Replace stuff a thing is made from, e.g. replace a wall's materials</description>
+	<description>Replace the stuff that a thing is made from, e.g. replace a wall's materials.
+	
+This mod does NOT deconstruct and reconstruct. It preserves the existing building and replaces materials in-place.
+	
+A new button in the Architect/Structure menu to replace any building's materials.
+Regular buildings that are ordered to be built on top of a copy are replaced instead of reconstructed.
+		
+It doesn't break down the existing building, which means:
+Replacing walls doesn't break the room, and keeps freezers cold.
+Replacing workbenches doesn't delete bills.
+
+Work to be done is the same as normal deconstruction and construction.
+Materials needed is just the stuff to be replaced.
+Materials left behind is only the removed stuff (Any additional materials are preserved in the building and not lost).
+Buildings with quality are assigned a new quality level.
+
+There are new over-wall cooler and vents that behave exactly like normal, but do not act as walls, and must be placed on top of walls (Which means expanding your freezer cooler doesn't break the walls). And, why not, you can place coolers even if the vents are blocked, because you can later remove the blockage.</description>
 	<url>https://steamcommunity.com/id/Uuugggg/myworkshopfiles/?appid=294100</url>
 </ModMetaData>
