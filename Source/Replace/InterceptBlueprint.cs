@@ -18,6 +18,10 @@ namespace Replace_Stuff.Replace
 		{
 			if (faction != Faction.OfPlayer) return true;
 
+			//Fix for door rotation
+			if (sourceDef is ThingDef thingDef && thingDef.thingClass == typeof(Building_Door))
+				rotation = Building_Door.DoorRotationAt(center, map);
+
 			Func<Thing, bool> validator = t =>
 			t.def == sourceDef &&
 			t.Position == center &&
