@@ -21,12 +21,12 @@ namespace Replace_Stuff.Replace
 			Func<Thing, bool> validator = t =>
 			t.def == sourceDef &&
 			t.Position == center &&
-			t.Rotation == rotation &&
-			map.designationManager.DesignationOn(t)?.def == DesignationDefOf.Deconstruct;
+			t.Rotation == rotation;
 
-			if (center.GetThingList(map).FirstOrDefault() is Thing oldThing)
+			if (center.GetThingList(map).FirstOrDefault(validator) is Thing oldThing)
 			{
-				GenReplace.PlaceReplaceFrame(oldThing, stuff);
+				if(oldThing.Stuff != stuff)
+					GenReplace.PlaceReplaceFrame(oldThing, stuff);
 				__result = null;
 				return false;
 			}
