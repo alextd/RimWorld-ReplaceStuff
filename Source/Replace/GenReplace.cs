@@ -17,7 +17,9 @@ namespace Replace_Stuff
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
 
 			//QualityBuilder
-			if(DefDatabase<DesignationDef>.GetNamed("SkilledBuilder", false) is DesignationDef d)
+			if(DefDatabase<DesignationDef>.GetNamed("SkilledBuilder", false) is DesignationDef d &&
+				AccessTools.TypeByName("CompQualityBuilder") is Type qbType &&
+				replaceFrame.def.HasComp(qbType))
 				oldThing.Map.designationManager.AddDesignation(new Designation(replaceFrame, d));
 
 			replaceFrame.SetFactionDirect(Faction.OfPlayer);
