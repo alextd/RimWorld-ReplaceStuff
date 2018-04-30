@@ -15,6 +15,11 @@ namespace Replace_Stuff
 			ThingDef replaceFrameDef = ThingDefGenerator_ReplaceFrame.ReplaceFrameDefFor(oldThing.def);
 
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
+
+			//QualityBuilder
+			if(DefDatabase<DesignationDef>.GetNamed("SkilledBuilder", false) is DesignationDef d)
+				oldThing.Map.designationManager.AddDesignation(new Designation(replaceFrame, d));
+
 			replaceFrame.SetFactionDirect(Faction.OfPlayer);
 			replaceFrame.oldThing = oldThing;
 			replaceFrame.oldStuff = oldThing.Stuff;
@@ -76,6 +81,11 @@ namespace Replace_Stuff
 			thingDef.clearBuildingArea = false;
 			thingDef.drawPlaceWorkersWhileSelected = def.drawPlaceWorkersWhileSelected;
 			thingDef.stuffCategories = def.stuffCategories;
+
+			//Support QualityBuilder
+			if (def.HasComp(typeof(CompQuality)) && def.building != null)
+				if (AccessTools.TypeByName("CompProperties_QualityBuilderr") is Type qbType)	//rr [sic]
+					thingDef.comps.Add((CompProperties)Activator.CreateInstance(qbType));
 
 			thingDef.entityDefToBuild = def;
 			//def.replaceFrameDef = thingDef;	//Dictionary instead
