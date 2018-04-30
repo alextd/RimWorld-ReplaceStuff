@@ -6,13 +6,6 @@
 		<label>over-wall cooler</label>
 		<graphicData>
 			<texPath>Cooler_Over</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
 		</graphicData>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<passability>PassThroughOnly</passability>
@@ -33,13 +26,6 @@
 		<label>over-wall vent</label>
 		<graphicData>
 			<texPath>Vent_Over</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
 		</graphicData>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<passability>PassThroughOnly</passability>
