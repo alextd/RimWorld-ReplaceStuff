@@ -36,4 +36,22 @@ namespace Replace_Stuff
 			return frame.MaterialsNeeded();
 		}
 	}
+
+	//Support for QualityBuilder. Which is to say, QB uses shit detours, not harmony
+	[StaticConstructorOnStartup]
+	public static class QualityBuilderSupport
+	{
+		static QualityBuilderSupport()
+		{
+			if (AccessTools.TypeByName("_WorkGiver_ConstructFinishFrames") is Type t)
+			{
+				HarmonyInstance harmony = Mod.Harmony();
+				{
+					//[HarmonyPatch(typeof(_WorkGiver_ConstructFinishFrames), "JobOnThing")]
+					harmony.Patch(AccessTools.Method(t, "JobOnThing"),
+						null, null, new HarmonyMethod(typeof(WorkGiverConstructReplaceFrame), "Transpiler"));
+				}
+			}
+		}
+	}
 }
