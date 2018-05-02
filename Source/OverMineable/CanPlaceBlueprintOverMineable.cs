@@ -48,7 +48,7 @@ namespace Replace_Stuff.OverMineable
 	[DefOf]
 	public static class ConceptDefOf
 	{
-		public static ConceptDef BuildingsTryMine;
+		public static ConceptDef BuildersTryMine;
 	}
 
 	//This should technically go inside Designator_Build.DesignateSingleCell, but this is easier.
@@ -66,7 +66,7 @@ namespace Replace_Stuff.OverMineable
 				{
 					map.designationManager.AddDesignation(new Designation(mineable, DesignationDefOf.Mine));
 					if(mineable.def.building?.mineableYieldWasteable ?? false)
-						TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildingsTryMine);
+						TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildersTryMine);
 				}
 			}
 		}
