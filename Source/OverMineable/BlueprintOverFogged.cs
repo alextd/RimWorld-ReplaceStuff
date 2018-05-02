@@ -17,18 +17,41 @@ namespace Replace_Stuff.OverMineable
 		{
 			MethodInfo FoggedInfo = AccessTools.Method(typeof(GridsUtility), "Fogged");
 
-			foreach(CodeInstruction i in instructions)
+			MethodInfo WasAcceptedInfo = AccessTools.Property(typeof(AcceptanceReport), "WasAccepted").GetGetMethod();
+
+			bool foundFogged = false;
+			foreach (CodeInstruction i in instructions)
 			{
-				if (i.opcode == OpCodes.Call && i.operand == FoggedInfo)
+				yield return i;
+				if (foundFogged)  //skip the brfalse after Fogged
 				{
-					yield return new CodeInstruction(OpCodes.Pop);//center
-					yield return new CodeInstruction(OpCodes.Pop);//map
-					yield return new CodeInstruction(OpCodes.Ldc_I4_0);//false
+					//IL_0518: call valuetype Verse.AcceptanceReport Verse.AcceptanceReport::get_WasAccepted()
+					//IL_051d: ret
+					yield return new CodeInstruction(OpCodes.Call, WasAcceptedInfo);
+					yield return new CodeInstruction(OpCodes.Ret);
+					foundFogged = false;
 				}
-				else
-					yield return i;
+				if (i.opcode == OpCodes.Call && i.operand == FoggedInfo)
+					foundFogged = true;
 			}
 		}
 		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
+	}
+
+	[HarmonyPatch(typeof(FogGrid), "UnfogWorker")]
+	public static class UnFogFix
+	{
+		//private void UnfogWorker(IntVec3 c)
+		public static void Postfix(FogGrid __instance, IntVec3 c)
+		{
+			Map map = (Map)AccessTools.Field(typeof(FogGrid), "map").GetValue(__instance);
+			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint)
+			{
+				AcceptanceReport report = GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint);
+				Log.Message(report + report.Reason);
+				if (!report.Accepted)
+					blueprint.Destroy();
+			}
+		}
 	}
 }
