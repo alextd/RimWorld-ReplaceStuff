@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>建設員は貴重な鉱石を採掘可能</BuildersTryMine.label>
+  <BuildersTryMine.helpText>注意：価値の高い鉱石の上に建物を設置すると、建築に割り当てられた入植者はその鉱石を採掘することができます。ただし、低いスキルで採掘すれば、鉱石を無駄にする可能性があります。あなたの建設作業員が採掘スキルに熟練していない場合は、あなた設定した建築プロジェクトを一端キャンセルして、熟練した採掘担当者に仕事を割り振って採掘の仕事をさせた方が良いかもしれません。</BuildersTryMine.helpText>
+
+
+</LanguageData>
