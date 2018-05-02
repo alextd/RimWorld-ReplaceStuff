@@ -6,6 +6,8 @@
 	<description>Replace the stuff that a thing is made from, e.g. replace a wall's materials.
 	
 This mod does NOT deconstruct and reconstruct. It preserves the existing building and replaces materials in-place.
+
+Also, blueprints are allowed over rock and fog.
 	
 A new button in the Architect/Structure menu to replace any building's materials.
 Regular buildings that are ordered to be built on top of a copy are replaced instead of reconstructed.
@@ -19,6 +21,17 @@ Materials needed is just the stuff to be replaced.
 Materials left behind is only the removed stuff (Any additional materials are preserved in the building and not lost).
 Buildings with quality are assigned a new quality level.
 
-There are new over-wall cooler and vents that behave exactly like normal, but do not act as walls, and must be placed on top of walls (Which means expanding your freezer cooler doesn't break the walls). And, why not, you can place coolers even if the vents are blocked, because you can later remove the blockage.</description>
+
+When building over rock, miners and builders will both mine. If it's valuable ore, unskilled miners will lose ore. You may want to cancel your building projects until the skilled miners do their job.
+Invalid blueprints are canceled when revealed, often due to terrain.
+Even building floors will clear out rock to install the floors.
+
+
+There are new over-wall cooler and vents that behave exactly like normal, but do not act as walls, and must be placed on top of walls (Which means expanding your freezer cooler doesn't break the walls). And, why not, you can place coolers even if the vents are blocked, because you can later remove the blockage.
+
+
+Minor improvements:
+- Corner walls are buildable and minable from inside. Now you can finish that cave-tunneled room.
+- Pawns don't block construction.</description>
 	<url>https://steamcommunity.com/id/Uuugggg/myworkshopfiles/?appid=294100</url>
 </ModMetaData>
