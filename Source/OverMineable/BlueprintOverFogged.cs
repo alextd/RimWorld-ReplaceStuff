@@ -13,11 +13,12 @@ namespace Replace_Stuff.OverMineable
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
 	public static class BlueprintOverFogged
 	{
+		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			MethodInfo FoggedInfo = AccessTools.Method(typeof(GridsUtility), "Fogged");
 
-			MethodInfo WasAcceptedInfo = AccessTools.Property(typeof(AcceptanceReport), "WasAccepted").GetGetMethod();
+			MethodInfo BlueprintAcceptedInfo = AccessTools.Method(typeof(BlueprintOverFogged), "BlueprintExistsAcceptance");
 
 			bool foundFogged = false;
 			foreach (CodeInstruction i in instructions)
@@ -25,9 +26,10 @@ namespace Replace_Stuff.OverMineable
 				yield return i;
 				if (foundFogged)  //skip the brfalse after Fogged
 				{
-					//IL_0518: call valuetype Verse.AcceptanceReport Verse.AcceptanceReport::get_WasAccepted()
-					//IL_051d: ret
-					yield return new CodeInstruction(OpCodes.Call, WasAcceptedInfo);
+					yield return new CodeInstruction(OpCodes.Ldarg_3);//map
+					yield return new CodeInstruction(OpCodes.Ldarg_1);//center
+					yield return new CodeInstruction(OpCodes.Ldarg_0);//entDef
+					yield return new CodeInstruction(OpCodes.Call, BlueprintAcceptedInfo);
 					yield return new CodeInstruction(OpCodes.Ret);
 					foundFogged = false;
 				}
@@ -35,7 +37,13 @@ namespace Replace_Stuff.OverMineable
 					foundFogged = true;
 			}
 		}
-		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
+
+		public static AcceptanceReport BlueprintExistsAcceptance(Map map, IntVec3 center, ThingDef entDef)
+		{
+			if(center.GetThingList(map).Any(t => t is Blueprint && t.def.entityDefToBuild == entDef))
+				return new AcceptanceReport("IdenticalBlueprintExists".Translate());
+			return true;
+		}
 	}
 
 	[HarmonyPatch(typeof(FogGrid), "UnfogWorker")]
