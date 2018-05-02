@@ -55,9 +55,7 @@ namespace Replace_Stuff.OverMineable
 			Map map = (Map)AccessTools.Field(typeof(FogGrid), "map").GetValue(__instance);
 			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint)
 			{
-				AcceptanceReport report = GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint);
-				Log.Message(report + report.Reason);
-				if (!report.Accepted)
+				if (!GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint).Accepted)
 					blueprint.Destroy();
 			}
 		}
