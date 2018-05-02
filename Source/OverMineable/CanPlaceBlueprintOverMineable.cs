@@ -62,6 +62,9 @@ namespace Replace_Stuff.OverMineable
 
 			foreach (IntVec3 cell in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
 			{
+				if (map.designationManager.DesignationAt(cell, DesignationDefOf.Mine) != null)
+					continue;
+
 				foreach (Thing mineable in map.thingGrid.ThingsAt(cell).Where(t => t.def.mineable))
 				{
 					map.designationManager.AddDesignation(new Designation(mineable, DesignationDefOf.Mine));
