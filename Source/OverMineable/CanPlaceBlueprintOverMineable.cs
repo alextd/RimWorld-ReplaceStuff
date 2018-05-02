@@ -45,6 +45,12 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
+	[DefOf]
+	public static class ConceptDefOf
+	{
+		public static ConceptDef BuildingsTryMine;
+	}
+
 	//This should technically go inside Designator_Build.DesignateSingleCell, but this is easier.
 	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForBuild")]
 	class InterceptBlueprintOverMinable
@@ -59,6 +65,8 @@ namespace Replace_Stuff.OverMineable
 				foreach (Thing mineable in map.thingGrid.ThingsAt(cell).Where(t => t.def.mineable))
 				{
 					map.designationManager.AddDesignation(new Designation(mineable, DesignationDefOf.Mine));
+					if(mineable.def.building?.mineableYieldWasteable ?? false)
+						TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildingsTryMine);
 				}
 			}
 		}
