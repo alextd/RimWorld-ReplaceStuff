@@ -9,10 +9,21 @@ using Verse;
 namespace Replace_Stuff
 {
 	[DefOf]
-	public static class OverDefOf
+	public static class WallChecker
 	{
+		public static bool IsWall(this BuildableDef bdef)
+		{
+			//return bdef == ThingDefOf.Wall;
+			return bdef is ThingDef def && def.coversFloor &&
+				(!def.building?.isNaturalRock ?? true);
+		}
+
 		public static ThingDef Cooler_Over;
 		public static ThingDef Vent_Over;
+		public static bool IsOverWall(this BuildableDef bdef)
+		{
+			return bdef == Cooler_Over || bdef == Vent_Over;
+		}
 	}
 
 	[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
@@ -29,8 +40,8 @@ namespace Replace_Stuff
 
 			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
 			if (thingDef.entityDefToBuild is ThingDef def
-				&& (def == ThingDefOf.Wall && (t.def == OverDefOf.Cooler_Over || t.def == OverDefOf.Vent_Over)
-				|| t.def == ThingDefOf.Wall && (def == OverDefOf.Cooler_Over || def == OverDefOf.Vent_Over)))
+				&& ((def.IsWall() && t.def.IsOverWall())
+				|| (t.def.IsWall() && def.IsOverWall())))
 				__result = false;
 		}
 	}
@@ -47,8 +58,7 @@ namespace Replace_Stuff
 			if (oldDef.category == ThingCategory.Building || oldDef.IsBlueprint || oldDef.IsFrame)
 			{
 				//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
-				if ((newDef == OverDefOf.Cooler_Over && oldBuildDef == ThingDefOf.Wall) || (newDef == OverDefOf.Vent_Over && oldBuildDef == ThingDefOf.Wall)
-					|| (newDef == ThingDefOf.Wall && oldBuildDef == OverDefOf.Cooler_Over) || (newDef == ThingDefOf.Wall && oldBuildDef == OverDefOf.Vent_Over))
+				if ((newDef.IsOverWall() && oldBuildDef.IsWall())	|| (newDef.IsWall() && oldBuildDef.IsOverWall()))
 				{
 					__result = true;
 				}
@@ -71,8 +81,8 @@ namespace Replace_Stuff
 			BuildableDef oldBuiltDef = GenConstruct.BuiltDefOf(oldDef);
 			
 			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
-			if ((newBuiltDef == OverDefOf.Cooler_Over && oldBuiltDef == ThingDefOf.Wall) || (newBuiltDef == OverDefOf.Vent_Over && oldBuiltDef == ThingDefOf.Wall)
-				|| (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == OverDefOf.Cooler_Over) || (newBuiltDef == ThingDefOf.Wall && oldBuiltDef == OverDefOf.Vent_Over))
+			if ((newBuiltDef.IsOverWall() && oldBuiltDef.IsWall())
+				|| (newBuiltDef.IsWall() && oldBuiltDef.IsOverWall()))
 			{
 				__result = false;	
 			}
