@@ -13,9 +13,10 @@ namespace Replace_Stuff.OverMineable
 	class CanPlaceBlueprintOverMineable
 	{
 		//public static bool CanPlaceBlueprintOver(BuildableDef newDef, ThingDef oldDef)
-		public static void Postfix(ThingDef oldDef, ref bool __result)
+		public static void Postfix(BuildableDef newDef, ThingDef oldDef, ref bool __result)
 		{
-			__result |= oldDef.mineable;
+			if(newDef.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f)
+				__result |= oldDef.mineable;
 		}
 	}
 
