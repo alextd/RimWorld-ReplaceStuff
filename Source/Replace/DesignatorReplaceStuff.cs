@@ -65,7 +65,7 @@ namespace Replace_Stuff
 			{
 				int cost = 0;
 				foreach (IntVec3 cell in Find.DesignatorManager.Dragger.DragCells)
-					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t)).Sum(t => t.def.costStuffCount);
+					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t)).Sum(t => Mathf.RoundToInt((float)t.def.costStuffCount / stuffDef.VolumePerUnit));
 				Vector2 drawPoint = Event.current.mousePosition + DragPriceDrawOffset;
 				Rect iconRect = new Rect(drawPoint.x, drawPoint.y, 27f, 27f);
 				GUI.DrawTexture(iconRect, stuffDef.uiIcon);
