@@ -136,10 +136,9 @@ namespace Replace_Stuff
 		public static void FinalizeReplace(Thing thing, ThingDef stuff, Pawn worker = null)
 		{
 			DeconstructDropStuff(thing);
-
-			int damage = thing.MaxHitPoints - thing.HitPoints;
+			
 			thing.SetStuffDirect(stuff);
-			thing.HitPoints = thing.MaxHitPoints - damage;
+			thing.HitPoints = thing.MaxHitPoints;	//Deconstruction/construction implicitly repairs
 			thing.Notify_ColorChanged();
 			thing.Map.mapDrawer.SectionAt(thing.Position).RegenerateLayers(MapMeshFlag.Things);
 
