@@ -49,6 +49,57 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
+	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
+	public static class FixConduitPlaceWorker
+	{
+		//AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			FieldInfo entityDefInfo = AccessTools.Field(typeof(ThingDef), "entityDefToBuild");
+			
+			//need to find loop continue label
+			object continueLabel = null;
+
+			//just easier to find the 3-line code to get thingList[i]
+			bool foundLdLoc = false;
+			List<CodeInstruction> currentThing = new List<CodeInstruction>();
+
+			List<CodeInstruction> iList = instructions.ToList();
+			for(int k=0; k < iList.Count(); k++)
+			{
+				CodeInstruction i = iList[k];
+				if (!foundLdLoc && i.opcode == OpCodes.Ldloc_0)
+				{
+					foundLdLoc = true;
+					currentThing.AddRange(iList.GetRange(k, 3));
+				}
+				if (i.opcode == OpCodes.Ldfld && i.operand == entityDefInfo)
+				{
+					continueLabel = iList[k+1].operand;
+					break;
+				}
+			}
+
+			foundLdLoc = false;
+			foreach(CodeInstruction i in instructions)
+			{
+				if(!foundLdLoc && i.opcode == OpCodes.Ldloc_0)
+				{
+					foundLdLoc = true;
+
+					yield return new CodeInstruction(OpCodes.Nop) { labels = i.labels };//start of loop label
+					i.labels = new List<Label>();
+					foreach (CodeInstruction ci in currentThing)
+						yield return new CodeInstruction(ci.opcode, ci.operand);//thingList[i]
+					yield return new CodeInstruction(OpCodes.Ldarg_S, 5);//thingToIgnore
+					yield return new CodeInstruction(OpCodes.Beq, continueLabel);//continue
+				}
+				yield return i;
+			}
+		}
+	}
+
+
 	[HarmonyPatch(typeof(FogGrid), "UnfogWorker")]
 	public static class UnFogFix
 	{
