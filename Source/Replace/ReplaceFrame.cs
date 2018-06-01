@@ -18,13 +18,26 @@ namespace Replace_Stuff
 		public ThingDef oldStuff;
 
 		private const int MaxDeconstructWork = 3000;
-		public new float WorkToMake
+		public float WorkToDeconstruct
 		{
 			get
 			{
 				float deWork = def.entityDefToBuild.GetStatValueAbstract(StatDefOf.WorkToBuild, oldStuff);
-				float work = def.entityDefToBuild.GetStatValueAbstract(StatDefOf.WorkToBuild, Stuff);
-				return work + (deWork > MaxDeconstructWork ? MaxDeconstructWork : deWork);
+				return Mathf.Min(deWork, MaxDeconstructWork);
+			}
+		}
+		public float WorkToReplace
+		{
+			get
+			{
+				return def.entityDefToBuild.GetStatValueAbstract(StatDefOf.WorkToBuild, Stuff);
+			}
+		}
+		public new float WorkToMake
+		{
+			get
+			{
+				return WorkToDeconstruct + WorkToReplace;
 			}
 		}
 
@@ -115,7 +128,16 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
-			//todo;
+			workDone = Mathf.Min(workDone, WorkToDeconstruct);
+			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
+			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
+			{
+				Messages.Message("MessageConstructionFailed".Translate(new object[]
+				{
+					this.Label,
+					worker.LabelShort
+				}), new TargetInfo(base.Position, Map), MessageTypeDefOf.NegativeEvent);
+			}
 		}
 
 		public static void DeconstructDropStuff(Thing oldThing)
