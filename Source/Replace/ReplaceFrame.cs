@@ -128,7 +128,32 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
+			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct + ", total is " + WorkToMake);
+
 			workDone = Mathf.Min(workDone, WorkToDeconstruct);
+			if (workDone == WorkToDeconstruct)
+			{
+				int total = TotalStuffNeeded();
+				int lostResources = total - GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
+				Log.Message("resources total " + total + ", lost " + lostResources + " stuff");
+
+				while (lostResources > 0)
+				{
+					Thing replacementStuff = resourceContainer.First();
+					if (replacementStuff.stackCount > lostResources)
+					{
+						replacementStuff.stackCount -= lostResources;
+						break;
+					}
+					else
+					{
+						lostResources -= replacementStuff.stackCount;
+						replacementStuff.Destroy();
+						resourceContainer.Remove(replacementStuff);
+					}
+				}
+			}
+
 			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
 			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
 			{
@@ -218,6 +243,20 @@ namespace Replace_Stuff
 			if (__instance is ReplaceFrame replaceFrame)
 			{
 				replaceFrame.CompleteConstruction(worker);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Frame), "FailConstruction")]
+	public static class Virtualize_FailConstruction
+	{
+		//public void FailConstruction(Pawn worker)
+		public static bool Prefix(Frame __instance, Pawn worker)
+		{
+			if (__instance is ReplaceFrame replaceFrame)
+			{
+				replaceFrame.FailConstruction(worker);
 				return false;
 			}
 			return true;
