@@ -166,31 +166,49 @@ namespace Replace_Stuff
 		}
 	}
 
-	[HarmonyPatch(typeof(Frame), "Draw")]
-	public static class PercentPatch
+
+	//VIRTUAL virtual methods
+	[HarmonyPatch(typeof(Frame), "MaterialsNeeded")]
+	public static class Virtualize_MaterialsNeeded
 	{
-		//public override void Draw()
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		//public List<ThingCountClass> MaterialsNeeded()
+		public static bool Prefix(Frame __instance, ref List<ThingCountClass> __result)
 		{
-			MethodInfo PercentCompleteInfo = AccessTools.Property(typeof(Frame), "PercentComplete").GetGetMethod();
-
-			MethodInfo ReplacePercentCompleteInfo = AccessTools.Method(typeof(PercentPatch), nameof(ReplacePercentComplete));
-
-			foreach (CodeInstruction i in instructions)
+			if (__instance is ReplaceFrame replaceFrame)
 			{
-				if (i.opcode == OpCodes.Call && i.operand == PercentCompleteInfo)
-					i.operand = ReplacePercentCompleteInfo;
-				yield return i;
+				__result = replaceFrame.MaterialsNeeded();
+				return false;
 			}
-		}
-
-		public static float ReplacePercentComplete(Frame frame)
-		{
-			//VIRTUAL virtual methods
-			if (frame is ReplaceFrame replaceFrame)
-				return replaceFrame.PercentComplete;
-			else
-				return frame.PercentComplete;
+			return true;
 		}
 	}
+	[HarmonyPatch(typeof(Frame), "CompleteConstruction")]
+	public static class Virtualize_CompleteConstruction
+	{
+		//public void CompleteConstruction(Pawn worker)
+		public static bool Prefix(Frame __instance, Pawn worker)
+		{
+			if (__instance is ReplaceFrame replaceFrame)
+			{
+				replaceFrame.CompleteConstruction(worker);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Frame), "get_WorkToMake")]
+	public static class Virtualize_WorkToMake
+	{
+		//public float WorkToMake
+		public static bool Prefix(Frame __instance, ref float __result)
+		{
+			if (__instance is ReplaceFrame replaceFrame)
+			{
+				__result = replaceFrame.WorkToMake;
+				return false;
+			}
+			return true;
+		}
+	}
+	
 }

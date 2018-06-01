@@ -27,19 +27,10 @@ namespace Replace_Stuff.Replace
 		//MakeNewToils, Toil, tickAction:
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			MethodInfo CompleteConstructionInfo = AccessTools.Method(typeof(Frame), "CompleteConstruction");
-			MethodInfo WorkToMakeInfo = AccessTools.Property(typeof(Frame), "WorkToMake").GetGetMethod();
-
 			MethodInfo IsReplaceFrameInfo = AccessTools.Method(typeof(JobDriverFinishReplaceFrame), nameof(IsReplaceFrame));
-			MethodInfo ReplaceCompleteConstructionInfo = AccessTools.Method(typeof(JobDriverFinishReplaceFrame), nameof(CompleteConstruction));
-			MethodInfo ReplaceWorkToMakeInfo = AccessTools.Method(typeof(JobDriverFinishReplaceFrame), nameof(ReplaceWorkToMake));
 
 			foreach (CodeInstruction i in instructions)
 			{
-				if (i.opcode == OpCodes.Callvirt && i.operand == CompleteConstructionInfo)
-					i.operand = ReplaceCompleteConstructionInfo;
-				if (i.opcode == OpCodes.Callvirt && i.operand == WorkToMakeInfo)
-					i.operand = ReplaceWorkToMakeInfo;
 				yield return i;
 				if (i.opcode == OpCodes.Bne_Un)
 				{
@@ -51,23 +42,5 @@ namespace Replace_Stuff.Replace
 		}
 
 		public static bool IsReplaceFrame(Frame f) => f is ReplaceFrame;
-
-		public static void CompleteConstruction(Frame frame, Pawn worker)
-		{
-			//VIRTUAL virtual methods
-			if (frame is ReplaceFrame replaceFrame)
-				replaceFrame.CompleteConstruction(worker);
-			else
-				frame.CompleteConstruction(worker);
-		}
-
-		public static float ReplaceWorkToMake(Frame frame)
-		{
-			//VIRTUAL virtual methods
-			if (frame is ReplaceFrame replaceFrame)
-				return replaceFrame.WorkToMake;
-			else
-				return frame.WorkToMake;
-		}
 	}
 }
