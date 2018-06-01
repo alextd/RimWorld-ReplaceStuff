@@ -16,7 +16,14 @@ namespace Replace_Stuff
 	{
 		public Thing oldThing;
 		public ThingDef oldStuff;
-
+		
+		public override void ExposeData()
+		{
+			base.ExposeData();
+			Scribe_References.Look(ref oldThing, "oldThing");
+			Scribe_Defs.Look(ref oldStuff, "oldStuff");
+		}
+		
 		private const int MaxDeconstructWork = 3000;
 		public float WorkToDeconstruct
 		{
