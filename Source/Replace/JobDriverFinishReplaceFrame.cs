@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
+using Verse.AI;
 using Harmony;
 using RimWorld;
 
@@ -27,20 +28,28 @@ namespace Replace_Stuff.Replace
 		//MakeNewToils, Toil, tickAction:
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			MethodInfo IsReplaceFrameInfo = AccessTools.Method(typeof(JobDriverFinishReplaceFrame), nameof(IsReplaceFrame));
+			//        IL_00a2: call         instance void Verse.AI.JobDriver::ReadyForNextToil()
+			MethodInfo ReadyForNextToilInfo = AccessTools.Method(typeof(JobDriver), "ReadyForNextToil");
 
+			MethodInfo ReplaceReadyForNextToilInfo = AccessTools.Method(typeof(JobDriver), "ReplaceReadyForNextToil");
+			
 			foreach (CodeInstruction i in instructions)
 			{
-				yield return i;
-				if (i.opcode == OpCodes.Bne_Un)
+				if (i.opcode == OpCodes.Call && i.operand == ReadyForNextToilInfo)
 				{
 					yield return new CodeInstruction(OpCodes.Ldloc_1);//frame
-					yield return new CodeInstruction(OpCodes.Call, IsReplaceFrameInfo);
-					yield return new CodeInstruction(OpCodes.Brtrue, i.operand);
+					yield return new CodeInstruction(OpCodes.Call, ReplaceReadyForNextToilInfo);
 				}
+				else
+					yield return i;
 			}
 		}
 
-		public static bool IsReplaceFrame(Frame f) => f is ReplaceFrame;
+		public static void ReplaceReadyForNextToil(JobDriver driver, Frame frame)
+		{
+			if (frame is ReplaceFrame)
+				return;
+			driver.ReadyForNextToil();
+		}
 	}
 }

@@ -113,6 +113,11 @@ namespace Replace_Stuff
 			}
 		}
 
+		public new void FailConstruction(Pawn worker)
+		{
+			//todo;
+		}
+
 		public static void DeconstructDropStuff(Thing oldThing)
 		{
 			if (Current.ProgramState != ProgramState.Playing)	return;
