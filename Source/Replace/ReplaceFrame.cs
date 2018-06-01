@@ -138,29 +138,28 @@ namespace Replace_Stuff
 			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct + ", total is " + WorkToMake);
 
 			workDone = Mathf.Min(workDone, WorkToDeconstruct);
-			if (workDone == WorkToDeconstruct)
-			{
-				int total = TotalStuffNeeded();
-				int lostResources = total - GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
-				Log.Message("resources total " + total + ", lost " + lostResources + " stuff");
+			if (workDone < WorkToDeconstruct) return;	//Deconstruction doesn't fail
 
-				while (lostResources > 0)
+			int total = TotalStuffNeeded();
+			int lostResources = total - GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
+			Log.Message("resources total " + total + ", lost " + lostResources + " stuff");
+
+			while (lostResources > 0)
+			{
+				Thing replacementStuff = resourceContainer.First();
+				if (replacementStuff.stackCount > lostResources)
 				{
-					Thing replacementStuff = resourceContainer.First();
-					if (replacementStuff.stackCount > lostResources)
-					{
-						replacementStuff.stackCount -= lostResources;
-						break;
-					}
-					else
-					{
-						lostResources -= replacementStuff.stackCount;
-						replacementStuff.Destroy();
-						resourceContainer.Remove(replacementStuff);
-					}
+					replacementStuff.stackCount -= lostResources;
+					break;
+				}
+				else
+				{
+					lostResources -= replacementStuff.stackCount;
+					replacementStuff.Destroy();
+					resourceContainer.Remove(replacementStuff);
 				}
 			}
-
+			
 			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
 			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
 			{
