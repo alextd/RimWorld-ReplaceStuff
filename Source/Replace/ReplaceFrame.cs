@@ -268,7 +268,8 @@ namespace Replace_Stuff
 			return true;
 		}
 	}
-	[HarmonyPatch(typeof(Frame), "get_WorkToMake")]
+	[HarmonyPatch(typeof(Frame))]
+	[HarmonyPatch("WorkToMake", PropertyMethod.Getter)]
 	public static class Virtualize_WorkToMake
 	{
 		//public float WorkToMake
