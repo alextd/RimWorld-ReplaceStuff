@@ -96,15 +96,15 @@ namespace Replace_Stuff
 			return TotalStuffNeeded() - CountStuffHas();
 		}
 
-		private List<ThingCountClass> cachedMaterialsNeeded = new List<ThingCountClass>();
-		public new List<ThingCountClass> MaterialsNeeded()
+		private List<ThingDefCountClass> cachedMaterialsNeeded = new List<ThingDefCountClass>();
+		public new List<ThingDefCountClass> MaterialsNeeded()
 		{
 			this.cachedMaterialsNeeded.Clear();
 			
 			int need = CountStuffNeeded();
 
 			if (need > 0)
-				this.cachedMaterialsNeeded.Add(new ThingCountClass(Stuff, need));
+				this.cachedMaterialsNeeded.Add(new ThingDefCountClass(Stuff, need));
 
 			return this.cachedMaterialsNeeded;
 		}
@@ -203,7 +203,8 @@ namespace Replace_Stuff
 			if (worker != null && thing.TryGetComp<CompQuality>() is CompQuality compQuality)
 			{
 				int level = worker.skills.GetSkill(SkillDefOf.Construction).Level;
-				compQuality.SetQuality(QualityUtility.RandomCreationQuality(level), ArtGenerationContext.Colony);
+				bool inspired = worker.Inspired;
+				compQuality.SetQuality(QualityUtility.GenerateQualityCreatedByPawn(level, inspired), ArtGenerationContext.Colony);
 			}
 		}
 
@@ -230,7 +231,7 @@ namespace Replace_Stuff
 	public static class Virtualize_MaterialsNeeded
 	{
 		//public List<ThingCountClass> MaterialsNeeded()
-		public static bool Prefix(Frame __instance, ref List<ThingCountClass> __result)
+		public static bool Prefix(Frame __instance, ref List<ThingDefCountClass> __result)
 		{
 			if (__instance is ReplaceFrame replaceFrame)
 			{

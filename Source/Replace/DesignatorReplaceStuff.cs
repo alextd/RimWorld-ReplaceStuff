@@ -29,9 +29,9 @@ namespace Replace_Stuff
 
 		public Designator_ReplaceStuff()
 		{
-			this.soundDragSustain = SoundDefOf.DesignateDragBuilding;
-			this.soundDragChanged = SoundDefOf.DesignateDragBuildingChanged;
-			this.soundSucceeded = SoundDefOf.DesignatePlaceBuilding;
+			this.soundDragSustain = SoundDefOf.Designate_DragBuilding;
+			this.soundDragChanged = SoundDefOf.Designate_DragStandard_Changed;
+			this.soundSucceeded = SoundDefOf.Designate_PlaceBuilding;
 
 			this.defaultLabel = "TD.Replace".Translate();
 			this.defaultDesc = "TD.ReplaceDesc".Translate();
@@ -40,7 +40,7 @@ namespace Replace_Stuff
 			this.iconDrawScale = 1f;
 			this.ResetStuffToDefault();
 
-			this.hotKey = KeyBindingDefOf.CommandColonistDraft;
+			this.hotKey = KeyBindingDefOf.Command_ColonistDraft;
 		}
 
 		public void ResetStuffToDefault()
@@ -48,11 +48,12 @@ namespace Replace_Stuff
 			stuffDef = ThingDefOf.WoodLog;
 		}
 
-		public override GizmoResult GizmoOnGUI(Vector2 topLeft)
+		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth)
 		{
-			GizmoResult result = base.GizmoOnGUI(topLeft);
+			GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth);
 
-			Rect rect = new Rect(topLeft.x + Width / 2, topLeft.y, Width / 2, Height / 2);
+			float w = GetWidth(maxWidth);
+			Rect rect = new Rect(topLeft.x + w / 2, topLeft.y, w / 2, Height / 2);
 			Widgets.ThingIcon(rect, stuffDef);
 
 			return result;

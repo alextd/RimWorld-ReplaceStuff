@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Replace_Stuff
 {
-	[HarmonyPatch(typeof(GhostDrawer), "GhostGraphicFor")]
+	[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
 	public static class ShowGhostOverFog
 	{
 		//private static Graphic GhostGraphicFor(Graphic baseGraphic, ThingDef thingDef, Color ghostCol)
@@ -39,7 +39,7 @@ namespace Replace_Stuff
 		{
 			//__result.altitudeLayer = AltitudeLayer.MetaOverlays;
 			//__result.drawerType = DrawerType.RealtimeOnly;
-			__result.graphicData.shaderType = ShaderType.MetaOverlay;
+			//__result.graphicData.shaderType = ShaderType.MetaOverlay;
 		}
 	}
 }

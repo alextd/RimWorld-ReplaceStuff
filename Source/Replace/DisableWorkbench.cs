@@ -8,8 +8,7 @@ using RimWorld;
 
 namespace Replace_Stuff.Replace
 {
-	[HarmonyPatch(typeof(Building_WorkTable))]
-	[HarmonyPatch("UsableNow", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Building_WorkTable), "CurrentlyUsableForBills")]
 	class DisableWorkbench
 	{
 		//public virtual bool UsableNow
