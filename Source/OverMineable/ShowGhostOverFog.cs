@@ -11,19 +11,22 @@ using UnityEngine;
 
 namespace Replace_Stuff
 {
-	[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
+	/* 1.0 has cooler blueprints/ghost shader which this would revert to meta
+	 * TODO: find a way to display over fog but with edgedetect shader
+	 * 
+	[HarmonyPatch(typeof(GhostUtility), "GhostGraphicFor")]
 	public static class ShowGhostOverFog
 	{
-		//private static Graphic GhostGraphicFor(Graphic baseGraphic, ThingDef thingDef, Color ghostCol)
+		//public static Graphic GhostGraphicFor(Graphic baseGraphic, ThingDef thingDef, Color ghostCol)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			FieldInfo TransparentInfo = AccessTools.Field(typeof(ShaderDatabase), "Transparent");
-			FieldInfo MetaOverlayInfo = AccessTools.Field(typeof(ShaderDatabase), "MetaOverlay");
+			FieldInfo EdgeDetectInfo = AccessTools.Field(typeof(ShaderTypeDefOf), "EdgeDetect");
+			FieldInfo MetaOverlayInfo = AccessTools.Field(typeof(ShaderTypeDefOf), "MetaOverlay");
 
 			foreach (CodeInstruction i in instructions)
 			{
-				//ldsfld       class [UnityEngine]UnityEngine.Shader Verse.ShaderDatabase::Transparent
-				if (i.opcode == OpCodes.Ldsfld && i.operand == TransparentInfo)
+				//ldsfld       class Verse.ShaderTypeDef RimWorld.ShaderTypeDefOf::EdgeDetect
+				if (i.opcode == OpCodes.Ldsfld && i.operand == EdgeDetectInfo)
 					i.operand = MetaOverlayInfo;
 				yield return i;
 			}
@@ -37,9 +40,12 @@ namespace Replace_Stuff
 		//private static ThingDef NewBlueprintDef_Thing(ThingDef def, bool isInstallBlueprint, ThingDef normalBlueprint = null)
 		public static void Postfix(ref ThingDef __result)
 		{
+			//This seems like it would work butno:
 			//__result.altitudeLayer = AltitudeLayer.MetaOverlays;
-			//__result.drawerType = DrawerType.RealtimeOnly;
-			//__result.graphicData.shaderType = ShaderType.MetaOverlay;
+			//__result.drawerType = DrawerType.MapMeshAndRealTime;
+
+			__result.graphicData.shaderType = ShaderTypeDefOf.MetaOverlay;
 		}
 	}
+	*/
 }
