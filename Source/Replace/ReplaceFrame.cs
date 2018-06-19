@@ -202,9 +202,9 @@ namespace Replace_Stuff
 
 			if (worker != null && thing.TryGetComp<CompQuality>() is CompQuality compQuality)
 			{
-				int level = worker.skills.GetSkill(SkillDefOf.Construction).Level;
-				bool inspired = worker.Inspired;
-				compQuality.SetQuality(QualityUtility.GenerateQualityCreatedByPawn(level, inspired), ArtGenerationContext.Colony);
+				QualityCategory qualityCreatedByPawn = QualityUtility.GenerateQualityCreatedByPawn(worker, SkillDefOf.Construction);
+				compQuality.SetQuality(qualityCreatedByPawn, ArtGenerationContext.Colony);
+				QualityUtility.SendCraftNotification(thing, worker);
 			}
 		}
 
@@ -230,7 +230,7 @@ namespace Replace_Stuff
 	[HarmonyPatch(typeof(Frame), "MaterialsNeeded")]
 	public static class Virtualize_MaterialsNeeded
 	{
-		//public List<ThingCountClass> MaterialsNeeded()
+		//public List<ThingDefCountClass> MaterialsNeeded()
 		public static bool Prefix(Frame __instance, ref List<ThingDefCountClass> __result)
 		{
 			if (__instance is ReplaceFrame replaceFrame)
