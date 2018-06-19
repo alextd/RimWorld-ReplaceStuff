@@ -30,7 +30,9 @@ namespace Replace_Stuff.OverMineable
 			if (thing.def.mineable)
 			{
 				__result = null;//Base would add deconstruct job for all buildings, no no no, rock walls are considered buildings, should not be deconstructed
-				
+
+				if (worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Mining)) return;
+
 				//if(worker.skills.GetSkill(SkillDefOf.Mining) < 2)	return;
 				//Too much to think about to stop shitty miners from doing this.
 
