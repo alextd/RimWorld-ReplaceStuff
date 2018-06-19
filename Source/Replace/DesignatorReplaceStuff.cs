@@ -177,5 +177,10 @@ namespace Replace_Stuff
 			Widgets.InfoCardButton(width - 24f - 6f, 6f, stuffDef);
 			Text.Font = GameFont.Tiny;
 		}
+
+		public override void RenderHighlight(List<IntVec3> dragCells)
+		{
+			DesignatorUtility.RenderHighlightOverSelectableCells(this, dragCells);
+		}
 	}
 }
