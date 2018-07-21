@@ -32,7 +32,7 @@ namespace Replace_Stuff.OverMineable
 				: constructible is Frame ? constructible.def.entityDefToBuild
 				: constructible.def;
 			
-			if (t.def.mineable)	// any case that the thing can be built over mineable?
+			if (t.def.mineable && !t.def.IsSmoothed)	// any case that the thing can be built over plain rock?
 				__result = true;
 		}
 	}
