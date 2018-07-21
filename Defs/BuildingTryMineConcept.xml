@@ -5,6 +5,6 @@
 		<defName>BuildersTryMine</defName>
 		<label>Builders will try to mine valuables</label>
 		<priority>-1000</priority>
-		<helpText>Note: Placing a building over valuable ore will allow builders to mine the ore. Ore can be wasted if mined with low skill. If your builders are not skiled at mining, you may want to cancel your building project and let skilled miners do their job first.</helpText>
+		<helpText>Note: Placing a building over valuable ore will allow builders to mine the ore. Ore can be wasted if mined with low skill. If your builders are not skilled at mining, you may want to cancel your building project and let skilled miners do their job first.</helpText>
 	</ConceptDef>
 </Defs>
