@@ -98,7 +98,7 @@ namespace Replace_Stuff
 		{
 			return new ThingDef
 			{
-				isFrame = true,
+				isFrameInt = true,
 				category = ThingCategory.Building,
 				label = "Unspecified stuff replacement frame",
 				thingClass = typeof(ReplaceFrame),
