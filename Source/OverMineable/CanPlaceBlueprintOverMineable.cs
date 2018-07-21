@@ -20,6 +20,23 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
+	[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
+	class MineableBlocksConstruction
+	{
+		//public static bool BlocksConstruction(Thing constructible, Thing t)
+		public static void Postfix(Thing constructible, Thing t, ref bool __result)
+		{
+			if (__result) return;
+
+			BuildableDef thingDef = constructible is Blueprint ? constructible.def.entityDefToBuild
+				: constructible is Frame ? constructible.def.entityDefToBuild
+				: constructible.def;
+			
+			if (t.def.mineable)	// any case that the thing can be built over mineable?
+				__result = true;
+		}
+	}
+
 	[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
 	class HandleBlockingThingOverMineable
 	{
