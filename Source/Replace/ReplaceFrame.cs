@@ -40,7 +40,7 @@ namespace Replace_Stuff
 				return def.entityDefToBuild.GetStatValueAbstract(StatDefOf.WorkToBuild, Stuff);
 			}
 		}
-		public new float WorkToMake
+		public new float WorkToBuild
 		{
 			get
 			{
@@ -52,7 +52,7 @@ namespace Replace_Stuff
 		{
 			get
 			{
-				return this.WorkToMake - this.workDone;
+				return this.WorkToBuild - this.workDone;
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace Replace_Stuff
 		{
 			get
 			{
-				return this.workDone / this.WorkToMake;
+				return this.workDone / this.WorkToBuild;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
-			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct + ", total is " + WorkToMake);
+			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct + ", total is " + WorkToBuild);
 
 			workDone = Mathf.Min(workDone, WorkToDeconstruct);
 			if (workDone < WorkToDeconstruct) return;	//Deconstruction doesn't fail
@@ -270,15 +270,15 @@ namespace Replace_Stuff
 		}
 	}
 	[HarmonyPatch(typeof(Frame))]
-	[HarmonyPatch("WorkToMake", PropertyMethod.Getter)]
+	[HarmonyPatch("WorkToBuild", PropertyMethod.Getter)]
 	public static class Virtualize_WorkToMake
 	{
-		//public float WorkToMake
+		//public float WorkToBuild
 		public static bool Prefix(Frame __instance, ref float __result)
 		{
 			if (__instance is ReplaceFrame replaceFrame)
 			{
-				__result = replaceFrame.WorkToMake;
+				__result = replaceFrame.WorkToBuild;
 				return false;
 			}
 			return true;
