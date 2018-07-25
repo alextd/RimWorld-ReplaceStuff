@@ -271,7 +271,7 @@ namespace Replace_Stuff
 	}
 	[HarmonyPatch(typeof(Frame))]
 	[HarmonyPatch("WorkToBuild", PropertyMethod.Getter)]
-	public static class Virtualize_WorkToMake
+	public static class Virtualize_WorkToBuild
 	{
 		//public float WorkToBuild
 		public static bool Prefix(Frame __instance, ref float __result)
