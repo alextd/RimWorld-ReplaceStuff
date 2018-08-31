@@ -3,15 +3,14 @@
 
   <Cooler_Over.label>クーラー(後付)</Cooler_Over.label>
   <Cooler_Over.description>通常のクーラーと違って、壁としては機能しません。壁に対してのみ設置できます。\n電気の力で冷気を部屋に送り込みますが、逆に室外機は多くの熱を発生します。夏の期間、部屋を冷却するのに使用したり、又は、冷凍倉庫として利用できます。</Cooler_Over.description>
-  <Cooler_Over_Blueprint.label>クーラー(後付)(設計)</Cooler_Over_Blueprint.label>
-  <Cooler_Over_Frame.label>クーラー(後付)(施工)</Cooler_Over_Frame.label>
-  <Cooler_Over_Frame.description>通常のクーラーと違って、壁としては機能しません。壁に対してのみ設置できます。\n電気の力で冷気を部屋に送り込みますが、逆に室外機は多くの熱を発生します。夏の期間、部屋を冷却するのに使用したり、又は、冷凍倉庫として利用できます。</Cooler_Over_Frame.description>
+  <Blueprint_Cooler_Over.label>クーラー(後付)(設計)</Blueprint_Cooler_Over.label>
+  <Frame_Cooler_Over.label>クーラー(後付)(施工)</Frame_Cooler_Over.label>
+  <Frame_Cooler_Over.description>通常のクーラーと違って、壁としては機能しません。壁に対してのみ設置できます。\n電気の力で冷気を部屋に送り込みますが、逆に室外機は多くの熱を発生します。夏の期間、部屋を冷却するのに使用したり、又は、冷凍倉庫として利用できます。</Frame_Cooler_Over.description>
 
   <Vent_Over.label>換気口(後付)</Vent_Over.label>
   <Vent_Over.description>シンプルな換気口は、人の往来が無くても、つないだ部屋と部屋との温度差を一様にします。</Vent_Over.description>
-  <Vent_Over_Blueprint.label>換気口(後付)(設計)</Vent_Over_Blueprint.label>
-  <Vent_Over_Frame.label>換気口(後付)(施工)</Vent_Over_Frame.label>
-  <Vent_Over_Frame.description>シンプルな換気口は、人の往来が無くても、つないだ部屋と部屋との温度差を一様にします。</Vent_Over_Frame.description>
-
+  <Blueprint_Vent_Over.label>換気口(後付)(設計)</Blueprint_Vent_Over.label>
+  <Frame_Vent_Over.label>換気口(後付)(施工)</Frame_Vent_Over.label>
+  <Frame_Vent_Over.description>シンプルな換気口は、人の往来が無くても、つないだ部屋と部屋との温度差を一様にします。</Frame_Vent_Over.description>
 
 </LanguageData>
