@@ -9,6 +9,14 @@ using Verse.AI;
 
 namespace Replace_Stuff.OverMineable
 {
+	class RockCheck
+	{
+		public static bool IsMineableRock(Thing t) => IsMineableRock(t.def);
+		public static bool IsMineableRock(ThingDef td)
+		{
+			return td.mineable && !td.IsSmoothed;
+		}
+	}
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintOver")]
 	class CanPlaceBlueprintOverMineable
 	{
@@ -16,7 +24,7 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(BuildableDef newDef, ThingDef oldDef, ref bool __result)
 		{
 			if(newDef.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f)
-				__result |= oldDef.mineable;
+				__result |= RockCheck.IsMineableRock(oldDef);
 		}
 	}
 
@@ -32,7 +40,7 @@ namespace Replace_Stuff.OverMineable
 				: constructible is Frame ? constructible.def.entityDefToBuild
 				: constructible.def;
 			
-			if (t.def.mineable && !t.def.IsSmoothed)	// any case that the thing can be built over plain rock?
+			if (RockCheck.IsMineableRock(t))	// any case that the thing can be built over plain rock?
 				__result = true;
 		}
 	}
@@ -44,7 +52,7 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(Thing constructible, Pawn worker, bool forced, ref Job __result)
 		{
 			Thing thing = GenConstruct.FirstBlockingThing(constructible, worker);
-			if (thing.def.mineable)
+			if (RockCheck.IsMineableRock(thing))
 			{
 				__result = null;//Base would add deconstruct job for all buildings, no no no, rock walls are considered buildings, should not be deconstructed
 
@@ -85,10 +93,10 @@ namespace Replace_Stuff.OverMineable
 				if (map.designationManager.DesignationAt(cell, DesignationDefOf.Mine) != null)
 					continue;
 
-				foreach (Thing mineable in map.thingGrid.ThingsAt(cell).Where(t => t.def.mineable))
+				foreach (Thing mineThing in map.thingGrid.ThingsAt(cell).Where(t => RockCheck.IsMineableRock(t)))
 				{
-					map.designationManager.AddDesignation(new Designation(mineable, DesignationDefOf.Mine));
-					if(mineable.def.building?.mineableYieldWasteable ?? false)
+					map.designationManager.AddDesignation(new Designation(mineThing, DesignationDefOf.Mine));
+					if(mineThing.def.building?.mineableYieldWasteable ?? false)
 						TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildersTryMine);
 				}
 			}
