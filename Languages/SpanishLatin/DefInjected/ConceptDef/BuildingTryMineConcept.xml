@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>Los constructores tratarán de extraer los bienes de valor</BuildersTryMine.label>
+  <BuildersTryMine.helpText>Nota: Colocar un edificio sobre un mineral valioso permitirá a los constructores extraer el mineral. El mineral puede desperdiciarse si se extrae con poca habilidad. Si sus constructores no son expertos en minería, es posible que desee cancelar su proyecto de construcción y dejar que mineros cualificados hagan antes su trabajo.</BuildersTryMine.helpText>
+
+
+</LanguageData>
