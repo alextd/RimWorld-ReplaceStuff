@@ -59,7 +59,14 @@ namespace StuffedReplacement
 				{
 					yield return new CodeInstruction(instructionList[i - 1]);
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(ThingDef), nameof(ThingDef.MadeFromStuff)).GetGetMethod());
-					yield return new CodeInstruction(OpCodes.Brtrue, instruction.operand);
+					//yield return new CodeInstruction(OpCodes.Brtrue, instruction.operand);
+					//Originally continuing with method, gonna just return true here: Identical thing exists means we certainly can build here
+					Label label = il.DefineLabel();
+					yield return new CodeInstruction(OpCodes.Brfalse, label);
+					yield return new CodeInstruction(OpCodes.Ldc_I4_1);
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AcceptanceReport), "op_Implicit", new Type[] { typeof(bool) }));
+					yield return new CodeInstruction(OpCodes.Ret);
+					instructionList[i + 1].labels = new List<Label>() { label };
 				}
 			}
 		}

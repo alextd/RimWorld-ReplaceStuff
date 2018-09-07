@@ -13,6 +13,7 @@ namespace Replace_Stuff
 		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing, ThingDef stuff)
 		{
 			ThingDef replaceFrameDef = ThingDefGenerator_ReplaceFrame.ReplaceFrameDefFor(oldThing.def);
+			if (oldThing.Position.GetFirstThing(oldThing.Map, replaceFrameDef) != null) return null;
 
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
 

@@ -167,7 +167,7 @@ namespace Replace_Stuff
 				}
 				else
 				{
-					ReplaceFrame frame = GenReplace.PlaceReplaceFrame(t, stuffDef);
+					GenReplace.PlaceReplaceFrame(t, stuffDef);
 				}
 			}
 		}
