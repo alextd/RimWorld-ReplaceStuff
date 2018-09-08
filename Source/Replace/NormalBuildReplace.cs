@@ -11,6 +11,7 @@ using Verse;
 //this code is straight-up from Erdelf, MIT license below
 namespace StuffedReplacement
 {
+	/*
 	[StaticConstructorOnStartup]
 	public class StuffedReplacement
 	{
@@ -18,7 +19,7 @@ namespace StuffedReplacement
 		{
 			HarmonyInstance harmony = HarmonyInstance.Create("rimworld.erdelf.stuffedReplacement");
 			//harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintOver)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintOverTranspiler)));
-			harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintAtTranspiler)));
+			//harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintAtTranspiler)));
 		}
 
 		public static IEnumerable<CodeInstruction> CanPlaceBlueprintOverTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
@@ -68,6 +69,28 @@ namespace StuffedReplacement
 					instructionList[i + 1].labels = new List<Label>() { label };
 				}
 			}
+		}
+	}
+	*/
+
+	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
+	public static class NormalBuildReplace
+	{
+		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
+		public static void Postfix(ref AcceptanceReport __result, BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode, Thing thingToIgnore)
+		{
+			if (__result.Reason != "IdenticalThingExists".Translate() &&
+				__result.Reason != "IdenticalBlueprintExists".Translate()) return;
+
+			if (!entDef.MadeFromStuff) return;
+
+			//Would love to check stuff here
+			//things and blueprints can be replaced,
+			//frames not so much. todo: replace in-progress frames, ie cancel and place blueprint
+			foreach (Thing thing in center.GetThingList(map))
+				if (thing != thingToIgnore && thing.Position == center && thing.Rotation == rot &&
+					(thing.def == entDef || (thing.def.entityDefToBuild == entDef && thing is Blueprint)))
+						__result = true;
 		}
 	}
 }
