@@ -17,13 +17,12 @@ namespace StuffedReplacement
 		static StuffedReplacement()
 		{
 			HarmonyInstance harmony = HarmonyInstance.Create("rimworld.erdelf.stuffedReplacement");
-			harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintOver)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintOverTranspiler)));
+			//harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintOver)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintOverTranspiler)));
 			harmony.Patch(AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt)), null, null, new HarmonyMethod(typeof(StuffedReplacement), nameof(CanPlaceBlueprintAtTranspiler)));
 		}
 
 		public static IEnumerable<CodeInstruction> CanPlaceBlueprintOverTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
 		{
-			FieldInfo placeOverWallInfo = AccessTools.Field(typeof(BuildingProperties), nameof(BuildingProperties.canPlaceOverWall));
 			MethodInfo isFrameInfo = AccessTools.Property(typeof(ThingDef), nameof(ThingDef.IsFrame)).GetGetMethod();
 
 			List<CodeInstruction> instructionList = instructions.ToList();
