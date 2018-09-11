@@ -42,7 +42,7 @@ namespace Replace_Stuff.BlueprintReplace
 		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
 		public static void Postfix(BuildableDef newEntDef, BuildableDef oldEntDef, ref bool __result)
 		{
-			if (__result) return;
+			if (__result || newEntDef != oldEntDef) return;
 
 			if (newEntDef is ThingDef newD && newD.IsBlueprint &&
 					oldEntDef is ThingDef oldD && oldD.IsBlueprint)
