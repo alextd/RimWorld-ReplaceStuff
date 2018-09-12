@@ -41,6 +41,8 @@ namespace Replace_Stuff.OverMineable
 		//if found fogged:
 		public static AcceptanceReport BlueprintExistsAcceptance(Map map, IntVec3 center, ThingDef entDef)
 		{
+			if (!OverMineable.PlaySettings_BlueprintOverRockToggle.enabled)
+				return new AcceptanceReport("CannotPlaceInUndiscovered".Translate());
 			if(center.GetThingList(map).Any(t => t is Blueprint && t.def.entityDefToBuild == entDef))
 				return new AcceptanceReport("IdenticalBlueprintExists".Translate());
 			if (entDef.GetStatValueAbstract(StatDefOf.WorkToBuild) == 0f)
