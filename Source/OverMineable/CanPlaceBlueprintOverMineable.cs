@@ -48,34 +48,6 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
-	[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
-	class HandleBlockingThingOverMineable
-	{
-		//public static Job HandleBlockingThingJob(Thing constructible, Pawn worker, bool forced = false)
-		public static void Postfix(Thing constructible, Pawn worker, bool forced, ref Job __result)
-		{
-			Thing thing = GenConstruct.FirstBlockingThing(constructible, worker);
-			if (RockCheck.IsMineableRock(thing))
-			{
-				__result = null;//Base would add deconstruct job for all buildings, no no no, rock walls are considered buildings, should not be deconstructed
-
-				if (worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Mining)) return;
-
-				//if(worker.skills.GetSkill(SkillDefOf.Mining) < 2)	return;
-				//Too much to think about to stop shitty miners from doing this.
-
-				LocalTargetInfo target = thing;
-				PathEndMode peMode = PathEndMode.Touch;
-				Danger maxDanger = worker.NormalMaxDanger();
-				if (worker.CanReserveAndReach(target, peMode, maxDanger, 1, -1, null, forced))
-					__result = new Job(JobDefOf.Mine, thing)
-					{
-						ignoreDesignations = true
-					};
-			}
-		}
-	}
-
 	[DefOf]
 	public static class ConceptDefOf
 	{
