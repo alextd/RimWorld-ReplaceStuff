@@ -8,6 +8,8 @@ using Verse;
 
 namespace Replace_Stuff
 {
+	/*
+	 * //Redundant due to Deliver under rock allowing all frames
 	[HarmonyPatch(typeof(GenSpawn), "SpawningWipes")]
 	class ReplaceFrameNoWipe
 	{
@@ -20,6 +22,7 @@ namespace Replace_Stuff
 				__result = false;
 		}
 	}
+	*/
 
 	[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
 	class ReplaceFrameNoBlock
