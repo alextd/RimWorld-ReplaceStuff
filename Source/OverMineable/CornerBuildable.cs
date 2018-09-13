@@ -38,4 +38,62 @@ namespace Replace_Stuff.OverMineable
 			return false;
 		}
 	}
+
+	
+	[HarmonyPatch(typeof(GenPath), "ShouldNotEnterCell")]
+	public static class ShouldNotEnterCellPatch
+	{
+		//private static bool ShouldNotEnterCell(Pawn pawn, Map map, IntVec3 dest)
+		public static void Postfix(ref bool __result, Pawn pawn, Map map, IntVec3 dest)
+		{
+			if (__result || !dest.InBounds(map)) return;
+
+			foreach (IntVec3 adj in GenAdj.CardinalDirections)
+			{
+				if ((!map.edificeGrid[dest + adj]?.BlocksPawn(pawn)) ?? true) return;
+			}
+			//Each direction is blocked
+			foreach (IntVec3 adj in GenAdj.DiagonalDirections)
+			{
+				if ((!map.edificeGrid[dest + adj]?.BlocksPawn(pawn)) ?? true)
+				{
+					//One corner is open
+					__result = true;
+					return;
+				}
+			}
+		}
+	}
+	[HarmonyPatch(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo")]
+	//private static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)
+	public static class TryFindSpotToPlaceHaulableCloseToPatch
+	{
+		public static bool recursive = true;
+		public static void Postfix(ref bool __result, Thing haulable, Pawn worker, IntVec3 center, ref IntVec3 spot)
+		{
+			if (__result || !recursive) return;
+			recursive = false;
+
+			foreach (IntVec3 adj in GenAdj.DiagonalDirections)
+			{
+				IntVec3 dCenter = center + adj;
+				if (TryFindSpotToPlaceHaulableCloseTo(haulable, worker, dCenter, out spot))
+				{
+					__result = true;
+					break;
+				}
+			}
+
+			recursive = true;
+		}
+
+		//Private, you say?
+		public static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)
+		{
+			object[] args = new object[] { haulable, worker, center, null};
+			bool result = (bool)AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo").Invoke(null, args);
+			spot = (IntVec3)args[3];
+			return result;
+		}
+	}
 }
