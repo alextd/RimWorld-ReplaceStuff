@@ -21,7 +21,7 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (worldView) return;
 
-			row.ToggleableIcon(ref enabled, icon, "Place blueprints over mountain rock");
+			row.ToggleableIcon(ref enabled, icon, "TD.ToggleBlueprintOverRock".Translate());
 		}
 	}
 }
