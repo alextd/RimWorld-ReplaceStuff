@@ -50,12 +50,14 @@ namespace Replace_Stuff.OverMineable
 
 			foreach (IntVec3 adj in GenAdj.CardinalDirections)
 			{
-				if ((!map.edificeGrid[dest + adj]?.BlocksPawn(pawn)) ?? true) return;
+				IntVec3 pos = dest + adj;
+				if (pos.InBounds(map) && (!map.edificeGrid[pos]?.BlocksPawn(pawn) ?? true)) return;
 			}
 			//Each direction is blocked
 			foreach (IntVec3 adj in GenAdj.DiagonalDirections)
 			{
-				if ((!map.edificeGrid[dest + adj]?.BlocksPawn(pawn)) ?? true)
+				IntVec3 pos = dest + adj;
+				if (pos.InBounds(map) && (!map.edificeGrid[pos]?.BlocksPawn(pawn) ?? true))
 				{
 					//One corner is open
 					__result = true;
