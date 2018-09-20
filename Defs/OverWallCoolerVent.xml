@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-	<ThingDef ParentName="Cooler">
+	<ThingDef ParentName="Cooler" Name="Cooler_Over">
 		<defName>Cooler_Over</defName>
 		<label>over-wall cooler</label>
 		<graphicData>
@@ -19,6 +19,16 @@
 			<isEdifice>false</isEdifice>
 		</building>
 		<designationHotKey>Misc6</designationHotKey>
+	</ThingDef>
+
+	<ThingDef ParentName="Cooler_Over">
+		<defName>Cooler_Over2W</defName>
+		<label>over-wall cooler (wide)</label>
+		<graphicData>
+			<texPath>Cooler_Over2W</texPath>
+			<drawSize>(1,2)</drawSize>
+		</graphicData>
+		<size>(1,2)</size>
 	</ThingDef>
 
 	<ThingDef ParentName="Vent">

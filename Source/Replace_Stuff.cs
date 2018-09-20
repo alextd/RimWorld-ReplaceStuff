@@ -7,7 +7,6 @@ namespace Replace_Stuff
 {
 	public class Mod : Verse.Mod
 	{
-		HarmonyInstance harmony;
 		public Mod(ModContentPack content) : base(content)
 		{
 			// initialize settings
@@ -15,13 +14,21 @@ namespace Replace_Stuff
 #if DEBUG
 			HarmonyInstance.DEBUG = true;
 #endif
-			harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+			//Need to patch this while loading
+			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+			harmony.Patch(AccessTools.Method(typeof(DesignationCategoryDef), "ResolveDesignators"),
+				null, new HarmonyMethod(typeof(CoolersOverWalls.DesignationCategoryDefRemovalService), "Postfix"));
 		}
 
-		public static HarmonyInstance Harmony()
+		[StaticConstructorOnStartup]
+		public static class ModStartup
 		{
-			return LoadedModManager.GetMod<Replace_Stuff.Mod>().harmony;
+			static ModStartup()
+			{
+				HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+				harmony.PatchAll(Assembly.GetExecutingAssembly());
+			}
 		}
 
 //		public override void DoSettingsWindowContents(Rect inRect)

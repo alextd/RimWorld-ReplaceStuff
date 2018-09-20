@@ -9,7 +9,7 @@ using Verse;
 namespace Replace_Stuff
 {
 	[DefOf]
-	public static class WallChecker
+	public static class OverWallDef
 	{
 		public static bool IsWall(this BuildableDef bdef)
 		{
@@ -19,10 +19,11 @@ namespace Replace_Stuff
 		}
 
 		public static ThingDef Cooler_Over;
+		public static ThingDef Cooler_Over2W;
 		public static ThingDef Vent_Over;
 		public static bool IsOverWall(this BuildableDef bdef)
 		{
-			return bdef == Cooler_Over || bdef == Vent_Over;
+			return bdef == Cooler_Over || bdef == Cooler_Over2W || bdef == Vent_Over;
 		}
 	}
 
