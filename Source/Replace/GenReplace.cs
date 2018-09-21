@@ -31,7 +31,7 @@ namespace Replace_Stuff
 		}
 	}
 
-	[HarmonyPatch(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve")]
+	//[HarmonyPatch(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve")]
 	public static class ThingDefGenerator_ReplaceFrame
 	{
 		public static void Prefix()
@@ -45,9 +45,9 @@ namespace Replace_Stuff
 		}
 
 		public static Dictionary<ThingDef, ThingDef> replaceFrameDefs;
-		public static ThingDef ReplaceFrameDefFor(ThingDef thing)
+		public static ThingDef ReplaceFrameDefFor(ThingDef def)
 		{
-			return replaceFrameDefs[thing]; // or bad things
+			return replaceFrameDefs[def]; // or bad things
 		}
 
 		public static IEnumerable<ThingDef> ImpliedReplaceFrameDefs()

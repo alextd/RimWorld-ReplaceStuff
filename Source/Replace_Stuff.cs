@@ -2,6 +2,7 @@
 using Verse;
 using UnityEngine;
 using Harmony;
+using RimWorld;
 
 namespace Replace_Stuff
 {
@@ -19,7 +20,9 @@ namespace Replace_Stuff
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
 			harmony.Patch(AccessTools.Method(typeof(DesignationCategoryDef), "ResolveDesignators"),
 				null, new HarmonyMethod(typeof(CoolersOverWalls.DesignationCategoryDefRemovalService), "Postfix"));
-		}
+			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
+				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
+	}
 
 		[StaticConstructorOnStartup]
 		public static class ModStartup
