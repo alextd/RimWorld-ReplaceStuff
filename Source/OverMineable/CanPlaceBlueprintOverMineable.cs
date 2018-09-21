@@ -38,10 +38,6 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(Thing constructible, Thing t, ref bool __result)
 		{
 			if (__result) return;
-
-			BuildableDef thingDef = constructible is Blueprint ? constructible.def.entityDefToBuild
-				: constructible is Frame ? constructible.def.entityDefToBuild
-				: constructible.def;
 			
 			if (RockCheck.IsMineableRock(t))	// any case that the thing can be built over plain rock?
 				__result = true;
