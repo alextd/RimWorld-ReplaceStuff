@@ -18,6 +18,16 @@ namespace Replace_Stuff.Replace
 		}
 	}
 
+	[HarmonyPatch(typeof(Building_TurretGun), "TryStartShootSomething")]
+	class DisableTurret
+	{
+		//protected void TryStartShootSomething(bool canBeginBurstImmediately)
+		public static bool Prefix(Building_TurretGun __instance)
+		{
+			return !DisableThing.IsReplacing(__instance);//__instance.ResetCurrentTarget();
+		}
+	}
+
 	[HarmonyPatch(typeof(Building_WorkTable), "UsableForBillsAfterFueling")]
 	class DisableWorkbench
 	{
