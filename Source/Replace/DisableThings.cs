@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Harmony;
 using Verse;
+using Verse.AI;
 using RimWorld;
 
 namespace Replace_Stuff.Replace
@@ -34,7 +35,11 @@ namespace Replace_Stuff.Replace
 		//public virtual bool UsableNow
 		public static void Postfix(ref bool __result, Building_WorkTable __instance)
 		{
-			if (DisableThing.IsReplacing(__instance))	__result = false;
+			if (DisableThing.IsReplacing(__instance))
+			{
+				__result = false;
+				JobFailReason.Is("stuff being replaced");
+			}
 		}
 	}
 }
