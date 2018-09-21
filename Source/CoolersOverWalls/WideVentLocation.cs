@@ -39,8 +39,10 @@ namespace Replace_Stuff.CoolersOverWalls
 
 		public static IntVec3 DoubleIt(IntVec3 v, object o)
 		{
-			ThingDef d = o is Thing t ? t.def : o as ThingDef;
-			return d == OverWallDef.Cooler_Over2W ? v * 2 : v;
+			ThingDef thingDef = o as ThingDef ?? (o as Thing)?.def;
+
+			return thingDef == OverWallDef.Cooler_Over2W || 
+				thingDef.entityDefToBuild == OverWallDef.Cooler_Over2W ? v * 2 : v;
 		}
 	}
 
