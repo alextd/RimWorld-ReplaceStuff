@@ -75,4 +75,13 @@ namespace Replace_Stuff.Replace
 		}
 	}
 
+	[HarmonyPatch(typeof(Toils_Bed), "FailOnBedNoLongerUsable")]
+	public static class FailRestWhenDisabled
+	{
+		//public static void FailOnBedNoLongerUsable(this Toil toil, TargetIndex bedIndex)
+		public static void Postfix(Toil toil, TargetIndex bedIndex)
+		{
+			toil.FailOn(() => DisableThing.IsReplacing(toil.actor.CurJob.GetTarget(bedIndex).Thing));
+		}
+	}
 }
