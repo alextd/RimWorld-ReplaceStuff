@@ -29,7 +29,7 @@ namespace Replace_Stuff.NewThing
 
 		public static List<Replacement> replacements;
 
-		public static bool CanBeReplaced(ThingDef newDef, ThingDef oldDef)
+		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
 			return replacements.Any(r => r.Matches(newDef, oldDef));
 		}
@@ -45,7 +45,7 @@ namespace Replace_Stuff.NewThing
 		{
 			foreach (Thing newThing in oldThing.Position.GetThingList(map))
 			{
-				if (CanBeReplaced(newThing.def, oldThing.def))
+				if (newThing.def.CanReplace(oldThing.def))
 				{
 					replacement = newThing;
 					return true;
@@ -68,7 +68,7 @@ namespace Replace_Stuff.NewThing
 		{
 			foreach (Thing oThing in pos.GetThingList(map))
 			{
-				if (CanBeReplaced(newDef, oThing.def))
+				if (newDef.CanReplace(oThing.def))
 				{
 					oldThing = oThing;
 					return true;
@@ -82,7 +82,9 @@ namespace Replace_Stuff.NewThing
 		//Sort of assume this is a frame...
 		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
 		{
-			return CanBeReplaced(newThing.def.entityDefToBuild as ThingDef, oldThing.def);
+			bool result = (newThing.def.entityDefToBuild as ThingDef).CanReplace(oldThing.def);
+			Log.Message($"{newThing} CanReplace {oldThing} => {result}");
+			return result;
 		}
 	}
 }
