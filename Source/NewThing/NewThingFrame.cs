@@ -82,9 +82,7 @@ namespace Replace_Stuff.NewThing
 		//Sort of assume this is a frame...
 		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
 		{
-			bool result = (newThing.def.entityDefToBuild as ThingDef).CanReplace(oldThing.def);
-			Log.Message($"{newThing} CanReplace {oldThing} => {result}");
-			return result;
+			return (newThing.def.entityDefToBuild as ThingDef).CanReplace(oldThing.def);
 		}
 	}
 }
