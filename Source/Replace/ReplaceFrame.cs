@@ -24,15 +24,14 @@ namespace Replace_Stuff
 			Scribe_Defs.Look(ref oldStuff, "oldStuff");
 		}
 		
-		private const int MaxDeconstructWork = 3000;
-		public float WorkToDeconstruct
+		private const float MaxDeconstructWork = 3000f;
+		public static float WorkToDeconstruct(ThingDef def, ThingDef oldStuff = null)
 		{
-			get
-			{
-				float deWork = def.entityDefToBuild.GetStatValueAbstract(StatDefOf.WorkToBuild, oldStuff);
-				return Mathf.Min(deWork, MaxDeconstructWork);
-			}
+			float deWork = (def.entityDefToBuild as ThingDef ?? def)
+				.GetStatValueAbstract(StatDefOf.WorkToBuild, oldStuff);
+			return Mathf.Min(deWork, MaxDeconstructWork);
 		}
+
 		public float WorkToReplace
 		{
 			get
@@ -44,23 +43,7 @@ namespace Replace_Stuff
 		{
 			get
 			{
-				return WorkToDeconstruct + WorkToReplace;
-			}
-		}
-
-		public new float WorkLeft
-		{
-			get
-			{
-				return this.WorkToBuild - this.workDone;
-			}
-		}
-
-		public new float PercentComplete
-		{
-			get
-			{
-				return this.workDone / this.WorkToBuild;
+				return WorkToDeconstruct(def, oldStuff) + WorkToReplace;
 			}
 		}
 
@@ -135,10 +118,10 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
-			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct + ", total is " + WorkToBuild);
+			Log.Message("Failed replace frame! work was " + workDone + ", Decon is " + WorkToDeconstruct(def, oldStuff) + ", total is " + WorkToBuild);
 
-			workDone = Mathf.Min(workDone, WorkToDeconstruct);
-			if (workDone < WorkToDeconstruct) return;	//Deconstruction doesn't fail
+			workDone = Mathf.Min(workDone, WorkToDeconstruct(def, oldStuff));
+			if (workDone < WorkToDeconstruct(def, oldStuff)) return;	//Deconstruction doesn't fail
 
 			int total = TotalStuffNeeded();
 			int lostResources = total - GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);

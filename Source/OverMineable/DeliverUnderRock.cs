@@ -71,7 +71,6 @@ namespace Replace_Stuff.OverMineable
 					if(Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
 						Any(ilcode => ilcode.operand == CanConstructInfo))
 					{
-						Log.Message($"patchin CanConstruct in ({method}) in Toils_Haul");
 						harmony.Patch(method, null, null, transpiler);
 					}
 				}
