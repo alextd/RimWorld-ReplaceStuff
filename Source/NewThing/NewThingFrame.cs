@@ -14,14 +14,14 @@ namespace Replace_Stuff.NewThing
 	{
 		public class Replacement
 		{
-			Predicate<BuildableDef> newCheck, oldCheck;
-			public Replacement(Predicate<BuildableDef> n, Predicate<BuildableDef> o)
+			Predicate<ThingDef> newCheck, oldCheck;
+			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o)
 			{
 				newCheck = n;
 				oldCheck = o;
 			}
 
-			public bool Matches(BuildableDef n, BuildableDef o)
+			public bool Matches(ThingDef n, ThingDef o)
 			{
 				return n != null && o != null && newCheck(n) && oldCheck(o);
 			}
@@ -29,7 +29,7 @@ namespace Replace_Stuff.NewThing
 
 		public static List<Replacement> replacements;
 
-		public static bool CanBeReplaced(BuildableDef newDef, BuildableDef oldDef)
+		public static bool CanBeReplaced(ThingDef newDef, ThingDef oldDef)
 		{
 			return replacements.Any(r => r.Matches(newDef, oldDef));
 		}
@@ -37,7 +37,7 @@ namespace Replace_Stuff.NewThing
 		static NewThingFrame()
 		{
 			replacements = new List<Replacement>();
-			replacements.Add(new Replacement(d => d == ThingDefOf.Door, n => n.IsWall()));
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
 		}
 
 		public static bool WasReplacedByNewThing(this Thing oldThing, out Thing replacement) => WasReplacedByNewThing(oldThing, oldThing.Map, out replacement);
@@ -59,12 +59,12 @@ namespace Replace_Stuff.NewThing
 		public static bool IsNewThingFrame(this Thing newThing, out Thing oldThing)
 		{
 			if (newThing.Spawned)
-				return IsNewThingReplacement(newThing is Frame ? newThing.def.entityDefToBuild : newThing.def, newThing.Position, newThing.Map, out oldThing);
+				return IsNewThingReplacement(newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def, newThing.Position, newThing.Map, out oldThing);
 			oldThing = null;
 			return false;
 		}
 
-		public static bool IsNewThingReplacement(this BuildableDef newDef, IntVec3 pos, Map map, out Thing oldThing)
+		public static bool IsNewThingReplacement(this ThingDef newDef, IntVec3 pos, Map map, out Thing oldThing)
 		{
 			foreach (Thing oThing in pos.GetThingList(map))
 			{
@@ -82,7 +82,7 @@ namespace Replace_Stuff.NewThing
 		//Sort of assume this is a frame...
 		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
 		{
-			return CanBeReplaced(newThing.def.entityDefToBuild, oldThing.def);
+			return CanBeReplaced(newThing.def.entityDefToBuild as ThingDef, oldThing.def);
 		}
 	}
 }
