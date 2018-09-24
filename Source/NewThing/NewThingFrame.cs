@@ -37,7 +37,11 @@ namespace Replace_Stuff.NewThing
 		static NewThingFrame()
 		{
 			replacements = new List<Replacement>();
+
+			//Here are valid replacements:
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed)));
+			//----------
 		}
 
 		public static bool WasReplacedByNewThing(this Thing oldThing, out Thing replacement) => WasReplacedByNewThing(oldThing, oldThing.Map, out replacement);
