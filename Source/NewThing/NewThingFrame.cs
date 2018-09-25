@@ -96,7 +96,11 @@ namespace Replace_Stuff.NewThing
 		public static bool IsNewThingFrame(this Thing newThing, out Thing oldThing)
 		{
 			if (newThing.Spawned)
-				return IsNewThingReplacement(newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def, newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
+			{
+				ThingDef newDef = newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def;
+				if (newDef != null)
+					return newDef.IsNewThingReplacement(newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
+			}
 			oldThing = null;
 			return false;
 		}
@@ -122,7 +126,8 @@ namespace Replace_Stuff.NewThing
 		//Sort of assume this is a frame...
 		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
 		{
-			return (newThing.def.entityDefToBuild as ThingDef).CanReplace(oldThing.def);
+			ThingDef newDef = newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def;
+			return newDef?.CanReplace(oldThing.def) ?? false;
 		}
 	}
 }
