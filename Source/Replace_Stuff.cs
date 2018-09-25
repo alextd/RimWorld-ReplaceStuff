@@ -11,7 +11,7 @@ namespace Replace_Stuff
 		public Mod(ModContentPack content) : base(content)
 		{
 			// initialize settings
-			// GetSettings<Settings>();
+			GetSettings<Settings>();
 #if DEBUG
 			HarmonyInstance.DEBUG = true;
 #endif
@@ -22,7 +22,7 @@ namespace Replace_Stuff
 				null, new HarmonyMethod(typeof(CoolersOverWalls.DesignationCategoryDefRemovalService), "Postfix"));
 			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
 				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
-	}
+		}
 
 		[StaticConstructorOnStartup]
 		public static class ModStartup
@@ -34,15 +34,15 @@ namespace Replace_Stuff
 			}
 		}
 
-//		public override void DoSettingsWindowContents(Rect inRect)
-//		{
-//			base.DoSettingsWindowContents(inRect);
-//			GetSettings<Settings>().DoWindowContents(inRect);
-//		}
-//
-//		public override string SettingsCategory()
-//		{
-//			return "TD.ReplaceStuff".Translate();
-//		}
+		public override void DoSettingsWindowContents(Rect inRect)
+		{
+			base.DoSettingsWindowContents(inRect);
+			GetSettings<Settings>().DoWindowContents(inRect);
+		}
+
+		public override string SettingsCategory()
+		{
+			return "TD.ReplaceStuff".Translate();
+		}
 	}
 }
