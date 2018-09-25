@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
+	<DesignatorDropdownGroupDef>
+		<defName>OverWallCooler</defName>
+	</DesignatorDropdownGroupDef>
+	
 	<ThingDef ParentName="Cooler" Name="Cooler_Over">
 		<defName>Cooler_Over</defName>
 		<label>over-wall cooler</label>
+		<designatorDropdown>OverWallCooler</designatorDropdown>
 		<graphicData>
 			<texPath>Cooler_Over</texPath>
 		</graphicData>

@@ -18,8 +18,6 @@ namespace Replace_Stuff
 
 			//Need to patch this while loading
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-			harmony.Patch(AccessTools.Method(typeof(DesignationCategoryDef), "ResolveDesignators"),
-				null, new HarmonyMethod(typeof(CoolersOverWalls.DesignationCategoryDefRemovalService), "Postfix"));
 			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
 				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
 		}
