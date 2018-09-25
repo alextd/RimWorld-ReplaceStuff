@@ -15,15 +15,28 @@ namespace Replace_Stuff.NewThing
 		public class Replacement
 		{
 			Predicate<ThingDef> newCheck, oldCheck;
+			Action<Thing, Thing> replaceAction;
 			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o)
 			{
 				newCheck = n;
 				oldCheck = o;
 			}
+			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o, Action<Thing, Thing> r) :this(n,o)
+			{
+				replaceAction = r;
+			}
 
 			public bool Matches(ThingDef n, ThingDef o)
 			{
 				return n != null && o != null && newCheck(n) && oldCheck(o);
+			}
+
+			public void Replace(Thing n, Thing  o)
+			{
+				if (replaceAction != null)
+				{
+					replaceAction(n, o);
+				}
 			}
 		}
 
@@ -34,13 +47,31 @@ namespace Replace_Stuff.NewThing
 			return replacements.Any(r => r.Matches(newDef, oldDef));
 		}
 
+		public static void FinalizeNewThingReplace(this Thing newThing, Thing oldThing)
+		{
+			replacements.ForEach(r =>
+			{
+				if (r.Matches(newThing.def, oldThing.def))
+					r.Replace(newThing, oldThing);
+			});
+		}
+
 		static NewThingFrame()
 		{
 			replacements = new List<Replacement>();
 
 			//Here are valid replacements:
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed)));
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed),
+				(n, o) =>
+				{
+					Building_Bed newBed = n as Building_Bed;
+					Building_Bed oldBed = o as Building_Bed;
+					newBed.ForPrisoners = oldBed.ForPrisoners;
+					newBed.Medical = oldBed.Medical;
+					newBed.owners = oldBed.owners.ListFullCopy();
+				}
+				));
 			//----------
 		}
 
