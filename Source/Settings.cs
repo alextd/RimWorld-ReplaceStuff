@@ -15,13 +15,32 @@ namespace Replace_Stuff
 			return LoadedModManager.GetMod<Replace_Stuff.Mod>().GetSettings<Settings>();
 		}
 
+		public class HideCoolerGameComponent : GameComponent
+		{
+			public Game game;
+
+			public HideCoolerGameComponent(Game game) : base()
+			{
+				this.game = game;
+			}
+
+			public override void FinalizeInit()
+			{
+				base.FinalizeInit();
+				Apply(Get().hideOverwallCoolers);
+			}
+
+			public void Apply(bool hide)
+			{
+				Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over, !hide);
+				Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over2W, !hide);
+				Current.Game.Rules.SetAllowBuilding(OverWallDef.Vent_Over, !hide);
+			}
+		}
+
 		public void SetHideCoolerDefs()
 		{
-			if (Current.Game == null) return;
-
-			Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over, !hideOverwallCoolers);
-			Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over2W, !hideOverwallCoolers);
-			Current.Game.Rules.SetAllowBuilding(OverWallDef.Vent_Over, !hideOverwallCoolers);
+			Current.Game?.GetComponent<HideCoolerGameComponent>().Apply(hideOverwallCoolers);
 		}
 
 		public void DoWindowContents(Rect wrect)
