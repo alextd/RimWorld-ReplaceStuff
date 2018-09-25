@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using Harmony;
 
 namespace Replace_Stuff
 {
@@ -15,34 +18,6 @@ namespace Replace_Stuff
 			return LoadedModManager.GetMod<Replace_Stuff.Mod>().GetSettings<Settings>();
 		}
 
-		public class HideCoolerGameComponent : GameComponent
-		{
-			public Game game;
-
-			public HideCoolerGameComponent(Game game) : base()
-			{
-				this.game = game;
-			}
-
-			public override void FinalizeInit()
-			{
-				base.FinalizeInit();
-				Apply(Get().hideOverwallCoolers);
-			}
-
-			public void Apply(bool hide)
-			{
-				Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over, !hide);
-				Current.Game.Rules.SetAllowBuilding(OverWallDef.Cooler_Over2W, !hide);
-				Current.Game.Rules.SetAllowBuilding(OverWallDef.Vent_Over, !hide);
-			}
-		}
-
-		public void SetHideCoolerDefs()
-		{
-			Current.Game?.GetComponent<HideCoolerGameComponent>().Apply(hideOverwallCoolers);
-		}
-
 		public void DoWindowContents(Rect wrect)
 		{
 			var options = new Listing_Standard();
@@ -50,8 +25,6 @@ namespace Replace_Stuff
 
 			bool hideOverwallCoolersP = hideOverwallCoolers;
 			options.CheckboxLabeled("Hide those super-nifty over-wall coolers from build menu", ref hideOverwallCoolers);
-			if (hideOverwallCoolers != hideOverwallCoolersP)
-				SetHideCoolerDefs();
 			options.Gap();
 
 			options.End();
@@ -60,6 +33,26 @@ namespace Replace_Stuff
 		public override void ExposeData()
 		{
 			Scribe_Values.Look(ref hideOverwallCoolers, "hideOverwallCoolers", false);
+		}
+	}
+
+
+	[HarmonyPatch(typeof(Designator_Build))]
+	[HarmonyPatch("Visible", PropertyMethod.Getter)]
+	public static class DontWipeBridgeBlueprints
+	{
+		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
+		public static bool Prefix(Designator_Build __instance, ref bool __result)
+		{
+			if (Settings.Get().hideOverwallCoolers &&
+				(__instance.PlacingDef == OverWallDef.Cooler_Over ||
+				__instance.PlacingDef == OverWallDef.Cooler_Over2W ||
+				__instance.PlacingDef == OverWallDef.Vent_Over))
+			{
+				__result = false;
+				return false;
+			}
+			return true;
 		}
 	}
 }
