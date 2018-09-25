@@ -60,6 +60,8 @@ namespace Replace_Stuff.NewThing
 		{
 			replacements = new List<Replacement>();
 
+			//---------------------------------------------
+			//---------------------------------------------
 			//Here are valid replacements:
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed),
@@ -69,10 +71,11 @@ namespace Replace_Stuff.NewThing
 					Building_Bed oldBed = o as Building_Bed;
 					newBed.ForPrisoners = oldBed.ForPrisoners;
 					newBed.Medical = oldBed.Medical;
-					newBed.owners = oldBed.owners.ListFullCopy();
+					oldBed.owners.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
-			//----------
+			//---------------------------------------------
+			//---------------------------------------------
 		}
 
 		public static bool WasReplacedByNewThing(this Thing oldThing, out Thing replacement) => WasReplacedByNewThing(oldThing, oldThing.Map, out replacement);
