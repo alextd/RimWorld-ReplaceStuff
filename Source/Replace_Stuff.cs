@@ -20,6 +20,13 @@ namespace Replace_Stuff
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
 			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
 				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
+			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
+				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Postfix)));
+		}
+
+		public static void Postfix(Designator_Dropdown __instance)
+		{
+			__instance.order = 20f;
 		}
 
 		[StaticConstructorOnStartup]
