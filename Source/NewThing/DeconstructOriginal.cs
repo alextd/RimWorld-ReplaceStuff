@@ -26,29 +26,39 @@ namespace Replace_Stuff.NewThing
 	{
 		public static bool __STATIC_STUPID_WAS_NEW_THING = false;
 
-		public static IEnumerable<CodeInstruction> Transpiler (IEnumerable<CodeInstruction> instructions)
+		public static void Postfix()
 		{
+			__STATIC_STUPID_WAS_NEW_THING = false;
+		}
+
+		public static IEnumerable<CodeInstruction> Transpiler (IEnumerable<CodeInstruction> instructions)
+
+		{ 
+			MethodInfo MinifiableInfo = AccessTools.Property(typeof(ThingDef), "Minifiable").GetGetMethod();
+
 			MethodInfo DecideDestroyModeInfo = AccessTools.Method(typeof(RefundDeconstruct), nameof(RefundDeconstruct.DecideDestroyMode));
+			MethodInfo NevermindAboutMinifiableInfo = AccessTools.Method(typeof(RefundDeconstruct), nameof(RefundDeconstruct.NevermindAboutMinifiable));
 
 			foreach (CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Ldc_I4_6)  //DestroyMode.Refund
-				{
-					yield return new CodeInstruction(OpCodes.Call, DecideDestroyModeInfo);// DecideDestroyModeInfo(thing,map)
-				}
+				if (i.opcode == OpCodes.Ldc_I4_6)  //DestroyMode.Refund
+					yield return new CodeInstruction(OpCodes.Call, DecideDestroyModeInfo);
 				else
 					yield return i;
+
+				if (i.opcode == OpCodes.Callvirt && i.operand == MinifiableInfo)
+					yield return new CodeInstruction(OpCodes.Call, NevermindAboutMinifiableInfo);
 			}
 		}
 
 		public static DestroyMode DecideDestroyMode()
 		{
-			if (__STATIC_STUPID_WAS_NEW_THING)
-			{
-				__STATIC_STUPID_WAS_NEW_THING = false;
-				return DestroyMode.Deconstruct;
-			}
-			return DestroyMode.Refund;
+			return __STATIC_STUPID_WAS_NEW_THING ? DestroyMode.Deconstruct : DestroyMode.Refund;
+		}
+
+		public static bool NevermindAboutMinifiable(bool minifiable)
+		{
+			return __STATIC_STUPID_WAS_NEW_THING ? false : minifiable;
 		}
 	}
 }

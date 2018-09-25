@@ -14,7 +14,7 @@ namespace Replace_Stuff.NewThing
 		//public static bool BlocksConstruction(Thing constructible, Thing t)
 		public static void Postfix(Thing constructible, Thing t, ref bool __result)
 		{
-			if (!__result ) return;
+			if (!__result || constructible is Blueprint_Install) return;
 			
 			if (constructible.CanReplaceOldThing(t))
 				__result = false;
