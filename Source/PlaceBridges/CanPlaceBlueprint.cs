@@ -14,11 +14,18 @@ namespace Replace_Stuff.PlaceBridges
 		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
 		public static bool Prefix(ref bool __result, BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
 		{
-			if (c.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
-				TerrainDefOf.Bridge.affordances.Contains(entDef.terrainAffordanceNeeded))
+			CellRect cellRect = GenAdj.OccupiedRect(c, rot, entDef.Size);
+			cellRect.ClipInsideMap(map);
+			CellRect.CellRectIterator iterator = cellRect.GetIterator();
+			while (!iterator.Done())
 			{
-				__result = true;
-				return false;
+				if (iterator.Current.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
+					TerrainDefOf.Bridge.affordances.Contains(entDef.terrainAffordanceNeeded))
+				{
+					__result = true;
+					return false;
+				}
+				iterator.MoveNext();
 			}
 
 			return true;
@@ -35,20 +42,16 @@ namespace Replace_Stuff.PlaceBridges
 			if (faction != Faction.OfPlayer || sourceDef == TerrainDefOf.Bridge) return;
 
 			TerrainAffordanceDef affNeeded = sourceDef.terrainAffordanceNeeded;
-			Log.Message($"{sourceDef} needs {affNeeded}");
 
 			foreach (IntVec3 cell in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
 			{
-				Log.Message($"{cell} handles {affNeeded}?");
 				if (cell.SupportsStructureType(map, affNeeded))
 					continue;
 
-				Log.Message("NOPE!");
 
 				if (cell.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) && 
 					TerrainDefOf.Bridge.affordances.Contains(affNeeded))
 				{
-					Log.Message($"Placing bridge at {cell} for {sourceDef}");
 					GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, cell, map, rotation, faction, null);
 				}
 			}

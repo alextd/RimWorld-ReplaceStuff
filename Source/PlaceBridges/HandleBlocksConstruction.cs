@@ -14,14 +14,14 @@ namespace Replace_Stuff.PlaceBridges
 		//public static bool BlocksConstruction(Thing constructible, Thing t)
 		public static bool Prefix(ref bool __result, Thing constructible, Thing t)
 		{
-			if (constructible is Frame newFrame && newFrame.def.entityDefToBuild == TerrainDefOf.Bridge) return true;
-
-			if(t is Frame frame && frame.def.entityDefToBuild == TerrainDefOf.Bridge)
+			if (t.def.entityDefToBuild == TerrainDefOf.Bridge)
 			{
-				__result = true;
+				//Bridges block non-bridges
+				__result = constructible.def.entityDefToBuild != TerrainDefOf.Bridge;
 				return false;
 			}
 			return true;
 		}
 	}
+	//No need to handle blocking job, that's just a construction job
 }
