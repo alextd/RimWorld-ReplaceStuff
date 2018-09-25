@@ -32,7 +32,6 @@ namespace Replace_Stuff.NewThing
 		}
 
 		public static IEnumerable<CodeInstruction> Transpiler (IEnumerable<CodeInstruction> instructions)
-
 		{ 
 			MethodInfo MinifiableInfo = AccessTools.Property(typeof(ThingDef), "Minifiable").GetGetMethod();
 
