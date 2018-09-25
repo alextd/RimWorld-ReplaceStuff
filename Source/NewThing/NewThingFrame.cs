@@ -78,14 +78,13 @@ namespace Replace_Stuff.NewThing
 		public static bool WasReplacedByNewThing(this Thing oldThing, out Thing replacement) => WasReplacedByNewThing(oldThing, oldThing.Map, out replacement);
 		public static bool WasReplacedByNewThing(this Thing oldThing, Map map, out Thing replacement)
 		{
-			foreach (Thing newThing in oldThing.Position.GetThingList(map))
-			{
+			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(oldThing.Position, oldThing.Rotation, oldThing.def.Size))
+				foreach (Thing newThing in checkPos.GetThingList(map))
 				if (newThing.def.CanReplace(oldThing.def))
 				{
 					replacement = newThing;
 					return true;
 				}
-			}
 
 			replacement = null;
 			return false;
@@ -94,19 +93,22 @@ namespace Replace_Stuff.NewThing
 		public static bool IsNewThingFrame(this Thing newThing, out Thing oldThing)
 		{
 			if (newThing.Spawned)
-				return IsNewThingReplacement(newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def, newThing.Position, newThing.Map, out oldThing);
+				return IsNewThingReplacement(newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def, newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
 			oldThing = null;
 			return false;
 		}
 
-		public static bool IsNewThingReplacement(this ThingDef newDef, IntVec3 pos, Map map, out Thing oldThing)
+		public static bool IsNewThingReplacement(this ThingDef newDef, IntVec3 pos, Rot4 rotation, Map map, out Thing oldThing)
 		{
-			foreach (Thing oThing in pos.GetThingList(map))
+			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(pos, rotation, newDef.Size))
 			{
-				if (newDef.CanReplace(oThing.def))
+				foreach (Thing oThing in checkPos.GetThingList(map))
 				{
-					oldThing = oThing;
-					return true;
+					if (newDef.CanReplace(oThing.def))
+					{
+						oldThing = oThing;
+						return true;
+					}
 				}
 			}
 
