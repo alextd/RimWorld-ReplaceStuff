@@ -13,6 +13,9 @@ namespace Replace_Stuff
 		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing, ThingDef stuff)
 		{
 			ThingDef replaceFrameDef = ThingDefGenerator_ReplaceFrame.ReplaceFrameDefFor(oldThing.def);
+
+			if (replaceFrameDef == null) return null;
+
 			if (oldThing.Position.GetFirstThing(oldThing.Map, replaceFrameDef) != null) return null;
 
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
@@ -47,7 +50,11 @@ namespace Replace_Stuff
 		public static Dictionary<ThingDef, ThingDef> replaceFrameDefs;
 		public static ThingDef ReplaceFrameDefFor(ThingDef def)
 		{
-			return replaceFrameDefs[def]; // or bad things
+			if (replaceFrameDefs.TryGetValue(def, out ThingDef replaceFrame))
+				return replaceFrame;
+			Verse.Log.Warning($"Couldn't find replace frame for {def} : probably a mod's building that isn't added to the database soon enough");
+
+			return null;
 		}
 
 		public static IEnumerable<ThingDef> ImpliedReplaceFrameDefs()
