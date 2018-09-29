@@ -71,42 +71,63 @@ namespace Replace_Stuff
 			return GhostOverFogChecker.ghostIsOverFog ? ShaderTypeDefOf.MetaOverlay : def;
 		}
 	}
-	
-	
-		/*
-	//[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Thing")]
-	public static class ShowBluePrintOverFog
-	{
-		//private static ThingDef NewBlueprintDef_Thing(ThingDef def, bool isInstallBlueprint, ThingDef normalBlueprint = null)
-		public static void Postfix(ref ThingDef __result)
-		{
-			//This seems like it would work butno:
-			//__result.altitudeLayer = AltitudeLayer.MetaOverlays;
-			//__result.drawerType = DrawerType.MapMeshAndRealTime;
-			
-			__result.graphicData.shaderType = ShaderTypeDefOf.MetaOverlay;
-			__result.drawerType = DrawerType.MapMeshAndRealTime;
-		}
-	}
 
-	[HarmonyPatch(typeof(Blueprint), "Draw")]
+	//-------------------------------------------
+	//Blueprint
+	//-------------------------------------------
+
+	[HarmonyPatch(typeof(Thing))]
+	[HarmonyPatch("DefaultGraphic", PropertyMethod.Getter)]
 	public static class ShowBluePrintOverFogDynamic
 	{
-		//public override void Draw()
-		public static void Prefix(Blueprint __instance, ShaderTypeDef __state)
+		//public Graphic DefaultGraphic
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			Thing thing = __instance;
-			
+			FieldInfo graphicDataInfo = AccessTools.Field(typeof(ThingDef), "graphicData");
+
+			MethodInfo FogGraphicMakerInfo = AccessTools.Method(typeof(ShowBluePrintOverFogDynamic), nameof(ShowBluePrintOverFogDynamic.FogGraphicMaker));
+
+			foreach (CodeInstruction i in instructions)
+			{
+				yield return i;
+				//hash with fog bool for graphics cache:
+				if (i.opcode == OpCodes.Ldfld && i.operand == graphicDataInfo)
+				{
+					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing
+					yield return new CodeInstruction(OpCodes.Call, FogGraphicMakerInfo);
+				}
+			}
+		}
+
+		public static GraphicData FogGraphicMaker(GraphicData normalGraphicData, Thing thing)
+		{
+			if (!thing.def.IsBlueprint) return normalGraphicData;
 			CellRect.CellRectIterator iterator = thing.OccupiedRect().GetIterator();
 			while (!iterator.Done())
 			{
-				if(thing.Map.fogGrid.IsFogged(iterator.Current))
+				if (thing.Map.fogGrid.IsFogged(iterator.Current))
 				{
-					__state = thing.Graphic.Shader
+					return FogBlueprintGraphicFor(normalGraphicData);
 				}
 				iterator.MoveNext();
 			}
+			return normalGraphicData;
 		}
-	}*/
+
+		private static Dictionary<int, GraphicData> fogGraphics = new Dictionary<int, GraphicData>();
+		public static GraphicData FogBlueprintGraphicFor(GraphicData baseGraphicData)
+		{
+			int hashKey = Gen.HashCombine<GraphicData>(0, baseGraphicData);
+			GraphicData graphicData;
+			if (!fogGraphics.TryGetValue(hashKey, out graphicData))
+			{
+				graphicData = new GraphicData();
+				graphicData.CopyFrom(baseGraphicData);
+				graphicData.shaderType = ShaderTypeDefOf.MetaOverlay;
+				fogGraphics.Add(hashKey, graphicData);
+			}
+			return graphicData;
+		}
+	}
 
 }
