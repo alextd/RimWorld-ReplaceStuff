@@ -21,10 +21,10 @@ namespace Replace_Stuff
 			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
 				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
 			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
-				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Postfix)));
+				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Designator_DropdownPostfix)));
 		}
 
-		public static void Postfix(Designator_Dropdown __instance)
+		public static void Designator_DropdownPostfix(Designator_Dropdown __instance)
 		{
 			__instance.order = 20f;
 		}
