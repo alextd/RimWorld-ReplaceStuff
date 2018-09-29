@@ -9,9 +9,8 @@ using RimWorld;
 using Verse;
 using UnityEngine;
 
-namespace Replace_Stuff
+namespace Replace_Stuff.OverMineable
 {
-
 	[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
 	public static class GhostOverFogChecker
 	{
@@ -20,16 +19,7 @@ namespace Replace_Stuff
 		//public static void DrawGhostThing(IntVec3 center, Rot4 rot, ThingDef thingDef, Graphic baseGraphic, Color ghostCol, AltitudeLayer drawAltitude)
 		public static void Prefix(IntVec3 center, Rot4 rot, ThingDef thingDef)
 		{
-			ghostIsOverFog = false;
-			CellRect.CellRectIterator iterator = GenAdj.OccupiedRect(center, rot, thingDef.Size).GetIterator();
-			while (!iterator.Done())
-			{
-				if (Find.CurrentMap.fogGrid.IsFogged(iterator.Current))
-				{
-					ghostIsOverFog = true;
-				}
-				iterator.MoveNext();
-			}
+			ghostIsOverFog = center.IsUnderFog(rot, thingDef);
 		}
 	}
 	
@@ -101,17 +91,7 @@ namespace Replace_Stuff
 
 		public static GraphicData FogGraphicMaker(GraphicData normalGraphicData, Thing thing)
 		{
-			if (!thing.def.IsBlueprint) return normalGraphicData;
-			CellRect.CellRectIterator iterator = thing.OccupiedRect().GetIterator();
-			while (!iterator.Done())
-			{
-				if (thing.Map.fogGrid.IsFogged(iterator.Current))
-				{
-					return FogBlueprintGraphicFor(normalGraphicData);
-				}
-				iterator.MoveNext();
-			}
-			return normalGraphicData;
+			return thing.def.IsBlueprint && thing.IsUnderFog() ? FogBlueprintGraphicFor(normalGraphicData) : normalGraphicData;
 		}
 
 		private static Dictionary<int, GraphicData> fogGraphics = new Dictionary<int, GraphicData>();

@@ -10,6 +10,28 @@ using Verse;
 
 namespace Replace_Stuff.OverMineable
 {
+	public static class FogUtil
+	{
+		public static bool IsUnderFog(this Thing thing)
+		{
+			return IsUnderFog(thing.Position, thing.Rotation, thing.def);
+		}
+
+		public static bool IsUnderFog(this IntVec3 center, Rot4 rot, ThingDef thingDef)
+		{
+			CellRect.CellRectIterator iterator = GenAdj.OccupiedRect(center, rot, thingDef.Size).GetIterator();
+			while (!iterator.Done())
+			{
+				if (Find.CurrentMap.fogGrid.IsFogged(iterator.Current))
+				{
+					return true;
+				}
+				iterator.MoveNext();
+			}
+			return false;
+		}
+	}
+
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
 	public static class BlueprintOverFogged
 	{
@@ -109,10 +131,12 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(FogGrid __instance, IntVec3 c)
 		{
 			Map map = (Map)AccessTools.Field(typeof(FogGrid), "map").GetValue(__instance);
-			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint)
+			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint && !blueprint.IsUnderFog())
 			{
 				if (!GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint).Accepted)
 					blueprint.Destroy();
+				else
+					blueprint.Notify_ColorChanged();//does the job, haha.
 			}
 		}
 	}
