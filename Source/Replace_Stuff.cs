@@ -22,6 +22,9 @@ namespace Replace_Stuff
 				new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Prefix"), null);
 			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
 				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Designator_DropdownPostfix)));
+
+			//harmony.Patch(AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Thing"),
+			//	null, new HarmonyMethod(typeof(ShowBluePrintOverFog), "Postfix"));
 		}
 
 		public static void Designator_DropdownPostfix(Designator_Dropdown __instance)
