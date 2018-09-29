@@ -35,14 +35,12 @@ namespace Replace_Stuff
 		{
 			if (!__result) return;
 
-			ThingDef blueprintDef = constructible is Blueprint ? constructible.def
-				: constructible is Frame ? constructible.def.entityDefToBuild.blueprintDef
-				: constructible.def.blueprintDef;
+			BuildableDef cDef = constructible.def.entityDefToBuild ?? constructible.def;
+			BuildableDef tDef = t.def.entityDefToBuild ?? t.def;
 
 			//Power conduit sharing is hardcoded, so cooler sharing is hardcoded too
-			if (blueprintDef.entityDefToBuild is ThingDef def
-				&& ((def.IsWall() && t.def.IsOverWall())
-				|| (t.def.IsWall() && def.IsOverWall())))
+			if ((cDef.IsWall() && tDef.IsOverWall()) || 
+					(tDef.IsWall() && cDef.IsOverWall()))
 				__result = false;
 		}
 	}
