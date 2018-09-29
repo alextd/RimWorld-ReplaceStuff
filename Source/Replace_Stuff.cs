@@ -18,8 +18,8 @@ namespace Replace_Stuff
 
 			//Need to patch this while loading
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-			harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
-				null, new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Postfix"));
+			//harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
+			//	null, new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Postfix"));
 			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
 				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Designator_DropdownPostfix)));
 
@@ -39,6 +39,10 @@ namespace Replace_Stuff
 			{
 				HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
 				harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+				//Hugslibs-added defs will be queued up before this Static Constructor
+				//So queue replace frame generation after that
+				LongEventHandler.QueueLongEvent(() => ThingDefGenerator_ReplaceFrame.AddReplaceFrames(), null, true, null);
 			}
 		}
 

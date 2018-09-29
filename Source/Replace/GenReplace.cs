@@ -37,11 +37,22 @@ namespace Replace_Stuff
 	//[HarmonyPatch(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve")]
 	public static class ThingDefGenerator_ReplaceFrame
 	{
+		/*
 		public static void Postfix()
+		{
+			// would be nice but mods don't add defs early enough.
+			// I mean they assume blueprints/frames don't need to be implied from them
+			// But replace frames sure can!
+			AddReplaceFrames(false);
+		}
+		*/
+		public static void AddReplaceFrames(bool addShortHash = true)
 		{
 			IEnumerable<ThingDef> enumerable = ThingDefGenerator_ReplaceFrame.ImpliedReplaceFrameDefs();
 			foreach (ThingDef current in enumerable)
 			{
+				if(addShortHash)	//Wouldn't need this if other mods added defs earlier. Oh well.
+					AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(null, new object[] { current, typeof(ThingDef) }); ;
 				current.PostLoad();
 				DefDatabase<ThingDef>.Add(current);
 			}
