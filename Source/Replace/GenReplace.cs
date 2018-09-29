@@ -99,6 +99,8 @@ namespace Replace_Stuff
 
 			thingDef.entityDefToBuild = def;
 			//def.replaceFrameDef = thingDef;	//Dictionary instead
+
+			thingDef.modContentPack = LoadedModManager.GetMod<Mod>().Content;
 			return thingDef;
 		}
 
