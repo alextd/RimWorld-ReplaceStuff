@@ -37,7 +37,7 @@ namespace Replace_Stuff
 	//[HarmonyPatch(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve")]
 	public static class ThingDefGenerator_ReplaceFrame
 	{
-		public static void Prefix()
+		public static void Postfix()
 		{
 			IEnumerable<ThingDef> enumerable = ThingDefGenerator_ReplaceFrame.ImpliedReplaceFrameDefs();
 			foreach (ThingDef current in enumerable)
