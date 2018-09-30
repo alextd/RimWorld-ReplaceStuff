@@ -186,7 +186,12 @@ namespace Replace_Stuff
 					if (thing is Blueprint_Build blueprint)
 						blueprint.stuffToUse = stuffDef;
 					else if (thing is ReplaceFrame replaceFrame)
-						replaceFrame.ChangeStuff(stuffDef);
+					{
+						if (replaceFrame.oldStuff == stuffDef)
+							replaceFrame.Destroy(DestroyMode.Cancel);
+						else
+							replaceFrame.ChangeStuff(stuffDef);
+					}
 					else if (thing is Frame frame)
 					{
 						GenConstruct.PlaceBlueprintForBuild(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
