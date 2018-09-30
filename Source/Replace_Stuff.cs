@@ -19,11 +19,17 @@ namespace Replace_Stuff
 			//Need to patch this while loading
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
 
-			//Turn of DefOf warning since harmony patches trigger it.
+			//Turn off DefOf warning since harmony patches trigger it.
 			harmony.Patch(AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor"),
-				new HarmonyMethod(typeof(EnsureInitializedInCtor), "Prefix"), null);
+				new HarmonyMethod(typeof(Mod), "EnsureInitializedInCtorPrefix"), null);
 			
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
+		}
+
+		public static bool EnsureInitializedInCtorPrefix()
+		{
+			//No need to display this warning.
+			return false;
 		}
 
 		[StaticConstructorOnStartup]
