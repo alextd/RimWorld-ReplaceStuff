@@ -132,7 +132,7 @@ namespace Replace_Stuff
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
-			return CanReplaceStuffAt(stuffDef, cell, Map);
+			return CanReplaceStuffAt(stuffDef, cell, Map) && !cell.GetThingList(Map).Any(t => t is ReplaceFrame rf && rf.UIStuff() == stuffDef);
 		}
 
 		public static bool CanReplaceStuffAt(ThingDef stuff, IntVec3 cell, Map map)
