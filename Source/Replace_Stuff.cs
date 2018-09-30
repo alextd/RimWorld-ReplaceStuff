@@ -23,17 +23,7 @@ namespace Replace_Stuff
 			harmony.Patch(AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor"),
 				new HarmonyMethod(typeof(EnsureInitializedInCtor), "Prefix"), null);
 			
-			//Constructor patch can't use Annotations
-			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
-				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Designator_DropdownPostfix)));
-			
 			harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-		}
-
-		public static void Designator_DropdownPostfix(Designator_Dropdown __instance)
-		{
-			__instance.order = 20f;
 		}
 
 		[StaticConstructorOnStartup]

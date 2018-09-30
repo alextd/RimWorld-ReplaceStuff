@@ -55,4 +55,14 @@ namespace Replace_Stuff.CoolersOverWalls
 			return WideVentLocationGhost.TranspileNorthWith(instructions, OpCodes.Ldarg_0);
 		}
 	}
+
+	[HarmonyPatch(typeof(Designator_Dropdown))]
+	[HarmonyPatch(new Type[] { })]
+	static class DropdownInOrder
+	{
+		public static void Postfix(Designator_Dropdown __instance)
+		{
+			__instance.order = 20f;
+		}
+	}
 }
