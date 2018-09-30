@@ -185,10 +185,15 @@ namespace Replace_Stuff
 					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
 					if (thing is Blueprint_Build blueprint)
 						blueprint.stuffToUse = stuffDef;
+					else if (thing is ReplaceFrame replaceFrame)
+					{
+						GenLeaving.DoLeavingsFor(replaceFrame, Map, DestroyMode.Cancel);
+						replaceFrame.ChangeStuff(stuffDef);
+					}
 					else if (thing is Frame frame)
 					{
-						GenLeaving.DoLeavingsFor(frame, Map, DestroyMode.Cancel);
-						frame.ChangeStuff(stuffDef);
+						GenConstruct.PlaceBlueprintForBuild(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
+						frame.Destroy(DestroyMode.Cancel);
 					}
 					else
 						GenReplace.PlaceReplaceFrame(thing, stuffDef);
