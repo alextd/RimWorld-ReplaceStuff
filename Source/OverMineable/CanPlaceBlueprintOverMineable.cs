@@ -9,10 +9,10 @@ using Verse.AI;
 
 namespace Replace_Stuff.OverMineable
 {
-	class RockCheck
+	static class RockCheck
 	{
-		public static bool IsMineableRock(Thing t) => IsMineableRock(t.def);
-		public static bool IsMineableRock(ThingDef td)
+		public static bool IsMineableRock(this Thing t) => IsMineableRock(t.def);
+		public static bool IsMineableRock(this ThingDef td)
 		{
 			return td.mineable && !td.IsSmoothed;
 		}
@@ -27,7 +27,7 @@ namespace Replace_Stuff.OverMineable
 				return;
 
 			if(newDef.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f)
-				__result |= RockCheck.IsMineableRock(oldDef);
+				__result |= oldDef.IsMineableRock();
 		}
 	}
 
@@ -39,7 +39,7 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (__result) return;
 			
-			if (RockCheck.IsMineableRock(t))	// any case that the thing can be built over plain rock?
+			if (t.IsMineableRock())	// any case that the thing can be built over plain rock?
 				__result = true;
 		}
 	}
@@ -64,7 +64,7 @@ namespace Replace_Stuff.OverMineable
 				if (map.designationManager.DesignationAt(cell, DesignationDefOf.Mine) != null)
 					continue;
 
-				foreach (Thing mineThing in map.thingGrid.ThingsAt(cell).Where(t => RockCheck.IsMineableRock(t)))
+				foreach (Thing mineThing in map.thingGrid.ThingsAt(cell).Where(t => t.IsMineableRock()))
 				{
 					map.designationManager.AddDesignation(new Designation(mineThing, DesignationDefOf.Mine));
 					if(mineThing.def.building?.mineableYieldWasteable ?? false)
