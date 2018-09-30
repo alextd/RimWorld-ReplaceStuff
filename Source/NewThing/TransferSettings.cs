@@ -13,12 +13,23 @@ namespace Replace_Stuff.NewThing
 	class TransferSettings
 	{
 		//public static Thing Spawn(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
-		public static void Prefix(Thing newThing, IntVec3 loc, Map map, Rot4 rot, bool respawningAfterLoad)
+		public static void Prefix(Thing newThing, IntVec3 loc, Map map, Rot4 rot, bool respawningAfterLoad, ref Thing __state)
 		{
+			__state = null;
 			if (respawningAfterLoad) return;
 
 			if (newThing.def.IsNewThingReplacement(loc, rot, map, out Thing oldThing))
-				newThing.FinalizeNewThingReplace(oldThing);
+			{
+				newThing.PreFinalizeNewThingReplace(oldThing);
+				__state = oldThing;
+			}
+		}
+
+		public static void Postfix(Thing __result, Thing __state)
+		{
+			if (__result == null || __state == null) return;
+
+			__result.FinalizeNewThingReplace(__state);
 		}
 	}
 }

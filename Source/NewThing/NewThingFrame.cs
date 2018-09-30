@@ -15,14 +15,12 @@ namespace Replace_Stuff.NewThing
 		public class Replacement
 		{
 			Predicate<ThingDef> newCheck, oldCheck;
-			Action<Thing, Thing> replaceAction;
-			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o)
+			Action<Thing, Thing> replaceAction, preReplaceAction;
+			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o, Action<Thing, Thing> p = null, Action < Thing, Thing> r = null)
 			{
 				newCheck = n;
 				oldCheck = o;
-			}
-			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o, Action<Thing, Thing> r) :this(n,o)
-			{
+				preReplaceAction = p;
 				replaceAction = r;
 			}
 
@@ -31,7 +29,17 @@ namespace Replace_Stuff.NewThing
 				return n != null && o != null && newCheck(n) && oldCheck(o);
 			}
 
-			public void Replace(Thing n, Thing  o)
+			//Pre-Despawn of old thing
+			public void PreReplace(Thing n, Thing o)
+			{
+				if (preReplaceAction != null)
+				{
+					preReplaceAction(n, o);
+				}
+			}
+
+			//Past-SpawnSetup of new thing, old thing saved even though despawned.
+			public void Replace(Thing n, Thing o)
 			{
 				if (replaceAction != null)
 				{
@@ -56,6 +64,15 @@ namespace Replace_Stuff.NewThing
 			});
 		}
 
+		public static void PreFinalizeNewThingReplace(this Thing newThing, Thing oldThing)
+		{
+			replacements.ForEach(r =>
+			{
+				if (r.Matches(newThing.def, oldThing.def))
+					r.PreReplace(newThing, oldThing);
+			});
+		}
+
 		static NewThingReplacement()
 		{
 			replacements = new List<Replacement>();
@@ -64,6 +81,16 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 			//Here are valid replacements:
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Cooler), n => n.thingClass == typeof(Building_Cooler),
+				null,
+				(n, o) =>
+				{
+					Building_Cooler newCooler = n as Building_Cooler;
+					Building_Cooler oldCooler = o as Building_Cooler;
+					//newCooler.compPowerTrader.PowerOn = oldCooler.compPowerTrader.PowerOn;	//should be flickable
+					newCooler.compTempControl.targetTemperature = oldCooler.compTempControl.targetTemperature;
+				}
+				));
 			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed),
 				(n, o) =>
 				{

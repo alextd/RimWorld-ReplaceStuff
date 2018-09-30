@@ -87,4 +87,19 @@ namespace Replace_Stuff
 			}
 		}
 	}
+
+
+	[HarmonyPatch(typeof(GenSpawn), "SpawningWipes")]
+	class CoolerWipesCooler
+	{
+		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
+		public static void Postfix(BuildableDef newEntDef, BuildableDef oldEntDef, ref bool __result)
+		{
+			if (__result) return;
+			
+			else if (newEntDef is ThingDef newDef && newDef.thingClass == typeof(Building_Cooler) &&
+				oldEntDef is ThingDef oldDef && oldDef.thingClass == typeof(Building_Cooler))
+				__result = true;
+		}
+	}
 }
