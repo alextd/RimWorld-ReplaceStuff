@@ -80,7 +80,7 @@ namespace Replace_Stuff
 			{
 				if (def.designationCategory != null && def.IsBuildingArtificial && !def.IsFrame && def.MadeFromStuff)
 				{
-					ThingDef replaceFrameDef = NewFrameDef_Thing(def);
+					ThingDef replaceFrameDef = NewReplaceFrameDef_Thing(def);
 					replaceFrameDefs[def] = replaceFrameDef;
 					yield return replaceFrameDef;
 				}
@@ -88,7 +88,7 @@ namespace Replace_Stuff
 		}
 
 
-		public static ThingDef NewFrameDef_Thing(ThingDef def)
+		public static ThingDef NewReplaceFrameDef_Thing(ThingDef def)
 		{
 			ThingDef thingDef = ThingDefGenerator_ReplaceFrame.BaseFrameDef();
 			thingDef.defName = def.defName + "_ReplaceStuff";
