@@ -64,7 +64,10 @@ namespace Replace_Stuff.PlaceBridges
 		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
 		public static bool Prefix(BuildableDef oldEntDef, bool __result)
 		{
-			if((GenConstruct.BuiltDefOf(oldEntDef as ThingDef) ?? oldEntDef) == TerrainDefOf.Bridge)
+			if (oldEntDef as ThingDef == null)
+				return true;
+
+			if ((GenConstruct.BuiltDefOf(oldEntDef as ThingDef) ?? oldEntDef) == TerrainDefOf.Bridge)
 			{
 				__result = false;
 				return false;
