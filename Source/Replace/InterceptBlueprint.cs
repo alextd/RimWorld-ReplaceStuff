@@ -20,23 +20,28 @@ namespace Replace_Stuff.Replace
 			if (sourceDef is ThingDef thingDef && thingDef.thingClass == typeof(Building_Door))
 				rotation = Building_Door.DoorRotationAt(center, map);
 
-			Func<Thing, bool> newReplaceCheck = t =>
-			t.def == sourceDef && t.Stuff != stuff &&
-			t.Position == center &&
-			t.Rotation == rotation;
+			Func<Thing, bool> posCheck = t => t.Position == center && t.Rotation == rotation;
+			
+			Func<Thing, bool> newReplaceCheck = t => posCheck(t) &&
+				t.def == sourceDef && t.Stuff != stuff;
+			Func<Thing, bool> changeFrameStuffCheck = t => posCheck(t) &&
+				t is Frame f && f.UIStuff() != stuff;
+			Func<Thing, bool> changeReplaceStuffCheck = t => posCheck(t) &&
+				t is ReplaceFrame rf && rf.UIStuff() != stuff;
 
-			Func<Thing, bool> changeReplaceStuffCheck = t =>
-			t is ReplaceFrame rf && rf.UIStuff() != stuff && 
-			t.Position == center &&
-			t.Rotation == rotation;
-
-			if (center.GetThingList(map).FirstOrDefault(changeReplaceStuffCheck) is Thing oldReplaceFrame)
+			List<Thing> thingsHere = center.GetThingList(map);
+			if (thingsHere.FirstOrDefault(changeReplaceStuffCheck) is Thing oldReplaceFrame)
 			{
 				oldReplaceFrame.ChangeStuff(stuff);
 				__result = null;
 				return false;
 			}
-			else if (center.GetThingList(map).FirstOrDefault(newReplaceCheck) is Thing oldThing)
+			else if (thingsHere.FirstOrDefault(changeFrameStuffCheck) is Thing oldFrame)
+			{
+				oldFrame.Destroy(DestroyMode.Cancel);
+				return true;
+			}
+			else if (thingsHere.FirstOrDefault(newReplaceCheck) is Thing oldThing)
 			{
 				GenReplace.PlaceReplaceFrame(oldThing, stuff);
 				__result = null;

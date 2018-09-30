@@ -28,7 +28,7 @@ namespace Replace_Stuff.BlueprintReplace
 			for (int i = 0; i < thingList.Count; i++)
 			{
 				Thing thing = thingList[i];
-				if ((thing.def == entDef || thing.def.entityDefToBuild == entDef) &&
+				if (GenConstruct.BuiltDefOf( thing.def ) == entDef &&
 					thing.Position == c && thing.Rotation == placingRot &&
 					(thing.Stuff == stuffDef || thing is Blueprint b && b.UIStuff() == stuffDef))
 					__result = false;

@@ -20,11 +20,9 @@ namespace Replace_Stuff
 			if (!entDef.MadeFromStuff) return;
 
 			//Would love to check stuff here
-			//things and blueprints can be replaced,
-			//frames not so much. todo: replace in-progress frames, ie cancel and place blueprint
 			foreach (Thing thing in center.GetThingList(map))
 				if (thing != thingToIgnore && thing.Position == center && thing.Rotation == rot &&
-					(thing.def == entDef || (thing.def.entityDefToBuild == entDef && thing is Blueprint)))
+					GenConstruct.BuiltDefOf(thing.def) == entDef )
 						__result = true;
 		}
 	}
