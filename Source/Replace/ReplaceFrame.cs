@@ -12,6 +12,16 @@ using Harmony;
 
 namespace Replace_Stuff
 {
+	public static class StuffChanger
+	{
+		public static void ChangeStuff(this Thing thing, ThingDef stuff)
+		{
+			thing.SetStuffDirect(stuff);
+			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
+			thing.Notify_ColorChanged();
+		}
+	}
+
 	class ReplaceFrame : Frame, IConstructible
 	{
 		public Thing oldThing;
@@ -177,11 +187,8 @@ namespace Replace_Stuff
 		public static void FinalizeReplace(Thing thing, ThingDef stuff, Pawn worker = null)
 		{
 			DeconstructDropStuff(thing);
-			
-			thing.SetStuffDirect(stuff);
-			thing.HitPoints = thing.MaxHitPoints;	//Deconstruction/construction implicitly repairs
-			thing.Notify_ColorChanged();
-			thing.Map.mapDrawer.SectionAt(thing.Position).RegenerateLayers(MapMeshFlag.Things);
+
+			thing.ChangeStuff(stuff);
 
 			if (worker != null && thing.TryGetComp<CompQuality>() is CompQuality compQuality)
 			{
@@ -267,5 +274,19 @@ namespace Replace_Stuff
 			return true;
 		}
 	}
-	
+
+	[HarmonyPatch(typeof(Thing), "Notify_ColorChanged")]
+	public static class Virtualize_Notify_ColorChanged
+	{
+		//public virtual void Notify_ColorChanged()
+		public static void Postfix(Thing __instance)
+		{
+			if (__instance is Frame frame)
+			{
+				//base.Notify but that's too much
+				AccessTools.Field(typeof(Frame), "cachedCornerMat").SetValue(frame, null);
+				AccessTools.Field(typeof(Frame), "cachedTileMat").SetValue(frame, null);
+			}
+		}
+	}
 }

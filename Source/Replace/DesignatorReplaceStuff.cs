@@ -151,6 +151,11 @@ namespace Replace_Stuff
 				if (bp.UIStuff() == stuff)
 					return false;
 			}
+			else if (thing is Frame frame)
+			{
+				if (frame.UIStuff() == stuff)
+					return false;
+			}
 			else if (thing.def.HasReplaceFrame())
 			{
 				if (thing.Stuff == stuff)
@@ -180,6 +185,11 @@ namespace Replace_Stuff
 					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
 					if (thing is Blueprint_Build blueprint)
 						blueprint.stuffToUse = stuffDef;
+					if (thing is Frame frame)
+					{
+						GenLeaving.DoLeavingsFor(frame, Map, DestroyMode.Cancel);
+						frame.ChangeStuff(stuffDef);
+					}
 					else
 						GenReplace.PlaceReplaceFrame(thing, stuffDef);
 				}
