@@ -16,7 +16,6 @@ namespace Replace_Stuff
 			HarmonyInstance.DEBUG = true;
 #endif
 
-			//Need to patch this while loading
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
 
 			//Turn off DefOf warning since harmony patches trigger it.
