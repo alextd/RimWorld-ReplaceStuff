@@ -20,6 +20,7 @@ namespace Replace_Stuff
 			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
 			if(thing is Frame frame)
 			{
+				GenLeaving.DoLeavingsFor(thing, thing.Map, DestroyMode.Cancel);
 				frame.workDone = 0;
 			}
 

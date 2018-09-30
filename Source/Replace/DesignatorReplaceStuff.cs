@@ -186,10 +186,7 @@ namespace Replace_Stuff
 					if (thing is Blueprint_Build blueprint)
 						blueprint.stuffToUse = stuffDef;
 					else if (thing is ReplaceFrame replaceFrame)
-					{
-						GenLeaving.DoLeavingsFor(replaceFrame, Map, DestroyMode.Cancel);
 						replaceFrame.ChangeStuff(stuffDef);
-					}
 					else if (thing is Frame frame)
 					{
 						GenConstruct.PlaceBlueprintForBuild(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
