@@ -10,7 +10,7 @@ using Verse;
 namespace Replace_Stuff.NewThing
 {
 	[StaticConstructorOnStartup]
-	static class NewThingFrame
+	static class NewThingReplacement
 	{
 		public class Replacement
 		{
@@ -56,7 +56,7 @@ namespace Replace_Stuff.NewThing
 			});
 		}
 
-		static NewThingFrame()
+		static NewThingReplacement()
 		{
 			replacements = new List<Replacement>();
 
@@ -118,11 +118,10 @@ namespace Replace_Stuff.NewThing
 			oldThing = null;
 			return false;
 		}
-
-		//Sort of assume this is a frame...
+		
 		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
 		{
-			ThingDef newDef = newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def;
+			ThingDef newDef = GenConstruct.BuiltDefOf(newThing.def) as ThingDef;
 			return newDef?.CanReplace(oldThing.def) ?? false;
 		}
 	}
