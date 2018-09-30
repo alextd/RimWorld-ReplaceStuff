@@ -66,7 +66,7 @@ namespace Replace_Stuff
 			{
 				int cost = 0;
 				foreach (IntVec3 cell in Find.DesignatorManager.Dragger.DragCells)
-					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t)).Sum(t => Mathf.RoundToInt((float)t.def.costStuffCount / stuffDef.VolumePerUnit));
+					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t)).Sum(t => Mathf.RoundToInt((float)GenConstruct.BuiltDefOf(t.def).costStuffCount / stuffDef.VolumePerUnit));
 				Vector2 drawPoint = Event.current.mousePosition + DragPriceDrawOffset;
 				Rect iconRect = new Rect(drawPoint.x, drawPoint.y, 27f, 27f);
 				GUI.DrawTexture(iconRect, stuffDef.uiIcon);
@@ -145,10 +145,20 @@ namespace Replace_Stuff
 			if (thing.Faction != Faction.OfPlayer && thing.Faction != null)
 				return false;
 
-			if (thing.Stuff == stuff || !thing.def.IsBuildingArtificial || thing.def.IsFrame || thing.def.designationCategory == null)
-				return false;
 
-			foreach (ThingDef def in GenStuff.AllowedStuffsFor(thing.def))
+			if (thing is Blueprint bp)
+			{
+				if (bp.UIStuff() == stuff)
+					return false;
+			}
+			else if (thing.def.HasReplaceFrame())
+			{
+				if (thing.Stuff == stuff)
+					return false;
+			}
+			else return false;
+			
+			foreach (ThingDef def in GenStuff.AllowedStuffsFor(GenConstruct.BuiltDefOf(thing.def)))
 				if (def == stuff)
 					return true;
 			return false;
@@ -159,15 +169,19 @@ namespace Replace_Stuff
 			List<Thing> things = cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t));
 			for(int i=0; i<things.Count; i++)
 			{
-				Thing t = things[i];
-				t.SetFaction(Faction.OfPlayer);
+				Thing thing = things[i];
+				thing.SetFaction(Faction.OfPlayer);
 				if (DebugSettings.godMode)
 				{
-					ReplaceFrame.FinalizeReplace(t, stuffDef);
+					ReplaceFrame.FinalizeReplace(thing, stuffDef);
 				}
 				else
 				{
-					GenReplace.PlaceReplaceFrame(t, stuffDef);
+					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
+					if (thing is Blueprint_Build blueprint)
+						blueprint.stuffToUse = stuffDef;
+					else
+						GenReplace.PlaceReplaceFrame(thing, stuffDef);
 				}
 			}
 		}

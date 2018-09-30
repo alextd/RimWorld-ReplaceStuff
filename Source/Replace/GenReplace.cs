@@ -68,6 +68,11 @@ namespace Replace_Stuff
 			return null;
 		}
 
+		public static bool HasReplaceFrame(this ThingDef def)
+		{
+			return replaceFrameDefs.ContainsKey(def);
+		}
+
 		public static IEnumerable<ThingDef> ImpliedReplaceFrameDefs()
 		{
 			replaceFrameDefs = new Dictionary<ThingDef, ThingDef>();
