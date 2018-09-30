@@ -18,7 +18,14 @@ namespace Replace_Stuff
 		{
 			thing.SetStuffDirect(stuff);
 			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
+			if(thing is Frame frame)
+			{
+				frame.workDone = 0;
+			}
+
 			thing.Notify_ColorChanged();
+
+			thing.Map.reservationManager.ReleaseAllForTarget(thing);
 		}
 	}
 
