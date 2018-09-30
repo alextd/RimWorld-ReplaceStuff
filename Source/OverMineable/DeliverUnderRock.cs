@@ -120,7 +120,7 @@ namespace Replace_Stuff.OverMineable
 	
 	//It did create a problem! Putting two edifices in same spot is a problem
 	//So frames aren't edifices... that shouldn't create a problem, right?
-	//[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing")]
+	[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing")]
 	public static class FramesArentEdifices
 	{
 		//private static ThingDef NewFrameDef_Thing(ThingDef def)

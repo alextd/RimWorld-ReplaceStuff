@@ -18,16 +18,18 @@ namespace Replace_Stuff
 
 			//Need to patch this while loading
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-			//harmony.Patch(AccessTools.Method(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve"),
-			//	null, new HarmonyMethod(typeof(ThingDefGenerator_ReplaceFrame), "Postfix"));
+
+			//Turn of DefOf warning since harmony patches trigger it.
+			harmony.Patch(AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor"),
+				new HarmonyMethod(typeof(EnsureInitializedInCtor), "Prefix"), null);
+			
+			//Constructor patch can't use Annotations
 			harmony.Patch(AccessTools.Constructor(typeof(Designator_Dropdown)),
 				null, new HarmonyMethod(typeof(Mod), nameof(Mod.Designator_DropdownPostfix)));
+			
+			harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-			//harmony.Patch(AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Thing"),
-			//	null, new HarmonyMethod(typeof(ShowBluePrintOverFog), "Postfix"));
-			harmony.Patch(AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing"),
-				null, new HarmonyMethod(typeof(OverMineable.FramesArentEdifices), "Postfix"));
-	}
+		}
 
 		public static void Designator_DropdownPostfix(Designator_Dropdown __instance)
 		{
@@ -39,9 +41,6 @@ namespace Replace_Stuff
 		{
 			static ModStartup()
 			{
-				HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-				harmony.PatchAll(Assembly.GetExecutingAssembly());
-
 				//Hugslibs-added defs will be queued up before this Static Constructor
 				//So queue replace frame generation after that
 				LongEventHandler.QueueLongEvent(() => ThingDefGenerator_ReplaceFrame.AddReplaceFrames(), null, true, null);
