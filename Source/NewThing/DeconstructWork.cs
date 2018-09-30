@@ -15,7 +15,18 @@ namespace Replace_Stuff.NewThing
 		//public float WorkToBuild
 		public static void Postfix(Frame __instance, ref float __result)
 		{
-			if (__instance.IsNewThingFrame(out Thing oldThing))
+			if (__instance.IsNewThingReplacement(out Thing oldThing))
+				__result += ReplaceFrame.WorkToDeconstruct(oldThing.def, oldThing.Stuff);
+		}
+	}
+	[HarmonyPatch(typeof(Blueprint_Build))]
+	[HarmonyPatch("WorkTotal", PropertyMethod.Getter)]
+	public static class NewThingDeconstructWork_Blueprint
+	{
+		//public float WorkToBuild
+		public static void Postfix(Frame __instance, ref float __result)
+		{
+			if (__instance.IsNewThingReplacement(out Thing oldThing))
 				__result += ReplaceFrame.WorkToDeconstruct(oldThing.def, oldThing.Stuff);
 		}
 	}

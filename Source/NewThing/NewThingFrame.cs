@@ -93,14 +93,10 @@ namespace Replace_Stuff.NewThing
 			return false;
 		}
 
-		public static bool IsNewThingFrame(this Thing newThing, out Thing oldThing)
+		public static bool IsNewThingReplacement(this Thing newThing, out Thing oldThing)
 		{
-			if (newThing.Spawned)
-			{
-				ThingDef newDef = newThing is Frame ? newThing.def.entityDefToBuild as ThingDef : newThing.def;
-				if (newDef != null)
-					return newDef.IsNewThingReplacement(newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
-			}
+			if (newThing.Spawned && GenConstruct.BuiltDefOf(newThing.def) is ThingDef newDef)
+				return newDef.IsNewThingReplacement(newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
 			oldThing = null;
 			return false;
 		}

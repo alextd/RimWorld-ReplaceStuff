@@ -16,7 +16,7 @@ namespace Replace_Stuff.NewThing
 	{
 		public static void Prefix(Frame __instance)
 		{
-			RefundDeconstruct.__STATIC_STUPID_WAS_NEW_THING = __instance.IsNewThingFrame(out Thing replacement);
+			RefundDeconstruct.__STATIC_STUPID_WAS_NEW_THING = __instance.IsNewThingReplacement(out Thing replacement);
 		}
 	}
 
