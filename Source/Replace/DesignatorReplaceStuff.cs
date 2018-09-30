@@ -195,7 +195,6 @@ namespace Replace_Stuff
 					else if (thing is Frame frame)
 					{
 						GenConstruct.PlaceBlueprintForBuild(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
-						frame.Destroy(DestroyMode.Cancel);
 					}
 					else
 						GenReplace.PlaceReplaceFrame(thing, stuffDef);
