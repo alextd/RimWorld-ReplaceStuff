@@ -8,6 +8,7 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 using Harmony;
+using Replace_Stuff.NewThing;
 
 namespace Replace_Stuff.Replace
 {
@@ -38,6 +39,8 @@ namespace Replace_Stuff.Replace
 		{
 			if (target.Thing is ReplaceFrame replaceFrame)
 				target = replaceFrame.oldThing;
+			else if (target.Thing is Frame frame && frame.IsNewThingReplacement(out Thing oldThing))
+				target = oldThing;
 		}
 	}
 }
