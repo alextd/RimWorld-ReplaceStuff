@@ -30,9 +30,12 @@ namespace Replace_Stuff.Replace
 				t is ReplaceFrame rf && rf.UIStuff() != stuff;
 
 			List<Thing> thingsHere = center.GetThingList(map);
-			if (thingsHere.FirstOrDefault(changeReplaceStuffCheck) is Thing oldReplaceFrame)
+			if (thingsHere.FirstOrDefault(changeReplaceStuffCheck) is ReplaceFrame oldReplaceFrame)
 			{
-				oldReplaceFrame.ChangeStuff(stuff);
+				if (oldReplaceFrame.oldStuff == stuff)
+					oldReplaceFrame.Destroy(DestroyMode.Cancel);
+				else
+					oldReplaceFrame.ChangeStuff(stuff);
 				__result = null;
 				return false;
 			}

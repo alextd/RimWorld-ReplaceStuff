@@ -24,15 +24,11 @@ namespace Replace_Stuff.BlueprintReplace
 			ThingDef stuffDef = (ThingDef)AccessTools.Field(typeof(Designator_Build), "stuffDef").GetValue(__instance);
 
 			//It would be nice to pass stuff into CanPlaceBlueprintAt, but here we are
-			List < Thing > thingList = c.GetThingList(map);
-			for (int i = 0; i < thingList.Count; i++)
-			{
-				Thing thing = thingList[i];
-				if (GenConstruct.BuiltDefOf( thing.def ) == entDef &&
-					thing.Position == c && thing.Rotation == placingRot &&
-					(thing.Stuff == stuffDef || thing is Blueprint b && b.UIStuff() == stuffDef))
-					__result = false;
-			}
+			if(c.GetThingList(map).All(thing => 
+				GenConstruct.BuiltDefOf( thing.def ) == entDef &&
+				thing.Position == c && thing.Rotation == placingRot &&
+				(thing.Stuff == stuffDef || thing is Blueprint b && b.UIStuff() == stuffDef)))
+				__result = false;
 		}
 	}
 

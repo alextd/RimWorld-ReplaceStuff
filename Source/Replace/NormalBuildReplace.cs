@@ -22,8 +22,11 @@ namespace Replace_Stuff
 			//Would love to check stuff here
 			foreach (Thing thing in center.GetThingList(map))
 				if (thing != thingToIgnore && thing.Position == center && thing.Rotation == rot &&
-					GenConstruct.BuiltDefOf(thing.def) == entDef )
-						__result = true;
+					GenConstruct.BuiltDefOf(thing.def) == entDef)
+				{
+					__result = true;
+					return;
+				}
 		}
 	}
 }
