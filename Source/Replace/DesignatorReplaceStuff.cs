@@ -185,7 +185,7 @@ namespace Replace_Stuff
 					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
 					if (thing is Blueprint_Build blueprint)
 						blueprint.stuffToUse = stuffDef;
-					if (thing is Frame frame)
+					else if (thing is Frame frame)
 					{
 						GenLeaving.DoLeavingsFor(frame, Map, DestroyMode.Cancel);
 						frame.ChangeStuff(stuffDef);
