@@ -19,7 +19,8 @@ namespace Replace_Stuff.OverMineable
 		{
 			FieldInfo mineableInfo = AccessTools.Field(typeof(ThingDef), "mineable");
 
-			MethodInfo ToBeSmoothedInfo = AccessTools.Method(typeof(DontMineSmoothingRock), nameof(DontMineSmoothingRock.ToBeSmoothed));
+			MethodInfo ToBeSmoothedInfo = AccessTools.Method(typeof(DontMineSmoothingRock), nameof(DontMineSmoothingRock.ToBeSmoothed),
+				new Type[] {typeof(Thing), typeof(Thing) });
 			MethodInfo SmoothItJobInfo = AccessTools.Method(typeof(DontMineSmoothingRock), nameof(DontMineSmoothingRock.SmoothItJob));
 
 			List<CodeInstruction> list = instructions.ToList();
@@ -31,18 +32,14 @@ namespace Replace_Stuff.OverMineable
 				{
 					Label otherwise = iLGenerator.DefineLabel();
 					list[i + 1].labels.Add(otherwise);
-
-					CodeInstruction workerInst = new CodeInstruction(OpCodes.Ldarg_1);//worker
-					CodeInstruction thingInst = new CodeInstruction(list[i - 3].opcode);//thing; Ld_loc_0
-
-					yield return workerInst;
-					yield return thingInst;
+					
+					yield return new CodeInstruction(list[i - 3].opcode);//thing; Ld_loc_0
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing constructible
 					yield return new CodeInstruction(OpCodes.Call, ToBeSmoothedInfo);// ToBeSmoothed(worker, thing, constructible)
 					yield return new CodeInstruction(OpCodes.Brfalse, otherwise);//if(ToBeSmoothed){...}
 
-					yield return workerInst;
-					yield return thingInst;
+					yield return new CodeInstruction(OpCodes.Ldarg_1);//worker
+					yield return new CodeInstruction(list[i - 3].opcode);//thing; Ld_loc_0
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//forced
 					yield return new CodeInstruction(OpCodes.Call, SmoothItJobInfo);
 					yield return new CodeInstruction(OpCodes.Ret);//return SmoothItJob(worker,thing,forced)
@@ -50,11 +47,12 @@ namespace Replace_Stuff.OverMineable
 			}
 		}
 
-		public static bool ToBeSmoothed(Pawn worker, Thing thing, Thing constructible)
+		public static bool ToBeSmoothed(Thing thing, Thing constructible) => ToBeSmoothed(thing, constructible.def);
+		public static bool ToBeSmoothed(Thing thing, ThingDef constructibleDef)
 		{
-			return !GenSpawn.SpawningWipes(GenConstruct.BuiltDefOf( constructible.def), thing.def.building?.smoothedThing) &&
+			return !GenSpawn.SpawningWipes(GenConstruct.BuiltDefOf( constructibleDef), thing.def.building?.smoothedThing) &&
 				thing.Map.edificeGrid[thing.Position] == thing &&
-				worker.Map.designationManager.DesignationAt(thing.Position, DesignationDefOf.SmoothWall) != null;
+				thing.Map.designationManager.DesignationAt(thing.Position, DesignationDefOf.SmoothWall) != null;
 		}
 
 		public static Job SmoothItJob(Pawn worker, Thing thing, bool forced)

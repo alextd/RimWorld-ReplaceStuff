@@ -64,12 +64,17 @@ namespace Replace_Stuff.OverMineable
 				if (map.designationManager.DesignationAt(cell, DesignationDefOf.Mine) != null)
 					continue;
 
-				foreach (Thing mineThing in map.thingGrid.ThingsAt(cell).Where(t => t.IsMineableRock()))
-				{
-					map.designationManager.AddDesignation(new Designation(mineThing, DesignationDefOf.Mine));
-					if(mineThing.def.building?.mineableYieldWasteable ?? false)
-						TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildersTryMine);
-				}
+				if (sourceDef is ThingDef thingDef)
+					foreach (Thing mineThing in map.thingGrid.ThingsAt(cell).Where(t => t.IsMineableRock()))
+					{
+						if (!DontMineSmoothingRock.ToBeSmoothed(mineThing, thingDef))
+						{
+							map.designationManager.AddDesignation(new Designation(mineThing, DesignationDefOf.Mine));
+
+							if (mineThing.def.building?.mineableYieldWasteable ?? false)
+								TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.BuildersTryMine);
+						}
+					}
 			}
 		}
 	}
