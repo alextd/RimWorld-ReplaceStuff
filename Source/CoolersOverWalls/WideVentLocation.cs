@@ -56,8 +56,7 @@ namespace Replace_Stuff.CoolersOverWalls
 		}
 	}
 
-	[HarmonyPatch(typeof(Designator_Dropdown))]
-	[HarmonyPatch(new Type[] { })]
+	[HarmonyPatch(typeof(Designator_Dropdown), MethodType.Constructor)]
 	static class DropdownInOrder
 	{
 		public static void Postfix(Designator_Dropdown __instance)
