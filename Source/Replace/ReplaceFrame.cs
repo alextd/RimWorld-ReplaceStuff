@@ -267,8 +267,7 @@ namespace Replace_Stuff
 			return true;
 		}
 	}
-	[HarmonyPatch(typeof(Frame))]
-	[HarmonyPatch("WorkToBuild", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Frame), "WorkToBuild", MethodType.Getter)]
 	public static class Virtualize_WorkToBuild
 	{
 		//public float WorkToBuild

@@ -8,8 +8,7 @@ using Harmony;
 
 namespace Replace_Stuff.NewThing
 {
-	[HarmonyPatch(typeof(Frame))]
-	[HarmonyPatch("WorkToBuild", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Frame), "WorkToBuild", MethodType.Getter)]
 	public static class NewThingDeconstructWork
 	{
 		//public float WorkToBuild
@@ -19,8 +18,7 @@ namespace Replace_Stuff.NewThing
 				__result += ReplaceFrame.WorkToDeconstruct(oldThing.def, oldThing.Stuff);
 		}
 	}
-	[HarmonyPatch(typeof(Blueprint_Build))]
-	[HarmonyPatch("WorkTotal", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Blueprint_Build), "WorkTotal", MethodType.Getter)]
 	public static class NewThingDeconstructWork_Blueprint
 	{
 		//public float WorkToBuild

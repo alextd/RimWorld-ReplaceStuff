@@ -66,8 +66,7 @@ namespace Replace_Stuff.OverMineable
 	//Blueprint
 	//-------------------------------------------
 
-	[HarmonyPatch(typeof(Thing))]
-	[HarmonyPatch("DefaultGraphic", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Thing), "DefaultGraphic", MethodType.Getter)]
 	public static class ShowBluePrintOverFogDynamic
 	{
 		//public Graphic DefaultGraphic

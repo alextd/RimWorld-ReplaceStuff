@@ -37,8 +37,7 @@ namespace Replace_Stuff
 	}
 
 
-	[HarmonyPatch(typeof(Designator_Build))]
-	[HarmonyPatch("Visible", PropertyMethod.Getter)]
+	[HarmonyPatch(typeof(Designator_Build), "Visible", MethodType.Getter)]
 	public static class DontWipeBridgeBlueprints
 	{
 		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
