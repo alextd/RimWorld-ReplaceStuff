@@ -22,7 +22,7 @@ namespace Replace_Stuff
 			harmony.Patch(AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor"),
 				new HarmonyMethod(typeof(Mod), "EnsureInitializedInCtorPrefix"), null);
 			
-			harmony.PatchAll(Assembly.GetExecutingAssembly());
+			harmony.PatchAll();
 		}
 
 		public static bool EnsureInitializedInCtorPrefix()
