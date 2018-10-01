@@ -59,7 +59,7 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (worker.story != null && worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
 			{
-				JobFailReason.Is("incapable of smoothing");
+				JobFailReason.Is("TD.IncapableOfSmoothing".Translate());
 				return null;
 			}
 			if (worker.CanReserveAndReach(thing, PathEndMode.Touch, worker.NormalMaxDanger(), 1, -1, null, forced) && 

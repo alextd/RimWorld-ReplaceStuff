@@ -40,7 +40,7 @@ namespace Replace_Stuff.Replace
 			if (DisableThing.IsReplacing(__instance))
 			{
 				__result = false;
-				JobFailReason.Is("stuff being replaced");
+				JobFailReason.Is("TD.FailedStuffBeingReplaced".Translate());
 			}
 		}
 	}

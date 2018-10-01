@@ -24,7 +24,7 @@ namespace Replace_Stuff
 			options.Begin(wrect);
 
 			bool hideOverwallCoolersP = hideOverwallCoolers;
-			options.CheckboxLabeled("Hide those super-nifty over-wall coolers from build menu", ref hideOverwallCoolers);
+			options.CheckboxLabeled("TD.SettingsNoOverwallCoolers".Translate(), ref hideOverwallCoolers);
 			options.Gap();
 
 			options.End();
