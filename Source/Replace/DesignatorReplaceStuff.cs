@@ -69,6 +69,7 @@ namespace Replace_Stuff
 					cost += cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t) && !(t is ReplaceFrame)).Sum(t => Mathf.RoundToInt((float)GenConstruct.BuiltDefOf(t.def).costStuffCount / stuffDef.VolumePerUnit));
 				Vector2 drawPoint = Event.current.mousePosition + DragPriceDrawOffset;
 				Rect iconRect = new Rect(drawPoint.x, drawPoint.y, 27f, 27f);
+				GUI.color = stuffDef.uiIconColor;
 				GUI.DrawTexture(iconRect, stuffDef.uiIcon);
 
 				Rect textRect = new Rect(drawPoint.x + 29f, drawPoint.y, 999f, 29f);
