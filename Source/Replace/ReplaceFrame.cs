@@ -164,11 +164,8 @@ namespace Replace_Stuff
 			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
 			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
 			{
-				Messages.Message("MessageConstructionFailed".Translate(new object[]
-				{
-					this.Label,
-					worker.LabelShort
-				}), new TargetInfo(base.Position, Map), MessageTypeDefOf.NegativeEvent);
+				Messages.Message("MessageConstructionFailed".Translate(Label, worker.LabelShort),
+					new TargetInfo(base.Position, Map), MessageTypeDefOf.NegativeEvent);
 			}
 		}
 
