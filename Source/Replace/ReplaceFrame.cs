@@ -143,7 +143,7 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
-			Log.Message($"Failed replace frame! work was {workDone}, Decon is " + WorkToDeconstruct(def, oldStuff) + ", total is {WorkToBuild}");
+			Log.Message($"Failed replace frame! work was {workDone}, Decon is {WorkToDeconstruct(def, oldStuff)}, total is {WorkToBuild}");
 
 			workDone = Mathf.Min(workDone, WorkToDeconstruct(def, oldStuff));
 			if (workDone < WorkToDeconstruct(def, oldStuff)) return;	//Deconstruction doesn't fail
@@ -171,7 +171,7 @@ namespace Replace_Stuff
 			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
 			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
 			{
-				Messages.Message("MessageConstructionFailed".Translate(Label, worker.LabelShort),
+				Messages.Message("MessageConstructionFailed".Translate(this.LabelEntityToBuild, worker.LabelShort, worker.Named("WORKER")),
 					new TargetInfo(base.Position, Map), MessageTypeDefOf.NegativeEvent);
 			}
 		}
