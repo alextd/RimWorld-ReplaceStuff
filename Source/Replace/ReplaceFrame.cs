@@ -134,39 +134,14 @@ namespace Replace_Stuff
 			}
 		}
 
-		public static Func<int, int> GetBuildingResourcesLeaveCalculator(Thing oldThing, DestroyMode mode)
-		{
-			return (Func<int, int>)
-				AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator")
-				.Invoke(null,	new object[] {oldThing, mode});
-		}
-
 		public new void FailConstruction(Pawn worker)
 		{
 			Log.Message($"Failed replace frame! work was {workDone}, Decon is {WorkToDeconstruct(def, oldStuff)}, total is {WorkToBuild}");
 
 			workDone = Mathf.Min(workDone, WorkToDeconstruct(def, oldStuff));
-			if (workDone < WorkToDeconstruct(def, oldStuff)) return;	//Deconstruction doesn't fail
+			if (workDone < WorkToDeconstruct(def, oldStuff)) return;  //Deconstruction doesn't fail
 
-			int total = TotalStuffNeeded();
-			int lostResources = total - GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
-			Log.Message($"resources total {total}, lost {lostResources} stuff");
-
-			while (lostResources > 0)
-			{
-				Thing replacementStuff = resourceContainer.First();
-				if (replacementStuff.stackCount > lostResources)
-				{
-					replacementStuff.stackCount -= lostResources;
-					break;
-				}
-				else
-				{
-					lostResources -= replacementStuff.stackCount;
-					replacementStuff.Destroy();
-					resourceContainer.Remove(replacementStuff);
-				}
-			}
+			GenLeaving.DoLeavingsFor(this, Map, DestroyMode.FailConstruction);
 			
 			MoteMaker.ThrowText(this.DrawPos, Map, "TextMote_ConstructionFail".Translate());
 			if (base.Faction == Faction.OfPlayer && this.WorkToReplace > 1400f)
@@ -176,13 +151,21 @@ namespace Replace_Stuff
 			}
 		}
 
+		public static Func<int, int> GetBuildingResourcesLeaveCalculator(Thing oldThing, DestroyMode mode)
+		{
+			return (Func<int, int>)
+				AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator")
+				.Invoke(null, new object[] { oldThing, mode });
+		}
+
 		public static void DeconstructDropStuff(Thing oldThing)
 		{
 			if (Current.ProgramState != ProgramState.Playing)	return;
 
 			ThingDef oldDef = oldThing.def;
 			ThingDef stuffDef = oldThing.Stuff;
-			
+
+			//preferably GenLeaving.DoLeavingsFor here, but don't want to drop non-stuff things.
 			if (GenLeaving.CanBuildingLeaveResources(oldThing, DestroyMode.Deconstruct))
 			{
 				int count = TotalStuffNeeded(oldDef, stuffDef);
