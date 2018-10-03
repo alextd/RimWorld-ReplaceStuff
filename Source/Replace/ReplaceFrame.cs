@@ -134,6 +134,13 @@ namespace Replace_Stuff
 			}
 		}
 
+		public static Func<int, int> GetBuildingResourcesLeaveCalculator(Thing oldThing, DestroyMode mode)
+		{
+			return (Func<int, int>)
+				AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator")
+				.Invoke(null,	new object[] {oldThing, mode});
+		}
+
 		public new void FailConstruction(Pawn worker)
 		{
 			Log.Message($"Failed replace frame! work was {workDone}, Decon is " + WorkToDeconstruct(def, oldStuff) + ", total is {WorkToBuild}");
@@ -142,7 +149,7 @@ namespace Replace_Stuff
 			if (workDone < WorkToDeconstruct(def, oldStuff)) return;	//Deconstruction doesn't fail
 
 			int total = TotalStuffNeeded();
-			int lostResources = total - GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
+			int lostResources = total - GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.FailConstruction)(total);
 			Log.Message($"resources total {total}, lost {lostResources} stuff");
 
 			while (lostResources > 0)
@@ -179,7 +186,7 @@ namespace Replace_Stuff
 			if (GenLeaving.CanBuildingLeaveResources(oldThing, DestroyMode.Deconstruct))
 			{
 				int count = TotalStuffNeeded(oldDef, stuffDef);
-				int leaveCount = GenLeaving.GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.Deconstruct)(count);
+				int leaveCount = GetBuildingResourcesLeaveCalculator(oldThing, DestroyMode.Deconstruct)(count);
 				if (leaveCount > 0)
 				{
 					Thing leftThing = ThingMaker.MakeThing(stuffDef);
