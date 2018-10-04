@@ -52,7 +52,7 @@ namespace Replace_Stuff.NewThing
 
 		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
-			return replacements.Any(r => r.Matches(newDef, oldDef));
+			return newDef != oldDef && replacements.Any(r => r.Matches(newDef, oldDef));
 		}
 
 		public static void FinalizeNewThingReplace(this Thing newThing, Thing oldThing)
@@ -101,6 +101,7 @@ namespace Replace_Stuff.NewThing
 					oldBed.owners.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
+			replacements.Add(new Replacement(d => d.IsWall(), n => n.IsWall()));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
