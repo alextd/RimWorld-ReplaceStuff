@@ -71,10 +71,16 @@ namespace Replace_Stuff
 				Rect iconRect = new Rect(drawPoint.x, drawPoint.y, 27f, 27f);
 				GUI.color = stuffDef.uiIconColor;
 				GUI.DrawTexture(iconRect, stuffDef.uiIcon);
-				GUI.color = Color.white;
 
 				Rect textRect = new Rect(drawPoint.x + 29f, drawPoint.y, 999f, 29f);
 				string text = cost.ToString();
+				if (base.Map.resourceCounter.GetCount(stuffDef) < cost)
+				{
+					GUI.color = Color.red;
+					text = text + " (" + "NotEnoughStoredLower".Translate() + ")";
+				}
+				else
+					GUI.color = Color.white;
 				Text.Font = GameFont.Small;
 				Text.Anchor = TextAnchor.MiddleLeft;
 				Widgets.Label(textRect, text);
