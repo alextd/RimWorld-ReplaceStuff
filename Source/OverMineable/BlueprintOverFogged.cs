@@ -128,9 +128,9 @@ namespace Replace_Stuff.OverMineable
 	public static class UnFogFix
 	{
 		//private void UnfogWorker(IntVec3 c)
-		public static void Postfix(FogGrid __instance, IntVec3 c)
+		public static void Postfix(FogGrid __instance, IntVec3 c, Map ___map)
 		{
-			Map map = (Map)AccessTools.Field(typeof(FogGrid), "map").GetValue(__instance);
+			Map map = ___map;
 			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint && !blueprint.IsUnderFog())
 			{
 				if (!GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint).Accepted)
