@@ -25,9 +25,9 @@ namespace Replace_Stuff.Replace
 			Func<Thing, bool> newReplaceCheck = t => posCheck(t) &&
 				t.def == sourceDef && t.Stuff != stuff;
 			Func<Thing, bool> changeFrameStuffCheck = t => posCheck(t) &&
-				t is Frame f && f.UIStuff() != stuff;
+				t is Frame f && f.UIStuff() != stuff && f.def.entityDefToBuild == sourceDef;
 			Func<Thing, bool> changeReplaceStuffCheck = t => posCheck(t) &&
-				t is ReplaceFrame rf && rf.UIStuff() != stuff;
+				t is ReplaceFrame rf && rf.UIStuff() != stuff && rf.def.entityDefToBuild == sourceDef;
 
 			List<Thing> thingsHere = center.GetThingList(map);
 			if (thingsHere.FirstOrDefault(changeReplaceStuffCheck) is ReplaceFrame oldReplaceFrame)
