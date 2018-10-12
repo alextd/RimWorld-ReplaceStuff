@@ -74,6 +74,13 @@ namespace Replace_Stuff
 
 				Rect textRect = new Rect(drawPoint.x + 29f, drawPoint.y, 999f, 29f);
 				string text = cost.ToString();
+				if (base.Map.resourceCounter.GetCount(stuffDef) < cost)
+				{
+					GUI.color = Color.red;
+					text = text + " (" + "NotEnoughStoredLower".Translate() + ")";
+				}
+				else
+					GUI.color = Color.white;
 				Text.Font = GameFont.Small;
 				Text.Anchor = TextAnchor.MiddleLeft;
 				Widgets.Label(textRect, text);

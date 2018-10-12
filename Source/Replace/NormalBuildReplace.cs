@@ -13,9 +13,9 @@ namespace Replace_Stuff
 	static class Designator_Build_Stuff
 	{
 		public static ThingDef stuffDef;
-		public static void Prefix(Designator_Build __instance)
+		public static void Prefix(Designator_Build __instance, ThingDef ___stuffDef)
 		{
-			stuffDef = (ThingDef)AccessTools.Field(typeof(Designator_Build), "stuffDef").GetValue(__instance);
+			stuffDef = ___stuffDef;
 		}
 		public static void Postfix()
 		{
