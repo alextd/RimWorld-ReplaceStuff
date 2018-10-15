@@ -17,7 +17,6 @@ namespace Replace_Stuff.OverMineable
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			MethodInfo AndIsNotRockInfo = AccessTools.Method(typeof(InteractionSpot), nameof(InteractionSpot.AndIsNotRock));
-			Log.Message($"AndIsNotRockInfo is {AndIsNotRockInfo}");
 
 			bool doneOnce = false;
 			List<CodeInstruction> list = instructions.ToList();
