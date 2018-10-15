@@ -117,7 +117,7 @@ namespace Replace_Stuff.OverMineable
 				__result = false;
 		}
 	}
-	
+
 	//It did create a problem! Putting two edifices in same spot is a problem
 	//So frames aren't edifices... that shouldn't create a problem, right?
 	[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing")]
@@ -127,6 +127,25 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(ThingDef __result)
 		{
 			__result.building.isEdifice = false;
+		}
+	}
+
+	//It did create a problem! Frames counting as edifices meant they blocked blueprints
+	//So frames are edifices for blueprint consideration... that shouldn't create a problem, right?
+	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintOver")]
+	public static class FramesAreEdificesInSomeCases
+	{
+		//private static ThingDef NewFrameDef_Thing(ThingDef def)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			return Harmony.Transpilers.MethodReplacer(instructions,
+				AccessTools.Method(typeof(EdificeUtility), "IsEdifice"),
+				AccessTools.Method(typeof(FramesAreEdificesInSomeCases), "IsEdificeOrFrame"));
+		}
+
+		public static bool IsEdificeOrFrame(BuildableDef def)
+		{
+			return def.IsEdifice() || (def is ThingDef thingDef && thingDef.IsFrame);
 		}
 	}
 }
