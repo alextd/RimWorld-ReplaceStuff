@@ -9,6 +9,14 @@ using Verse;
 
 namespace Replace_Stuff.NewThing
 {
+	[DefOf]
+	public static class NewThingDefOf
+	{
+		public static ThingDef ElectricStove;
+		public static ThingDef FueledStove;
+		public static ThingDef HandTailoringBench;
+		public static ThingDef ElectricTailoringBench;
+	}
 	[StaticConstructorOnStartup]
 	static class NewThingReplacement
 	{
@@ -102,6 +110,19 @@ namespace Replace_Stuff.NewThing
 				}
 				));
 			replacements.Add(new Replacement(d => d.IsWall(), n => n.IsWall()));
+
+			Action<Thing, Thing> transferBills = (n, o) =>
+				{
+					Building_WorkTable newTable = n as Building_WorkTable;
+					Building_WorkTable oldTable = o as Building_WorkTable;
+
+					foreach (Bill bill in oldTable.BillStack)
+					{
+						newTable.BillStack.AddBill(bill);
+					}
+				};
+			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricStove, n => n == NewThingDefOf.FueledStove, transferBills));
+			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricTailoringBench, n => n == NewThingDefOf.HandTailoringBench, transferBills));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
