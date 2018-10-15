@@ -32,12 +32,12 @@ namespace Replace_Stuff.PlaceBridges
 		}
 	}
 
-	//This should technically go inside Designator_Build.DesignateSingleCell, but this is easier.
+	//This should technically go inside Designator's DesignateSingleCell, but this is easier.
 	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForBuild")]
 	class InterceptBlueprintPlaceBridgeFrame
 	{
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
-		public static void Prefix(ref Blueprint_Build __result, BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
+		public static void Prefix(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction)
 		{
 			if (faction != Faction.OfPlayer || sourceDef == TerrainDefOf.Bridge) return;
 
@@ -57,6 +57,29 @@ namespace Replace_Stuff.PlaceBridges
 			}
 		}
 	}
+
+	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForInstall")]
+	class InterceptBlueprintPlaceBridgeFrame_Install
+	{
+		//public static Blueprint_Install PlaceBlueprintForInstall(MinifiedThing itemToInstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
+		public static void Prefix(MinifiedThing itemToInstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
+		{
+			ThingDef def = itemToInstall.InnerThing.def;
+			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction);
+		}
+	}
+
+	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForReinstall")]
+	class InterceptBlueprintPlaceBridgeFrame_Reinstall
+	{
+		//public static Blueprint_Install PlaceBlueprintForReinstall(Building buildingToReinstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
+		public static void Prefix(Building buildingToReinstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
+		{
+			ThingDef def = buildingToReinstall.def;
+			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction);
+		}
+	}
+
 
 	[HarmonyPatch(typeof(GenSpawn), "SpawningWipes")]
 	public static class DontWipeBridgeBlueprints
