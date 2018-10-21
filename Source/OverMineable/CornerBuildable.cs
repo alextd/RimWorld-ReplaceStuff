@@ -48,18 +48,20 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (__result || !dest.InBounds(map)) return;
 
+			//Return if any direction open
 			foreach (IntVec3 adj in GenAdj.CardinalDirections)
 			{
 				IntVec3 pos = dest + adj;
 				if (pos.InBounds(map) && (!map.edificeGrid[pos]?.BlocksPawn(pawn) ?? true)) return;
 			}
-			//Each direction is blocked
+			//continuing, all directions are blocked
+
 			foreach (IntVec3 adj in GenAdj.DiagonalDirections)
 			{
 				IntVec3 pos = dest + adj;
 				if (pos.InBounds(map) && (!map.edificeGrid[pos]?.BlocksPawn(pawn) ?? true))
 				{
-					//One corner is open
+					//One corner is open, so don't try to enter this cell, just do the thing diagonally
 					__result = true;
 					return;
 				}
