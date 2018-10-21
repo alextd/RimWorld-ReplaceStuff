@@ -23,6 +23,7 @@
     <Exec WorkingDirectory="$(ProjectDir)" Command="$(PostBuildEvent)" />
   </Target>
   <Target Name="Clean" />
+	<Target Name="Build" />
   <Target Name="Rebuild" />
   <PropertyGroup>
     <PostBuildEvent>if $(Configuration) == Release (
