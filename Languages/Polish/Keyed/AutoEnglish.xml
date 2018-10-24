@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>Wymień</TD.Replace>
+	<TD.ReplaceDesc>Zastąp rzeczy, np. zastąp drewnianą ścianę kamienną.</TD.ReplaceDesc>
+	<TD.ReplacingTag> (Wymiana)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>Umieść plany nad górami</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>Ukryj te super-ładne klimatyzatory na ścianie z menu budowania</TD.SettingsNoOverwallCoolers>
+	<TD.IncapableOfSmoothing>niezdolny do wygładzenia</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>wczasie wymiany</TD.FailedStuffBeingReplaced>
+	
+</LanguageData>

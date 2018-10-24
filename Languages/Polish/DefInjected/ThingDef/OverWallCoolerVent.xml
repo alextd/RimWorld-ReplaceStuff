@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Cooler_Over.label>naścienny klimatyzator</Cooler_Over.label>
+  <Cooler_Over.description>Klimatyzator położony na ścianie.</Cooler_Over.description>
+  <Blueprint_Cooler_Over.label>naścienny klimatyzator (plan)</Blueprint_Cooler_Over.label>
+  <Frame_Cooler_Over.label>naścienny klimatyzator (budowa)</Frame_Cooler_Over.label>
+  <Frame_Cooler_Over.description>Klimatyzator położony na ścianie.</Frame_Cooler_Over.description>
+  
+  <Vent_Over.label>naścienna kratka wentylacyjna</Vent_Over.label>
+  <Vent_Over.description>Kratka wentylacyjna położona na ścianie.</Vent_Over.description>
+  <Blueprint_Vent_Over.label>naścienna kratka wentylacyjna (plan)</Blueprint_Vent_Over.label>
+  <Frame_Vent_Over.label>naścienna kratka wentylacyjna (budowa)</Frame_Vent_Over.label>
+  <Frame_Vent_Over.description>Kratka wentylacyjna położona na ścianie.</Frame_Vent_Over.description>
+
+</LanguageData>
