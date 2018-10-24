@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>Budowniczowie będą próbowali wydobywać kosztowności</BuildersTryMine.label>
+  <BuildersTryMine.helpText>Uwaga: Umieszczenie budynku nad cenną rudą pozwoli budowniczym na wydobycie tej rudy. Ruda może zostać zmarnowana, jeśli wydobywa się ją z niskim poziomem umiejętności. Jeśli twoi budowniczowie nie są wykwalifikowani w górnictwie, możesz anulować swój projekt budowlany i pozwolić, aby wykwalifikowani górnicy wykonali swoją pracę jako pierwsi.</BuildersTryMine.helpText>
+
+</LanguageData>
