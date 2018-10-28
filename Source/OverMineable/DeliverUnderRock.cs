@@ -8,6 +8,7 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 using Harmony;
+using TD.Utilities;
 
 namespace Replace_Stuff.OverMineable
 {
@@ -49,32 +50,19 @@ namespace Replace_Stuff.OverMineable
 	{
 		static HaulToBlueprintUnderRock()
 		{
-			//AccessTools.Inner
 			HarmonyMethod transpiler = new HarmonyMethod(typeof(DeliverUnderRock), nameof(DeliverUnderRock.Transpiler));
 			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+
 			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
-
-
-			//Find the compiler-created method in Toils_Haul that calls CanConstruct
-			List<Type> nestedTypes = new List<Type>(typeof(Toils_Haul).GetNestedTypes(BindingFlags.NonPublic));
-			while (!nestedTypes.NullOrEmpty())
+			Predicate<MethodInfo> check = delegate (MethodInfo method)
 			{
-				Type type = nestedTypes.Pop();
-				nestedTypes.AddRange(type.GetNestedTypes(BindingFlags.NonPublic));
-				
-				foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic))
-				{
-					if (method.DeclaringType != type) continue;
-					
-					DynamicMethod dm = DynamicTools.CreateDynamicMethod(method, "-unused");
+				DynamicMethod dm = DynamicTools.CreateDynamicMethod(method, "-unused");
 
-					if(Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
-						Any(ilcode => ilcode.operand == CanConstructInfo))
-					{
-						harmony.Patch(method, null, null, transpiler);
-					}
-				}
-			}
+				return (Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
+					Any(ilcode => ilcode.operand == CanConstructInfo));
+			};
+
+			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
 		}
 	}
 
