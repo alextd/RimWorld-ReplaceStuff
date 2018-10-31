@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>대체</TD.Replace>
+	<TD.ReplaceDesc>물건을 대체합니다.\n예. 나무 벽을 돌로 대체</TD.ReplaceDesc>
+	<TD.ReplacingTag> (대체되는중)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>청사진을 바위 속에 놓습니다.</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>벽걸이형 에어컨을 건설 메뉴에서 감춥니다.</TD.SettingsNoOverwallCoolers>
+	<TD.IncapableOfSmoothing>다듬을 수 없음</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>물건이 대체되었습니다.</TD.FailedStuffBeingReplaced>
+	
+</LanguageData>
