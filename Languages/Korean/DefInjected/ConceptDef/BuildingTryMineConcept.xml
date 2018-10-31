@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>건설자는 귀금속을 채굴하려 할 것입니다.</BuildersTryMine.label>
+  <BuildersTryMine.helpText>메모：건물을 귀금속 위에 건설하는 경우 건설자는 광석을 채굴합니다. 광석은 채광 기술이 낮을 경우 손실 됩니다. 만약 건설자의 채광 기술이 낮은 경우, 숙련된 채광자가 채광 작업을 먼저 하도록 건설 프로젝트를 취소할 수 있습니다.</BuildersTryMine.helpText>
+
+
+</LanguageData>
