@@ -151,11 +151,10 @@ namespace Replace_Stuff
 			}
 		}
 
+		public static MethodInfo CalcInfo = AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator");
 		public static Func<int, int> GetBuildingResourcesLeaveCalculator(Thing oldThing, DestroyMode mode)
 		{
-			return (Func<int, int>)
-				AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator")
-				.Invoke(null, new object[] { oldThing, mode });
+			return (Func<int, int>)CalcInfo.Invoke(null, new object[] { oldThing, mode });
 		}
 
 		public static void DeconstructDropStuff(Thing oldThing)
@@ -272,14 +271,16 @@ namespace Replace_Stuff
 	[HarmonyPatch(typeof(Thing), "Notify_ColorChanged")]
 	public static class Virtualize_Notify_ColorChanged
 	{
+		public static FieldInfo cornerInfo = AccessTools.Field(typeof(Frame), "cachedCornerMat");
+		public static FieldInfo tileInfo = AccessTools.Field(typeof(Frame), "cachedTileMat");
 		//public virtual void Notify_ColorChanged()
 		public static void Postfix(Thing __instance)
 		{
 			if (__instance is Frame frame)
 			{
 				//base.Notify but that's too much
-				AccessTools.Field(typeof(Frame), "cachedCornerMat").SetValue(frame, null);
-				AccessTools.Field(typeof(Frame), "cachedTileMat").SetValue(frame, null);
+				cornerInfo.SetValue(frame, null);
+				tileInfo.SetValue(frame, null);
 			}
 		}
 	}

@@ -92,10 +92,11 @@ namespace Replace_Stuff.OverMineable
 		}
 
 		//Private, you say?
+		public static MethodInfo FindInfo = AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo");
 		public static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)
 		{
 			object[] args = new object[] { haulable, worker, center, null};
-			bool result = (bool)AccessTools.Method(typeof(HaulAIUtility), "TryFindSpotToPlaceHaulableCloseTo").Invoke(null, args);
+			bool result = (bool)FindInfo.Invoke(null, args);
 			spot = (IntVec3)args[3];
 			return result;
 		}
