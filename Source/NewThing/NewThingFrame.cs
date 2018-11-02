@@ -108,7 +108,7 @@ namespace Replace_Stuff.NewThing
 					oldBed.owners.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
-			DesignationCategoryDef fencesDef = DefDatabase<DesignationCategoryDef>.GetNamed("Fences");
+			DesignationCategoryDef fencesDef = DefDatabase<DesignationCategoryDef>.GetNamed("Fences", false);
 			if(fencesDef != null)
 				replacements.Add(new Replacement(d => d.designationCategory == fencesDef));
 
