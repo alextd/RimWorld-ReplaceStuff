@@ -38,6 +38,9 @@ namespace Replace_Stuff
 
 			ThingDef newStuff = Designator_Build_Stuff.stuffDef;
 
+			//It would not be so easy to transpile this part
+			//it doesn't simply change __result to true when a replace frame can be placed,
+			//it also checks if the replace frame is already there and overrides that with false
 			foreach (Thing thing in center.GetThingList(map))
 				if (thing != thingToIgnore && thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
