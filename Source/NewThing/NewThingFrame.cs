@@ -24,12 +24,12 @@ namespace Replace_Stuff.NewThing
 		{
 			Predicate<ThingDef> newCheck, oldCheck;
 			Action<Thing, Thing> replaceAction, preReplaceAction;
-			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o, Action<Thing, Thing> p = null, Action < Thing, Thing> r = null)
+			public Replacement(Predicate<ThingDef> n, Predicate<ThingDef> o = null, Action<Thing, Thing> preAction = null, Action < Thing, Thing> postAction = null)
 			{
 				newCheck = n;
-				oldCheck = o;
-				preReplaceAction = p;
-				replaceAction = r;
+				oldCheck = o ?? n;
+				preReplaceAction = preAction;
+				replaceAction = postAction;
 			}
 
 			public bool Matches(ThingDef n, ThingDef o)
@@ -88,10 +88,9 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 			//---------------------------------------------
 			//Here are valid replacements:
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Door), n => n.IsWall() || n.thingClass == typeof(Building_Door)));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Cooler), n => n.thingClass == typeof(Building_Cooler),
-				null,
-				(n, o) =>
+			replacements.Add(new Replacement(d => d.IsWall() || d.thingClass == typeof(Building_Door)));
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Cooler),
+				postAction: (n, o) =>
 				{
 					Building_Cooler newCooler = n as Building_Cooler;
 					Building_Cooler oldCooler = o as Building_Cooler;
@@ -99,8 +98,8 @@ namespace Replace_Stuff.NewThing
 					newCooler.compTempControl.targetTemperature = oldCooler.compTempControl.targetTemperature;
 				}
 				));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed), n => n.thingClass == typeof(Building_Bed),
-				(n, o) =>
+			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed),
+				preAction: (n, o) =>
 				{
 					Building_Bed newBed = n as Building_Bed;
 					Building_Bed oldBed = o as Building_Bed;
@@ -109,7 +108,6 @@ namespace Replace_Stuff.NewThing
 					oldBed.owners.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
-			replacements.Add(new Replacement(d => d.IsWall(), n => n.IsWall()));
 
 			Action<Thing, Thing> transferBills = (n, o) =>
 				{
