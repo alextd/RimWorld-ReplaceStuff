@@ -28,7 +28,7 @@ namespace Replace_Stuff.OverMineable
 	}
 
 	[HarmonyPatch(typeof(TouchPathEndModeUtility), "MakesOccupiedCellsAlwaysReachableDiagonally")]
-	public static class ConrnerMineableOkay
+	public static class CornerMineableOkay
 	{
 		//public static bool MakesOccupiedCellsAlwaysReachableDiagonally(ThingDef def)
 		public static bool Prefix(ref bool __result, ThingDef def)
