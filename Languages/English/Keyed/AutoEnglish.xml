@@ -6,7 +6,8 @@
 	<TD.ReplaceDesc>Replace stuff of a thing, e.g. replace a wood wall with stone</TD.ReplaceDesc>
 	<TD.ReplacingTag> (Replacing)</TD.ReplacingTag>
 	<TD.ToggleBlueprintOverRock>Place blueprints over mountain rock</TD.ToggleBlueprintOverRock>
-	<TD.SettingsNoOverwallCoolers>Hide those super-nifty over-wall coolers from build menu</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoOverwallCoolers>Hide those super-nifty over-wall coolers from the build menu</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>Hide the normal cooler and vent from the build menu</TD.SettingsNoNormalCoolers>
 	<TD.IncapableOfSmoothing>incapable of smoothing</TD.IncapableOfSmoothing>
 	<TD.FailedStuffBeingReplaced>stuff being replaced</TD.FailedStuffBeingReplaced>
 	

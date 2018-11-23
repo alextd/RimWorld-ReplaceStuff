@@ -21,6 +21,7 @@ namespace Replace_Stuff
 		public static ThingDef Cooler_Over;
 		public static ThingDef Cooler_Over2W;
 		public static ThingDef Vent_Over;
+		public static ThingDef Vent;//not in vanilla
 		public static bool IsOverWall(this BuildableDef bdef)
 		{
 			return bdef == Cooler_Over || bdef == Cooler_Over2W || bdef == Vent_Over;
