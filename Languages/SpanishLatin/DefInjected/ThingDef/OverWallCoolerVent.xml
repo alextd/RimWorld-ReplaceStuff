@@ -4,5 +4,14 @@
   <Cooler_Over.label>Refrigerador empotrado</Cooler_Over.label>
 
   <Vent_Over.label>Conducto de ventilación empotrado</Vent_Over.label>
+  
+  <Cooler_Over.label>Refrigerador (empotrado)</Cooler_Over.label>
+  <Cooler_Over.description>Un dispositivo eléctrico empotrado en un muro que enfría una habitación.\nSu tubo de escape produce mucho calor. Puede utilizarse para enfriar habitaciones durante el verano o para crear una habitación frigorífica.</Cooler_Over.description>
+
+  <Cooler_Over2W.label>Refrigerador ancho (empotrado)</Cooler_Over2W.label>
+  <Cooler_Over2W.description>Un dispositivo eléctrico empotrado en un muro ancho que enfría una habitación.\nSu tubo de escape produce mucho calor. Puede utilizarse para enfriar habitaciones durante el verano o para crear una habitación frigorífica.。</Cooler_Over2W.description>
+
+  <Vent_Over.label>Conducto de ventilación (empotrado)</Vent_Over.label>
+  <Vent_Over.description>Un sencillo respiradero para equilibrar la temperatura entre dos habitaciones sin permitir que la gente pase de una a otra.</Vent_Over.description>
 
 </LanguageData>
