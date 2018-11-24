@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
-  <TD.Replace>Reemplazar</TD.Replace>
-  <TD.ReplaceDesc>Reemplace el material de cualquier cosa, por ejemplo, sustituya una pared de madera por una piedra</TD.ReplaceDesc>
-  <TD.ReplacingTag> (Reemplazando)</TD.ReplacingTag>
-
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>Reemplazar</TD.Replace>
+	<TD.ReplaceDesc>Reemplace el material de cualquier cosa, por ejemplo, sustituya una pared de madera por una piedr</TD.ReplaceDesc>
+	<TD.ReplacingTag> (Reemplazando)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>Colocar planos sobre roca de montaña</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>Esconder los súper ingeniosos refrigeradores empotrados del menú de construcción</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>Ocultar el refrigerador y el conducto de ventilación normales del menú de construcción</TD.SettingsNoNormalCoolers>
+	<TD.IncapableOfSmoothing>incapaz de alisar</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>materiales que serán reemplazados</TD.FailedStuffBeingReplaced>
+  
 </LanguageData>
