@@ -50,7 +50,9 @@ namespace Replace_Stuff.OverMineable
 		public static bool ToBeSmoothed(Thing thing, Thing constructible) => ToBeSmoothed(thing, constructible.def);
 		public static bool ToBeSmoothed(Thing thing, ThingDef constructibleDef)
 		{
-			return !GenSpawn.SpawningWipes(GenConstruct.BuiltDefOf( constructibleDef), thing.def.building?.smoothedThing) &&
+			ThingDef smoothedThing = thing.def.building?.smoothedThing;
+			return smoothedThing != null && 
+				!GenSpawn.SpawningWipes(GenConstruct.BuiltDefOf( constructibleDef), smoothedThing) &&
 				thing.Map.edificeGrid[thing.Position] == thing &&
 				thing.Map.designationManager.DesignationAt(thing.Position, DesignationDefOf.SmoothWall) != null;
 		}
