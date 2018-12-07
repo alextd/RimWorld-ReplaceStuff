@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>Construtores vão tentar meus objetos de valor</BuildersTryMine.label>
+  <BuildersTryMine.helpText>Nota: Colocar um prédio sobre minério valioso permitirá que os construtores mineirem o minério. Minério pode ser desperdiçado se extraído com pouca habilidade. Se seus construtores não são qualificados em mineração, você pode querer cancelar seu projeto de construção e permitir que mineiros qualificados façam seu trabalho primeiro.</BuildersTryMine.helpText>
+
+
+</LanguageData>
