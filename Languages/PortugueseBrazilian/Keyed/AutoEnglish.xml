@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <TD.ReplaceStuff>Substitua as coisas</TD.ReplaceStuff>
+  <TD.Replace>Substituir</TD.Replace>
+  <TD.ReplaceDesc>Substituir material de uma coisa, por ex. substituir uma parede de madeira com pedra</TD.ReplaceDesc>
+  <TD.ReplacingTag> (Substituindo)</TD.ReplacingTag>
+  <TD.ToggleBlueprintOverRock>Coloque plantas sobre a rocha da montanha</TD.ToggleBlueprintOverRock>
+  <TD.SettingsNoOverwallCoolers>Oculte os super coolers de over-wall do menu construir</TD.SettingsNoOverwallCoolers>
+  <TD.SettingsNoNormalCoolers>Oculte o cooler normal e desabafar do menu de compilação</TD.SettingsNoNormalCoolers>
+  <TD.IncapableOfSmoothing>incapaz de suavizar</TD.IncapableOfSmoothing>
+  <TD.FailedStuffBeingReplaced>coisas sendo substituídas</TD.FailedStuffBeingReplaced>
+
+</LanguageData>
