@@ -46,7 +46,7 @@ namespace Replace_Stuff.OverMineable
 		//private static bool ShouldNotEnterCell(Pawn pawn, Map map, IntVec3 dest)
 		public static void Postfix(ref bool __result, Pawn pawn, Map map, IntVec3 dest)
 		{
-			if (__result || !dest.InBounds(map)) return;
+			if (__result || !pawn.IsFreeColonist || !dest.InBounds(map)) return;
 
 			//Return if any direction open
 			foreach (IntVec3 adj in GenAdj.CardinalDirections)
