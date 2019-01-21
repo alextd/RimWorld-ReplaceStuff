@@ -14,6 +14,8 @@ namespace Replace_Stuff
 		public bool hideOverwallCoolers = false;
 		public bool hideNormalCoolers = false;
 
+		public bool cornerBuildable = true;
+
 		public static Settings Get()
 		{
 			return LoadedModManager.GetMod<Replace_Stuff.Mod>().GetSettings<Settings>();
@@ -28,6 +30,9 @@ namespace Replace_Stuff
 			options.CheckboxLabeled("TD.SettingsNoNormalCoolers".Translate(), ref hideNormalCoolers);
 			options.Gap();
 
+			options.CheckboxLabeled("TD.SettingsCornerBuildable".Translate(), ref cornerBuildable, "TD.SettingsCornerBuildableDesc".Translate());
+			options.Gap();
+
 			options.End();
 		}
 		
@@ -35,6 +40,8 @@ namespace Replace_Stuff
 		{
 			Scribe_Values.Look(ref hideOverwallCoolers, "hideOverwallCoolers", false);
 			Scribe_Values.Look(ref hideNormalCoolers, "hideNormalCoolers", false);
+
+			Scribe_Values.Look(ref cornerBuildable, "cornerBuildable", true);
 		}
 	}
 

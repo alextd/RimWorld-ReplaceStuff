@@ -16,6 +16,8 @@ namespace Replace_Stuff.OverMineable
 	{
 		public static bool Prefix(ref bool __result, int cornerX, int cornerZ, Map map)
 		{
+			if (!Settings.Get().cornerBuildable) return true;
+
 			//public static bool IsCornerTouchAllowed(int cornerX, int cornerZ, int adjCardinal1X, int adjCardinal1Z, int adjCardinal2X, int adjCardinal2Z, Map map)
 			if (map.thingGrid.ThingsAt(new IntVec3(cornerX, 0, cornerZ))
 				.Any(t => TouchPathEndModeUtility.MakesOccupiedCellsAlwaysReachableDiagonally(t.def)))
@@ -33,6 +35,8 @@ namespace Replace_Stuff.OverMineable
 		//public static bool MakesOccupiedCellsAlwaysReachableDiagonally(ThingDef def)
 		public static bool Prefix(ref bool __result, ThingDef def)
 		{
+			if (!Settings.Get().cornerBuildable) return true;
+
 			ThingDef thingDef = (def.IsFrame || def.IsBlueprint) ? (def.entityDefToBuild as ThingDef) : def;
 			__result = thingDef != null && thingDef.category == ThingCategory.Building && thingDef.holdsRoof;
 			return false;
@@ -46,6 +50,8 @@ namespace Replace_Stuff.OverMineable
 		//private static bool ShouldNotEnterCell(Pawn pawn, Map map, IntVec3 dest)
 		public static void Postfix(ref bool __result, Pawn pawn, Map map, IntVec3 dest)
 		{
+			if (!Settings.Get().cornerBuildable) return;
+
 			if (__result || !pawn.IsFreeColonist || !dest.InBounds(map)) return;
 
 			//Return if any direction open
@@ -75,6 +81,8 @@ namespace Replace_Stuff.OverMineable
 		public static bool recursive = true;
 		public static void Postfix(ref bool __result, Thing haulable, Pawn worker, IntVec3 center, ref IntVec3 spot)
 		{
+			if (!Settings.Get().cornerBuildable) return;
+
 			if (__result || !recursive) return;
 			recursive = false;
 
