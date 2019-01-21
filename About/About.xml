@@ -3,7 +3,7 @@
 	<name>Replace Stuff - Dev Build</name>
 	<author>Uuugggg</author>
 	<supportedVersions>
-		<li>1.0.0</li>
+		<li>1.0</li>
 	</supportedVersions>
 	<description>Replace stuff a thing is made from, e.g. replace a wall's materials 
 (This is the dev version of Replace Stuff. The release version of About.xml is available for editing at About/About-Release.xml. Edits made on this file or on the temporary About/About.xml won't show up on the release version. Use VisualStudio to build a "Release" version of this mod when ready to upload your mod!)</description>
