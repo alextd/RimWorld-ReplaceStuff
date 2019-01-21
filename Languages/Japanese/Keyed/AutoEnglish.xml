@@ -8,6 +8,8 @@
   <TD.ToggleBlueprintOverRock>岩山の中に設計図を設置</TD.ToggleBlueprintOverRock>
   <TD.SettingsNoOverwallCoolers>建設メニューから超便利なクーラー(後付)を隠します</TD.SettingsNoOverwallCoolers>
   <TD.SettingsNoNormalCoolers>建設メニューからバニラのクーラーと換気口を隠します</TD.SettingsNoNormalCoolers>
+  <TD.SettingsCornerBuildable>コーナータイルは内側から建設と採掘が可能</TD.SettingsCornerBuildable>
+  <TD.SettingsCornerBuildableDesc>これは時々変わった経路の問題を引き起こすかもしれません。－それを修正するためにはこれを無効化してください。</TD.SettingsCornerBuildableDesc>
   <TD.IncapableOfSmoothing>床の張替え(壁の磨き)ができません</TD.IncapableOfSmoothing>
   <TD.FailedStuffBeingReplaced>材料が置き換えられました</TD.FailedStuffBeingReplaced>
 
