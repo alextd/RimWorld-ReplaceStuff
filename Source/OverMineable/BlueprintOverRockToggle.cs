@@ -13,7 +13,7 @@ namespace Replace_Stuff.OverMineable
 	[StaticConstructorOnStartup]
 	public static class PlaySettings_BlueprintOverRockToggle
 	{
-		public static bool enabled = true;
+		public static bool blueprintOverRock = true;
 		private static Texture2D icon = ContentFinder<Texture2D>.Get("BlueprintOverRockToggle", true);
 
 		[HarmonyPostfix]
@@ -21,7 +21,17 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (worldView) return;
 
-			row.ToggleableIcon(ref enabled, icon, "TD.ToggleBlueprintOverRock".Translate());
+			row.ToggleableIcon(ref blueprintOverRock, icon, "TD.ToggleBlueprintOverRock".Translate());
+		}
+	}
+
+
+	[HarmonyPatch(typeof(PlaySettings), "ExposeData")]
+	public static class PlaySettings_ExposeData
+	{
+		public static void Prefix()
+		{
+			Scribe_Values.Look(ref PlaySettings_BlueprintOverRockToggle.blueprintOverRock, "blueprintOverRock", true);
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace Replace_Stuff.OverMineable
 		//public static bool CanPlaceBlueprintOver(BuildableDef newDef, ThingDef oldDef)
 		public static void Postfix(BuildableDef newDef, ThingDef oldDef, ref bool __result)
 		{
-			if (!OverMineable.PlaySettings_BlueprintOverRockToggle.enabled)
+			if (!OverMineable.PlaySettings_BlueprintOverRockToggle.blueprintOverRock)
 				return;
 
 			if(newDef.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f)
