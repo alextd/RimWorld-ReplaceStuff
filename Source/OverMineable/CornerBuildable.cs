@@ -50,7 +50,7 @@ namespace Replace_Stuff.OverMineable
 		//private static bool ShouldNotEnterCell(Pawn pawn, Map map, IntVec3 dest)
 		public static void Postfix(ref bool __result, Pawn pawn, Map map, IntVec3 dest)
 		{
-			if (!Settings.Get().cornerBuildable) return;
+			if (!Settings.Get().cornerBuildable || pawn == null) return;
 
 			if (__result || !pawn.IsFreeColonist || !dest.InBounds(map)) return;
 
