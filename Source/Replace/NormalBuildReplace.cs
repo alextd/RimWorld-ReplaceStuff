@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
+using Replace_Stuff.NewThing;
 using Verse;
 
 namespace Replace_Stuff
@@ -42,6 +43,12 @@ namespace Replace_Stuff
 			//it doesn't simply change __result to true when a replace frame can be placed,
 			//it also checks if the replace frame is already there and overrides that with false
 			foreach (Thing thing in center.GetThingList(map))
+			{
+				if (thing.IsNewThingReplacement(out Thing oldThing))
+				{
+					__result = false;
+					return;
+				}
 				if (thing != thingToIgnore && thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
@@ -55,6 +62,7 @@ namespace Replace_Stuff
 					if (newStuff != oldStuff)
 						__result = true;
 				}
+			}
 		}
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
