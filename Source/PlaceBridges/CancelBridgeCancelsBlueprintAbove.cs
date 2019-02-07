@@ -13,7 +13,7 @@ namespace Replace_Stuff.PlaceBridges
 		public static void CancelAbove(BuildableDef defToBuild, DestroyMode mode, Map map, IntVec3 pos)
 		{
 			if (defToBuild == TerrainDefOf.Bridge
-				&& mode != DestroyMode.Vanish)
+				&& !(mode == DestroyMode.Vanish || mode == DestroyMode.FailConstruction))
 			{
 				List<Thing> toKill = new List<Thing>();
 				foreach(Thing thing in map.thingGrid.ThingsListAtFast(pos))
