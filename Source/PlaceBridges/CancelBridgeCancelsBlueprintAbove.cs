@@ -23,7 +23,9 @@ namespace Replace_Stuff.PlaceBridges
 					if (thing is Frame fr && fr.def.entityDefToBuild != TerrainDefOf.Bridge)
 						toKill.Add(thing);
 				}
-				toKill.Do(t => t.Destroy(DestroyMode.Refund));
+				//Kill unless it's already killed or it's IsSelected.
+				//IsSelected probably not the best since possible non-cancel destruction would keep the thing above, but what are the chances of that?
+				toKill.Do(t => { if (!t.Destroyed && !Find.Selector.IsSelected(t)) t.Destroy(DestroyMode.Refund); });
 			}
 		}
 	}
