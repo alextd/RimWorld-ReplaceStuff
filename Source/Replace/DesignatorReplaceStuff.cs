@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using Replace_Stuff.NewThing;
 
 namespace Replace_Stuff
 {
@@ -140,7 +141,10 @@ namespace Replace_Stuff
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
-			return CanReplaceStuffAt(stuffDef, cell, Map) && !cell.GetThingList(Map).Any(t => t is ReplaceFrame rf && rf.UIStuff() == stuffDef);
+			return CanReplaceStuffAt(stuffDef, cell, Map)
+				&& !cell.GetThingList(Map).Any(t => 
+				(t is ReplaceFrame rf && rf.UIStuff() == stuffDef) || 
+				(t.IsNewThingReplacement(out Thing oldThing)));
 		}
 
 		public static bool CanReplaceStuffAt(ThingDef stuff, IntVec3 cell, Map map)
