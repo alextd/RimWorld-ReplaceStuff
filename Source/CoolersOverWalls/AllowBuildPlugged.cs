@@ -18,4 +18,14 @@ namespace Replace_Stuff.CoolersOverWalls
 			return false;
 		}
 	}
+	[HarmonyPatch(typeof(PlaceWorker_Vent), "AllowsPlacing")]
+	class AllowBuildPlugged_Vent
+	{
+		//public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null)
+		public static bool Prefix(ref AcceptanceReport __result)
+		{
+			__result = true;
+			return false;
+		}
+	}
 }
