@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using Harmony;
 using RimWorld;
 using Verse;
@@ -81,6 +82,9 @@ namespace Replace_Stuff.NewThing
 			});
 		}
 
+
+		public static Type fridgeType = AccessTools.TypeByName("Building_Refrigerator");
+		public static FieldInfo DesiredTempInfo = AccessTools.Field(fridgeType, "DesiredTemp");
 		static NewThingReplacement()
 		{
 			replacements = new List<Replacement>();
@@ -124,6 +128,14 @@ namespace Replace_Stuff.NewThing
 				};
 			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricStove, n => n == NewThingDefOf.FueledStove, transferBills));
 			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricTailoringBench, n => n == NewThingDefOf.HandTailoringBench, transferBills));
+
+			replacements.Add(new Replacement(d => d.IsTable));
+
+			replacements.Add(new Replacement(d => d.thingClass == fridgeType, 
+				postAction: (n, o) =>
+				{
+					DesiredTempInfo.SetValue(n, DesiredTempInfo.GetValue(o));
+				}));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
