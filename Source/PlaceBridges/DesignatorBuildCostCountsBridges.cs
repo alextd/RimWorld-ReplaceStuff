@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Replace_Stuff.PlaceBridges
 {
 	[HarmonyPatch(typeof(Designator_Build), nameof(Designator_Build.DrawMouseAttachments))]
-	class DesignatorBuildCostCountsBridges
+	static class DesignatorBuildCostCountsBridges
 	{
 		//public override void DrawMouseAttachments()
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method, ILGenerator generator)
@@ -33,17 +33,18 @@ namespace Replace_Stuff.PlaceBridges
 			 yield return instList[instList.Count - 1];
 		}
 
+		public static FieldInfo placingRotInfo = AccessTools.Field(typeof(Designator_Build), "placingRot");
+		public static Rot4 PlacingRot(this Designator_Build designator) =>
+			(Rot4)placingRotInfo.GetValue(designator);
 		public static void DrawBridgeCost(Designator_Build designator, Vector2 drawPos, float curY)
 		{
 			DesignationDragger dragger = Find.DesignatorManager.Dragger;
-			if (!dragger.Dragging) return;
-
 			int bridgeCount = 0;
-			foreach(IntVec3 dragPos in dragger.DragCells)
-			{
+			IEnumerable<IntVec3> cells = dragger.Dragging ? dragger.DragCells :
+				GenAdj.OccupiedRect(UI.MouseCell(), designator.PlacingRot(), designator.PlacingDef.Size).Cells;
+			foreach (IntVec3 dragPos in cells)
 				if (PlaceBridges.NeedsBridge(designator.PlacingDef, dragPos, designator.Map))
 					bridgeCount++;
-			}
 
 			if (bridgeCount == 0) return;
 
