@@ -14,7 +14,7 @@ namespace Replace_Stuff
 		public static bool IsWall(this BuildableDef bdef)
 		{
 			//return bdef == ThingDefOf.Wall || bdef.IsSmoothed;//Just IsSmoothed doesn't account for modded walls
-			return bdef is ThingDef def && def.coversFloor &&
+			return bdef is ThingDef def && def.coversFloor && def.holdsRoof && def.passability == Traversability.Impassable &&
 				(!def.building?.isNaturalRock ?? true);
 		}
 
