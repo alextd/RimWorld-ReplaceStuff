@@ -8,6 +8,16 @@ using Verse;
 
 namespace Replace_Stuff.PlaceBridges
 {
+	public static class PlaceBridges
+	{
+		public static bool NeedsBridge(BuildableDef def, IntVec3 pos, Map map)
+		{
+			return !pos.SupportsStructureType(map, def.terrainAffordanceNeeded) &&
+				pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
+				TerrainDefOf.Bridge.affordances.Contains(def.terrainAffordanceNeeded);
+		}
+	}
+
 	[HarmonyPatch(typeof(GenConstruct), "CanBuildOnTerrain")]
 	class CanPlaceBlueprint
 	{
@@ -19,8 +29,7 @@ namespace Replace_Stuff.PlaceBridges
 			CellRect.CellRectIterator iterator = cellRect.GetIterator();
 			while (!iterator.Done())
 			{
-				if (iterator.Current.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
-					TerrainDefOf.Bridge.affordances.Contains(entDef.terrainAffordanceNeeded))
+				if (PlaceBridges.NeedsBridge(entDef, iterator.Current, map))
 				{
 					__result = true;
 					return false;
@@ -43,18 +52,9 @@ namespace Replace_Stuff.PlaceBridges
 
 			TerrainAffordanceDef affNeeded = sourceDef.terrainAffordanceNeeded;
 
-			foreach (IntVec3 cell in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
-			{
-				if (cell.SupportsStructureType(map, affNeeded))
-					continue;
-
-
-				if (cell.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) && 
-					TerrainDefOf.Bridge.affordances.Contains(affNeeded))
-				{
-					GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, cell, map, rotation, faction, null);
-				}
-			}
+			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
+				if (PlaceBridges.NeedsBridge(sourceDef, pos, map))
+					GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, pos, map, rotation, faction, null);
 		}
 	}
 

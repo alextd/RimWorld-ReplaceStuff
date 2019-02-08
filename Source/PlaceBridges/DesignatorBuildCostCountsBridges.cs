@@ -33,27 +33,37 @@ namespace Replace_Stuff.PlaceBridges
 			 yield return instList[instList.Count - 1];
 		}
 
-		public static void DrawBridgeCost(Designator_Build designator, Vector2 pos, float curY)
+		public static void DrawBridgeCost(Designator_Build designator, Vector2 drawPos, float curY)
 		{
-			int count = 1;//TODO: actual bridge count
+			DesignationDragger dragger = Find.DesignatorManager.Dragger;
+			if (!dragger.Dragging) return;
+
+			int bridgeCount = 0;
+			foreach(IntVec3 dragPos in dragger.DragCells)
+			{
+				if (PlaceBridges.NeedsBridge(designator.PlacingDef, dragPos, designator.Map))
+					bridgeCount++;
+			}
+
+			if (bridgeCount == 0) return;
 
 			//could just say wood here, this is still assuming it costs only one thing.
 			ThingDefCountClass bridgeCost = TerrainDefOf.Bridge.costList.First();	
 
-			Widgets.ThingIcon(new Rect(pos.x, pos.y + curY, 27f, 27f), bridgeCost.thingDef);
+			Widgets.ThingIcon(new Rect(drawPos.x, drawPos.y + curY, 27f, 27f), bridgeCost.thingDef);
 
-			int total = bridgeCost.count * count;
+			int totalCost = bridgeCost.count * bridgeCount;
 
-			string label = total.ToString();
+			string label = $"{totalCost} ({TerrainDefOf.Bridge.LabelCap})";
 			//This doesn't account for normal building cost + under bridge cost, but what can you do
-			if (designator.Map.resourceCounter.GetCount(bridgeCost.thingDef) < total)
+			if (designator.Map.resourceCounter.GetCount(bridgeCost.thingDef) < totalCost)
 			{
 				GUI.color = Color.red;
 				label = label + " (" + "NotEnoughStoredLower".Translate() + ")";
 			}
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.MiddleLeft;
-			Widgets.Label(new Rect(pos.x + 29f, pos.y + curY, 999f, 29f), label);
+			Widgets.Label(new Rect(drawPos.x + 29f, drawPos.y + curY, 999f, 29f), label);
 			Text.Anchor = TextAnchor.UpperLeft;
 			GUI.color = Color.white;
 		}
