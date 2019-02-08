@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
+using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
 using Verse;
@@ -16,28 +18,38 @@ namespace Replace_Stuff.PlaceBridges
 				pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
 				TerrainDefOf.Bridge.affordances.Contains(def.terrainAffordanceNeeded);
 		}
+
+		public static bool CantEvenBridge(IntVec3 pos, Map map) =>
+			!pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded);
 	}
 
 	[HarmonyPatch(typeof(GenConstruct), "CanBuildOnTerrain")]
 	class CanPlaceBlueprint
 	{
 		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
-		public static bool Prefix(ref bool __result, BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			CellRect cellRect = GenAdj.OccupiedRect(c, rot, entDef.Size);
-			cellRect.ClipInsideMap(map);
-			CellRect.CellRectIterator iterator = cellRect.GetIterator();
-			while (!iterator.Done())
-			{
-				if (PlaceBridges.NeedsBridge(entDef, iterator.Current, map))
-				{
-					__result = true;
-					return false;
-				}
-				iterator.MoveNext();
-			}
+			MethodInfo ContainsInfo = AccessTools.Method(typeof(List<TerrainAffordanceDef>), nameof(List<TerrainAffordanceDef>.Contains));
 
-			return true;
+			bool firstOnly = true;
+			foreach(CodeInstruction i in instructions)
+			{
+				if(i.opcode == OpCodes.Callvirt && i.operand == ContainsInfo && firstOnly)
+				{
+					firstOnly = false;
+					
+					i.operand = AccessTools.Method(typeof(CanPlaceBlueprint), nameof(CanDoTerrain));
+				}
+
+				yield return i;
+			}
+		}
+
+		public static bool CanDoTerrain(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef)
+		{
+			return affordances.Contains(neededDef) ||
+				(affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded)
+				&& TerrainDefOf.Bridge.affordances.Contains(neededDef));
 		}
 	}
 
