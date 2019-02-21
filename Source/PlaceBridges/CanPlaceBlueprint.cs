@@ -14,7 +14,8 @@ namespace Replace_Stuff.PlaceBridges
 	{
 		public static bool NeedsBridge(BuildableDef def, IntVec3 pos, Map map)
 		{
-			return !pos.SupportsStructureType(map, def.terrainAffordanceNeeded) &&
+			return pos.InBounds(map) &&
+				!pos.SupportsStructureType(map, def.terrainAffordanceNeeded) &&
 				pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
 				TerrainDefOf.Bridge.affordances.Contains(def.terrainAffordanceNeeded);
 		}
