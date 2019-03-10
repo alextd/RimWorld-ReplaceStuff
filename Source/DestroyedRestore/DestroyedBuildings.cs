@@ -44,32 +44,28 @@ namespace Replace_Stuff.DestroyedRestore
 		public override void ExposeData()
 		{
 			Scribe_Collections.Look(ref destroyedBuildings, "destroyedBuildings", LookMode.Value, LookMode.Deep);
-			Log.Message($"Mode: {Scribe.mode}:{destroyedBuildings.ToStringSafeEnumerable()}");
 		}
 		
 
 		public static void SaveBuilding(Thing thing, Map map)
 		{
-			if (thing is Frame) return;
+			if (!BuildingReviver.CanDo(thing)) return;
 
 			DestroyedBuildings comp = map.GetComponent<DestroyedBuildings>();
 			Log.Message($"Saving {thing} to {map}:{thing.Position}");
 			comp.destroyedBuildings[thing.Position] = thing;
-			thing.ForceSetStateToUnspawned();
 		}
 
-		public static Thing FindBuilding(IntVec3 pos, Map map)
+		public static void ReviveBuilding(Thing newBuilding, IntVec3 pos, Map map)
 		{
 			DestroyedBuildings comp = map.GetComponent<DestroyedBuildings>();
 			if (comp.destroyedBuildings.TryGetValue(pos, out Thing building))
 			{
 				Log.Message($"got {building}");
-				building.stackCount = 1;
 				comp.destroyedBuildings.Remove(pos);
 
-				return building;
+				BuildingReviver.Transfer(building, newBuilding);
 			}
-			return null;
 		}
 
 		public static void RemoveAt(IntVec3 pos, Map map)
@@ -77,10 +73,42 @@ namespace Replace_Stuff.DestroyedRestore
 			DestroyedBuildings comp = map.GetComponent<DestroyedBuildings>();
 			if (comp.destroyedBuildings.TryGetValue(pos, out Thing building))
 			{
-				Log.Message($"Removed destroyed: {building}");
+				Log.Message($"Forgetting destroyed: {building}");
 				//Probably should set building.mapIndexOrState to -2
 				comp.destroyedBuildings.Remove(pos);
 			}
+		}
+	}
+
+	[StaticConstructorOnStartup]
+	public static class BuildingReviver
+	{
+		public static Dictionary<Type, Action<Thing, Thing>> handlers;
+		static BuildingReviver()
+		{
+			handlers = new Dictionary<Type, Action<Thing, Thing>>();
+
+			//Here are the types 
+			handlers[typeof(Building_WorkTable)] = delegate (Thing from, Thing to)
+			{
+				if (from is Building_WorkTable oldTable && to is Building_WorkTable newTable)
+					foreach (Bill bill in oldTable.BillStack)
+						newTable.BillStack.AddBill(bill);
+			};
+		}
+
+		public static bool CanDo(Thing thing)
+		{
+			return handlers.ContainsKey(thing.GetType());
+		}
+
+		public static void Transfer(Thing from, Thing to)
+		{
+			if (handlers.TryGetValue(from.GetType(), out Action<Thing, Thing> handler))
+			{
+				handler(from, to);
+			}
+			//else log warning no this shouldn't happen
 		}
 	}
 }

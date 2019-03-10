@@ -38,7 +38,9 @@ namespace Replace_Stuff.DestroyedRestore
 		//public static Thing MakeThing(ThingDef def, ThingDef stuff = null)
 		public static Thing CheckForRevival(ThingDef def, ThingDef stuff, Frame frame, Map map)
 		{
-			return DestroyedBuildings.FindBuilding(frame.Position, map) ?? ThingMaker.MakeThing(def, stuff);
+			Thing thing = ThingMaker.MakeThing(def, stuff);
+			DestroyedBuildings.ReviveBuilding(thing, frame.Position, map);
+			return thing;
 		}
 	}
 }
