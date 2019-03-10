@@ -118,6 +118,8 @@ namespace Replace_Stuff.DestroyedRestore
 			};
 			//If building_bed didn't forget their owner it'd be easier;
 			//otherwise the entire system could save an object instead of the Building before it despawns. 
+
+			//CompProperties_Refuelable if targetFuelLevelConfigurable
 		}
 
 		public static bool CanDo(Thing thing)
