@@ -15,7 +15,7 @@ namespace Replace_Stuff.DestroyedRestore
 		public static void Prefix(Blueprint __instance, DestroyMode mode)
 		{
 			if (mode != DestroyMode.Vanish)
-				DestroyedBuildings.RemoveAt(__instance.Position);
+				DestroyedBuildings.RemoveAt(__instance.Position, __instance.Map);
 		}
 	}
 
@@ -26,7 +26,7 @@ namespace Replace_Stuff.DestroyedRestore
 		public static void Prefix(Frame __instance, DestroyMode mode)
 		{
 			if (mode != DestroyMode.Vanish && mode != DestroyMode.FailConstruction && mode != DestroyMode.KillFinalize)
-				DestroyedBuildings.RemoveAt(__instance.Position);
+				DestroyedBuildings.RemoveAt(__instance.Position, __instance.Map);
 		}
 	}
 }
