@@ -116,6 +116,8 @@ namespace Replace_Stuff.DestroyedRestore
 				if (fromThing is Building_Storage from && toThing is Building_Storage to)
 					to.settings.CopyFrom(from.GetStoreSettings());
 			};
+			//If building_bed didn't forget their owner it'd be easier;
+			//otherwise the entire system could save an object instead of the Building before it despawns. 
 		}
 
 		public static bool CanDo(Thing thing)
