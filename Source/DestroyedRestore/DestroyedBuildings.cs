@@ -36,5 +36,15 @@ namespace Replace_Stuff.DestroyedRestore
 			destroyedBuildings[thing.Position] = thing;
 			thing.ForceSetStateToUnspawned();
 		}
+
+		public static void RemoveAt(IntVec3 pos)
+		{
+			if (destroyedBuildings.TryGetValue(pos, out Thing building))
+			{
+				Log.Message($"Removed destroyed: {building}");
+				//Probably should set building.mapIndexOrState to -2
+				destroyedBuildings.Remove(pos);
+			}
+		}
 	}
 }
