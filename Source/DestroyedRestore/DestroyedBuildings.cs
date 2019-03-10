@@ -101,6 +101,21 @@ namespace Replace_Stuff.DestroyedRestore
 				if (fromThing is Building_Cooler from && toThing is Building_Cooler to)
 					to.compTempControl.targetTemperature = from.compTempControl.targetTemperature;
 			};
+			handlers[typeof(Building_Heater)] = delegate (Thing fromThing, Thing toThing)
+			{
+				if (fromThing is Building_Heater from && toThing is Building_Heater to)
+					to.compTempControl.targetTemperature = from.compTempControl.targetTemperature;
+			};
+			handlers[typeof(Building_PlantGrower)] = delegate (Thing fromThing, Thing toThing)
+			{
+				if (fromThing is Building_PlantGrower from && toThing is Building_PlantGrower to)
+					to.SetPlantDefToGrow(from.GetPlantDefToGrow());
+			};
+			handlers[typeof(Building_Storage)] = delegate (Thing fromThing, Thing toThing)
+			{
+				if (fromThing is Building_Storage from && toThing is Building_Storage to)
+					to.settings.CopyFrom(from.GetStoreSettings());
+			};
 		}
 
 		public static bool CanDo(Thing thing)
