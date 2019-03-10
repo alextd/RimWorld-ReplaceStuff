@@ -62,9 +62,10 @@ namespace Replace_Stuff.DestroyedRestore
 			if (comp.destroyedBuildings.TryGetValue(pos, out Thing building))
 			{
 				Log.Message($"got {building}");
-				comp.destroyedBuildings.Remove(pos);
 
 				BuildingReviver.Transfer(building, newBuilding);
+
+				comp.destroyedBuildings.Remove(pos);
 			}
 		}
 
@@ -89,11 +90,16 @@ namespace Replace_Stuff.DestroyedRestore
 			handlers = new Dictionary<Type, Action<Thing, Thing>>();
 
 			//Here are the types 
-			handlers[typeof(Building_WorkTable)] = delegate (Thing from, Thing to)
+			handlers[typeof(Building_WorkTable)] = delegate (Thing fromThing, Thing toThing)
 			{
-				if (from is Building_WorkTable oldTable && to is Building_WorkTable newTable)
-					foreach (Bill bill in oldTable.BillStack)
-						newTable.BillStack.AddBill(bill);
+				if (fromThing is Building_WorkTable from && toThing is Building_WorkTable to)
+					foreach (Bill bill in from.BillStack)
+						to.BillStack.AddBill(bill);
+			};
+			handlers[typeof(Building_Cooler)] = delegate (Thing fromThing, Thing toThing)
+			{
+				if (fromThing is Building_Cooler from && toThing is Building_Cooler to)
+					to.compTempControl.targetTemperature = from.compTempControl.targetTemperature;
 			};
 		}
 

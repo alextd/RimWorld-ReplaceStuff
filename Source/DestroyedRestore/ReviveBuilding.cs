@@ -17,17 +17,16 @@ namespace Replace_Stuff.DestroyedRestore
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase mb, ILGenerator ilg)
 		{
 			//ThingMaker.MakeThing(thingDef, base.Stuff);
-			MethodInfo MakeThingInfo = AccessTools.Method(typeof(ThingMaker), nameof(ThingMaker.MakeThing));
+			MethodInfo SpawnInfo = AccessTools.Method(typeof(GenSpawn), nameof(GenSpawn.Spawn), 
+				new Type[] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)});
 			MethodInfo CheckForRevivalInfo = AccessTools.Method(typeof(ReviveBuilding), nameof(CheckForRevival));
 
 			int localMapIndex = mb.GetMethodBody().LocalVariables.FirstOrDefault(lv => lv.LocalType == typeof(Map)).LocalIndex;
 
 			foreach(CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Call && i.operand == MakeThingInfo)
+				if(i.opcode == OpCodes.Call && i.operand == SpawnInfo)
 				{
-					yield return new CodeInstruction(OpCodes.Ldarg_0);//Frame
-					yield return new CodeInstruction(OpCodes.Ldloc_S, localMapIndex);//Map map;
 					yield return new CodeInstruction(OpCodes.Call, CheckForRevivalInfo);//CheckForRevival(thingDef, base.Stuff, Frame, map)
 				}
 				else 
@@ -35,11 +34,11 @@ namespace Replace_Stuff.DestroyedRestore
 			}
 		}
 
-		//public static Thing MakeThing(ThingDef def, ThingDef stuff = null)
-		public static Thing CheckForRevival(ThingDef def, ThingDef stuff, Frame frame, Map map)
+		//public static Thing Spawn(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
+		public static Thing CheckForRevival(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
 		{
-			Thing thing = ThingMaker.MakeThing(def, stuff);
-			DestroyedBuildings.ReviveBuilding(thing, frame.Position, map);
+			Thing thing = GenSpawn.Spawn(newThing, loc, map, rot, wipeMode, respawningAfterLoad);
+			DestroyedBuildings.ReviveBuilding(thing, loc, map);	//After spawn so SpawnSetup is called, comps created.
 			return thing;
 		}
 	}
