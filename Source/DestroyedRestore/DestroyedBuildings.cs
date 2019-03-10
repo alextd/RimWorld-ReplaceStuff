@@ -32,6 +32,8 @@ namespace Replace_Stuff.DestroyedRestore
 		public static Dictionary<IntVec3, Thing> destroyedBuildings = new Dictionary<IntVec3, Thing>();
 		public static void SaveBuilding(Thing thing)
 		{
+			if (thing is Frame) return;
+
 			Log.Message($"Saving {thing} to {thing.Position}");
 			destroyedBuildings[thing.Position] = thing;
 			thing.ForceSetStateToUnspawned();
