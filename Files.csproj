@@ -22,7 +22,7 @@
           SkipUnchangedFiles="true" />
     <Copy Condition=" '$(Configuration)' == 'Release' "
 					SourceFiles="@(ReleaseFiles)"
-					DestinationFiles="@(ReleaseFiles->'$(OutputPath)%(RelativeDir)%(RecursiveDir)%(Filename)%(Extension)')"
+					DestinationFiles="@(ReleaseFiles->'$(OutputPath)%(RelativeDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true" />
   </Target>
   <Target Name="Rebuild" />
