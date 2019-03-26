@@ -26,7 +26,6 @@ namespace TD.Utilities
 
 					if (check(method))
 					{
-						Log.Message($"Dynamic patching {method}");
 						harmony.Patch(method, prefix, postfix, transpiler);
 					}
 				}
