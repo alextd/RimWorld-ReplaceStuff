@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Cooler_Over.label>壁掛式冷氣機</Cooler_Over.label>
+  <Cooler_Over.description>和一般的冷氣機設定不同，它不能被當作牆壁的一部分使用，反而是必須要安裝在牆面上。\n電力透過冷氣機將冷空氣送入房間，但會在室外產生大量熱量。可以用於夏天來冷卻房間，或者用來建立冰庫。</Cooler_Over.description>
+  <Blueprint_Cooler_Over.label>壁掛式冷氣機（藍圖）</Blueprint_Cooler_Over.label>
+  <Frame_Cooler_Over.label>壁掛式冷氣機（建造中）</Frame_Cooler_Over.label>
+  <Frame_Cooler_Over.description>和一般的冷氣機設定不同，它不能被當作牆壁的一部分使用，反而是必須要安裝在牆面上。\n電力透過冷氣機將冷空氣送入房間，但會在室外產生大量熱量。可以用於夏天來冷卻房間，或者用來建立冰庫。</Frame_Cooler_Over.description>
+
+  <Cooler_Over2W.label>壁掛式寬型冷氣機</Cooler_Over2W.label>
+  <Cooler_Over2W.description>它是一種安裝在牆壁上的大型冷氣機。\n電力透過冷氣機將冷空氣送入房間，但會在室外產生大量熱量。可以用於夏天來冷卻房間，或者用來建立冰庫。</Cooler_Over2W.description>
+  <Blueprint_Cooler_Over2W.label>壁掛式寬型冷氣機（藍圖）</Blueprint_Cooler_Over2W.label>
+  <Frame_Cooler_Over2W.label>壁掛式寬型冷氣機（建造中）</Frame_Cooler_Over2W.label>
+  <Frame_Cooler_Over2W.description>它是一種安裝在牆壁上的大型冷氣機。\n電力透過冷氣機將冷空氣送入房間，但會在室外產生大量熱量。可以用於夏天來冷卻房間，或者用來建立冰庫。</Frame_Cooler_Over2W.description>
+
+  <Vent_Over.label>鑲壁式通風口</Vent_Over.label>
+  <Vent_Over.description>即使空間上沒有實際連通，簡單的通風口也能使連接的兩個房間之間的溫度逐漸平衡。</Vent_Over.description>
+  <Blueprint_Vent_Over.label>鑲壁式通風口（藍圖）</Blueprint_Vent_Over.label>
+  <Frame_Vent_Over.label>鑲壁式通風口（建造中）</Frame_Vent_Over.label>
+  <Frame_Vent_Over.description>即使空間上沒有實際連通，簡單的通風口也能使連接的兩個房間之間的溫度逐漸平衡。</Frame_Vent_Over.description>
+
+</LanguageData>
