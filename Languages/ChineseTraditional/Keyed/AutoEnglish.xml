@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>建材替換</TD.Replace>
+	<TD.ReplaceDesc>替換物品材質，例如將木牆替換成石製的</TD.ReplaceDesc>
+	<TD.ReplacingTag> （建材替換中）</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>藍圖可以放置在天然岩石上</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>在建造清單中隱藏那些超級輕巧的壁掛式冷氣和通風口</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>在建造清單中隱藏原版的冷氣和通風口</TD.SettingsNoNormalCoolers>
+	<TD.SettingsCornerBuildable>位於轉角的目標可以在內部斜向建造或開採</TD.SettingsCornerBuildable>
+	<TD.SettingsCornerBuildableDesc>這有時候可能會導致奇怪的路徑問題 - 將其關閉以解決問題。</TD.SettingsCornerBuildableDesc>
+	<TD.IncapableOfSmoothing>和一些東西無法相容。</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>物品已經被改建完畢</TD.FailedStuffBeingReplaced>
+	
+</LanguageData>
