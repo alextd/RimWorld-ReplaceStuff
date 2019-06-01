@@ -73,6 +73,7 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
+	//TL;DR: actually ignore the thingToIgnore argument
 	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
 	public static class FixConduitPlaceWorker
 	{
