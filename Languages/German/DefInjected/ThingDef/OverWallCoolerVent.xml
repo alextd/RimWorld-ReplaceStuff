@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <Cooler_Over.label>Überwand-Kühlung</Cooler_Over.label>
+
+  <Vent_Over.label>Überwand-Lüftung</Vent_Over.label>
+  
+  <Cooler_Over.label>Überwand-Kühlung</Cooler_Over.label>
+  <Cooler_Over.description>Ein Gerät zum Kühlen der Luft, das über eine Wand gebaut wird. Es erzeugt einerseits Kälte, aber generiert auf der anderen Seite recht viel Wärme. Die Kühlung kann benutzt werden, um im Sommer einen Raum zu kühlen, oder auch um einen Kühlraum zu betreiben.</Cooler_Over.description>
+
+  <Cooler_Over2W.label>Überwand-Kühlung (Breit)</Cooler_Over2W.label>
+  <Cooler_Over2W.description>Ein Gerät zum Kühlen der Luft, das über zwei Wände gebaut wird. Es erzeugt einerseits Kälte, aber generiert auf der anderen Seite recht viel Wärme. Die Kühlung kann benutzt werden, um im Sommer einen Raum zu kühlen, oder auch um einen Kühlraum zu betreiben.</Cooler_Over2W.description>
+
+  <Vent_Over.label>Überwand-Lüftung</Vent_Over.label>
+  <Vent_Over.description>Ein einfacher Lüftungsschacht zum Ausgleichen der Temperatur zwischen zwei Räumen, ohne dabei eine Öffnung zu schaffen. Wird über eine Wand platziert.</Vent_Over.description>
+
+</LanguageData>

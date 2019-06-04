@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>Ersetze mit</TD.Replace>
+	<TD.ReplaceDesc>Ersetzt das Material eines Objektes, z.B. ersetzt eine Holzwand mit Stein.</TD.ReplaceDesc>
+	<TD.ReplacingTag> (Ersetzen)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>Platziere Blaupause über Felsgestein</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>Verberge die genialen Überwand-Kühler im Baumenü</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>Verberge die normalen Kühler und Lüftungen im Baumenü</TD.SettingsNoNormalCoolers>
+	<TD.SettingsCornerBuildable>Eckenfliesen sind bau- und abbaubar von innen</TD.SettingsCornerBuildable>
+	<TD.SettingsCornerBuildableDesc>Es kann sein, das dadurch manchmal komische Laufwege entstehen - deaktiviere das um das Problem eventuell zu beheben.</TD.SettingsCornerBuildableDesc>
+	<TD.IncapableOfSmoothing>Unfähig zum Glätten</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>Material wurde ersetzt</TD.FailedStuffBeingReplaced>
+
+</LanguageData>
