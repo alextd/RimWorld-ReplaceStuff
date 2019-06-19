@@ -48,6 +48,7 @@ namespace Replace_Stuff.OverMineable
 				yield return i;
 				if (foundFogged)  //skip the brfalse after Fogged
 				{
+					//This should probably check for DesignatorContext.designating but then more of this code would need to change
 					yield return new CodeInstruction(OpCodes.Ldarg_3);//map
 					yield return new CodeInstruction(OpCodes.Ldarg_1);//center
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//entDef
