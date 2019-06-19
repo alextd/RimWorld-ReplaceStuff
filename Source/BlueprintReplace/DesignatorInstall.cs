@@ -32,5 +32,14 @@ namespace Replace_Stuff.BlueprintReplace
 					next = true;
 			}
 		}
+
+		public static void Prefix()
+		{
+			DesignatorContext.designating = true;
+		}
+		public static void Postfix()
+		{
+			DesignatorContext.designating = false;
+		}
 	}
 }

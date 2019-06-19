@@ -13,16 +13,20 @@ namespace Replace_Stuff
 {
 	//public override AcceptanceReport CanDesignateCell(IntVec3 c)
 	[HarmonyPatch(typeof(Designator_Build), "CanDesignateCell")]
-	static class Designator_Build_Stuff
+	static class DesignatorContext
 	{
 		public static ThingDef stuffDef;
-		public static void Prefix(Designator_Build __instance, ThingDef ___stuffDef)
+		public static bool designating;
+
+		public static void Prefix(ThingDef ___stuffDef)
 		{
 			stuffDef = ___stuffDef;
+			designating = true;
 		}
 		public static void Postfix()
 		{
 			stuffDef = null;
+			designating = false;
 		}
 	}
 
@@ -37,7 +41,7 @@ namespace Replace_Stuff
 
 			if (!entDef.MadeFromStuff) return;
 
-			ThingDef newStuff = Designator_Build_Stuff.stuffDef;
+			ThingDef newStuff = DesignatorContext.stuffDef;
 
 			//It would not be so easy to transpile this part
 			//it doesn't simply change __result to true when a replace frame can be placed,

@@ -48,9 +48,13 @@ namespace Replace_Stuff.PlaceBridges
 
 		public static bool CanDoTerrain(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef)
 		{
-			return affordances.Contains(neededDef) ||
-				(affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded)
-				&& TerrainDefOf.Bridge.affordances.Contains(neededDef));
+			if (affordances.Contains(neededDef))  return true;
+
+			if (DesignatorContext.designating)
+				return affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded)
+				&& TerrainDefOf.Bridge.affordances.Contains(neededDef);
+
+			return false;
 		}
 	}
 
