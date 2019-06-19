@@ -17,8 +17,7 @@ namespace Replace_Stuff.OverMineable
 			return td.mineable && !td.IsSmoothed;
 		}
 	}
-
-	//It would be nice if we knew this was player-controlled or automated, e.g. enemy sieges placing sandbags
+	
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintOver")]
 	class CanPlaceBlueprintOverMineable
 	{
@@ -27,6 +26,8 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (!OverMineable.PlaySettings_BlueprintOverRockToggle.blueprintOverRock)
 				return;
+
+			if (!DesignatorContext.designating) return;
 
 			if(newDef.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f)
 				__result |= oldDef.IsMineableRock();
