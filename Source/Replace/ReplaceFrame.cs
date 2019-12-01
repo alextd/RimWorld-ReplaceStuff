@@ -21,7 +21,10 @@ namespace Replace_Stuff
 			if(thing is Frame frame)
 			{
 				GenLeaving.DoLeavingsFor(thing, thing.Map, DestroyMode.Cancel);
-				frame.workDone = 0;
+				if (frame is ReplaceFrame replaceFrame)
+					replaceFrame.workDone = Mathf.Min(replaceFrame.workDone, replaceFrame.WorkToDeconstruct);
+				else
+					frame.workDone = 0;
 			}
 
 			thing.Notify_ColorChanged();
@@ -43,11 +46,19 @@ namespace Replace_Stuff
 		}
 		
 		private const float MaxDeconstructWork = 3000f;
-		public static float WorkToDeconstruct(ThingDef def, ThingDef oldStuff = null)
+		public static float WorkToDeconstructDef(ThingDef def, ThingDef oldStuff = null)
 		{
 			float deWork = (def.entityDefToBuild as ThingDef ?? def)
 				.GetStatValueAbstract(StatDefOf.WorkToBuild, oldStuff);
 			return Mathf.Min(deWork, MaxDeconstructWork);
+		}
+
+		public float WorkToDeconstruct
+		{
+			get
+			{
+				return WorkToDeconstructDef(def.entityDefToBuild as ThingDef, oldStuff);
+			}
 		}
 
 		public float WorkToReplace
@@ -61,7 +72,7 @@ namespace Replace_Stuff
 		{
 			get
 			{
-				return WorkToDeconstruct(def, oldStuff) + WorkToReplace;
+				return WorkToDeconstructDef(def, oldStuff) + WorkToReplace;
 			}
 		}
 
@@ -136,10 +147,10 @@ namespace Replace_Stuff
 
 		public new void FailConstruction(Pawn worker)
 		{
-			Log.Message($"Failed replace frame! work was {workDone}, Decon is {WorkToDeconstruct(def, oldStuff)}, total is {WorkToBuild}");
+			Log.Message($"Failed replace frame! work was {workDone}, Decon is {WorkToDeconstructDef(def, oldStuff)}, total is {WorkToBuild}");
 
-			workDone = Mathf.Min(workDone, WorkToDeconstruct(def, oldStuff));
-			if (workDone < WorkToDeconstruct(def, oldStuff)) return;  //Deconstruction doesn't fail
+			workDone = Mathf.Min(workDone, WorkToDeconstructDef(def, oldStuff));
+			if (workDone < WorkToDeconstructDef(def, oldStuff)) return;  //Deconstruction doesn't fail
 
 			GenLeaving.DoLeavingsFor(this, Map, DestroyMode.FailConstruction);
 			
