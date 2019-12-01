@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using RimWorld;
 using Replace_Stuff.NewThing;
 
@@ -202,7 +203,26 @@ namespace Replace_Stuff
 						if (replaceFrame.oldStuff == stuffDef)
 							replaceFrame.Destroy(DestroyMode.Cancel);
 						else
+						{
 							replaceFrame.ChangeStuff(stuffDef);
+
+							//Interrupt any workers - they don't have the required new stuff
+							if (replaceFrame.Map.mapPawns.FreeColonists.First() is Pawn sampleColonist &&
+								replaceFrame.Map.reservationManager.FirstRespectedReserver(replaceFrame, sampleColonist) is Pawn worker)
+							{
+								if (worker.CurJob.def == JobDefOf.FinishFrame &&
+									worker.CurJob.targetA == replaceFrame)
+									worker.jobs.EndCurrentJob(JobCondition.InterruptForced);
+
+								for (int jobI = worker.jobs.jobQueue.Count - 1; jobI >= 0; jobI--)
+								{
+									Job qJob = worker.jobs.jobQueue[jobI].job;
+									if (qJob.def == JobDefOf.FinishFrame &&
+										qJob.targetA == replaceFrame)
+										worker.jobs.EndCurrentOrQueuedJob(qJob, JobCondition.InterruptForced);
+								}
+							}
+						}
 					}
 					else if (thing is Frame frame)
 					{
