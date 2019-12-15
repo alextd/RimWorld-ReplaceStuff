@@ -123,7 +123,7 @@ namespace Replace_Stuff.OverMineable
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintOver")]
 	public static class FramesAreEdificesInSomeCases
 	{
-		//private static ThingDef NewFrameDef_Thing(ThingDef def)
+		//public static bool CanPlaceBlueprintOver(BuildableDef newDef, ThingDef oldDef)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			return Harmony.Transpilers.MethodReplacer(instructions,
