@@ -92,8 +92,8 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 			//---------------------------------------------
 			//Here are valid replacements:
-			replacements.Add(new Replacement(d => d.IsWall() || d.thingClass == typeof(Building_Door)));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Cooler),
+			replacements.Add(new Replacement(d => d.IsWall() || typeof(Building_Door).IsAssignableFrom(d.thingClass)));
+			replacements.Add(new Replacement(d => typeof(Building_Cooler).IsAssignableFrom(d.thingClass),
 				postAction: (n, o) =>
 				{
 					Building_Cooler newCooler = n as Building_Cooler;
@@ -102,7 +102,7 @@ namespace Replace_Stuff.NewThing
 					newCooler.compTempControl.targetTemperature = oldCooler.compTempControl.targetTemperature;
 				}
 				));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed),
+			replacements.Add(new Replacement(d => typeof(Building_Bed).IsAssignableFrom(d.thingClass),
 				preAction: (n, o) =>
 				{
 					Building_Bed newBed = n as Building_Bed;

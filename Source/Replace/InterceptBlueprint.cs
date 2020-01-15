@@ -17,7 +17,7 @@ namespace Replace_Stuff.Replace
 			if (faction != Faction.OfPlayer) return true;
 
 			//Fix for door rotation
-			if (sourceDef is ThingDef thingDef && thingDef.thingClass == typeof(Building_Door))
+			if (sourceDef is ThingDef thingDef && typeof(Building_Door).IsAssignableFrom(thingDef.thingClass))
 				rotation = Building_Door.DoorRotationAt(center, map);
 
 			Func<Thing, bool> posCheck = t => t.Position == center && t.Rotation == rotation;
