@@ -5,12 +5,14 @@
 		<xpath>Defs/ThingDef[defName="Cooler"]</xpath>
 		<attribute>Name</attribute>
 		<value>Cooler</value>
+		<success>Always</success>
 	</Operation>
 	
 	<Operation Class="PatchOperationAttributeAdd">
 		<xpath>Defs/ThingDef[defName="Vent"]</xpath>
 		<attribute>Name</attribute>
 		<value>Vent</value>
+		<success>Always</success>
 	</Operation>
 	
 </Patch>
