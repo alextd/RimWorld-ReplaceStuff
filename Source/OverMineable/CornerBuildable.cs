@@ -38,7 +38,9 @@ namespace Replace_Stuff.OverMineable
 			if (!Settings.Get().cornerBuildable) return true;
 
 			ThingDef thingDef = (def.IsFrame || def.IsBlueprint) ? (def.entityDefToBuild as ThingDef) : def;
-			__result = thingDef != null && thingDef.category == ThingCategory.Building && thingDef.holdsRoof;
+			__result = thingDef != null && 
+				((thingDef.category == ThingCategory.Building && thingDef.holdsRoof)	//walls
+				 || thingDef.EverHaulable); //haulable
 			return false;
 		}
 	}
