@@ -25,12 +25,12 @@ namespace Replace_Stuff.DestroyedRestore
 			handlers[typeof(Building_Cooler)] = delegate (Thing fromThing, Thing toThing)
 			{
 				if (fromThing is Building_Cooler from && toThing is Building_Cooler to)
-					to.compTempControl.targetTemperature = from.compTempControl.targetTemperature;
+					to.compTempControl.targetTemperature = from.GetComp<CompTempControl>().targetTemperature;
 			};
 			handlers[typeof(Building_Heater)] = delegate (Thing fromThing, Thing toThing)
 			{
 				if (fromThing is Building_Heater from && toThing is Building_Heater to)
-					to.compTempControl.targetTemperature = from.compTempControl.targetTemperature;
+					to.compTempControl.targetTemperature = from.GetComp<CompTempControl>().targetTemperature;
 			};
 			handlers[typeof(Building_PlantGrower)] = delegate (Thing fromThing, Thing toThing)
 			{
