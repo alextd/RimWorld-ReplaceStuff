@@ -38,9 +38,14 @@ namespace Replace_Stuff.OverMineable
 			if (!Settings.Get().cornerBuildable) return true;
 
 			ThingDef thingDef = (def.IsFrame || def.IsBlueprint) ? (def.entityDefToBuild as ThingDef) : def;
-			__result = thingDef != null && 
-				((thingDef.category == ThingCategory.Building && thingDef.holdsRoof)	//walls
+			__result = thingDef != null && thingDef.category == ThingCategory.Building && thingDef.holdsRoof;
+			/*
+			// Would like to make haulable items grabbable from a corner, but deep in StoreUtility it checks if storage is reachable from the item
+			// Should be from the carrier, but that is used a lot, wary to change it for this little effect
+				__result = thingDef != null &&
+				((thingDef.category == ThingCategory.Building && thingDef.holdsRoof)  //walls
 				 || thingDef.EverHaulable); //haulable
+				 */
 			return false;
 		}
 	}
