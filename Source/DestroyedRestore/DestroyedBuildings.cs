@@ -62,6 +62,8 @@ namespace Replace_Stuff.DestroyedRestore
 		{
 			if (!BuildingReviver.CanDo(thing)) return;
 
+			thing.ForceSetStateToUnspawned();
+
 			DestroyedBuildings comp = map.GetComponent<DestroyedBuildings>();
 			Log.Message($"Saving {thing} to {map}:{thing.Position}");
 			comp.destroyedBuildings[thing.Position] = thing;
