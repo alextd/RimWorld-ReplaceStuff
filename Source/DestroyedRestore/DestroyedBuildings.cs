@@ -43,6 +43,17 @@ namespace Replace_Stuff.DestroyedRestore
 
 		public override void ExposeData()
 		{
+			if(Scribe.mode == LoadSaveMode.Saving)
+			{
+				//Sanity check
+				foreach (IntVec3 pos in destroyedBuildings.Keys.ToList())
+					if (!pos.GetThingList(map).Any(t => t.def.IsFrame || t.def.IsBlueprint))
+					{
+						Verse.Log.Warning($"ReplaceStuff - Forgetting unrevivable building {destroyedBuildings[pos]}:{pos} before saving - somehow it didn't get removed when it should have?");
+						destroyedBuildings.Remove(pos);
+					}
+			}
+
 			Scribe_Collections.Look(ref destroyedBuildings, "destroyedBuildings", LookMode.Value, LookMode.Deep);
 		}
 
