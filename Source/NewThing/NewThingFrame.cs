@@ -136,6 +136,8 @@ namespace Replace_Stuff.NewThing
 				{
 					DesiredTempInfo.SetValue(n, DesiredTempInfo.GetValue(o));
 				}));
+
+			replacements.Add(new Replacement(d => d.building?.isSittable ?? false));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
