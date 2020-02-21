@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -29,7 +29,7 @@ namespace Replace_Stuff.Other
 			{
 				if (instList[i].opcode == OpCodes.Blt && //if(Fillage >= Partial)
 					instList[i - 1].opcode == OpCodes.Ldc_I4_1 && //FillCategory.Partial
-					instList[i - 2].opcode == OpCodes.Callvirt && instList[i - 2].operand == FillageInfo) //Fillage
+					instList[i - 2].opcode == OpCodes.Callvirt && instList[i - 2].operand.Equals(FillageInfo)) //Fillage
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_1);//t
 					yield return new CodeInstruction(OpCodes.Call, AndNotFrameInfo);//AndNotFrame(Fillage,  Partial, t)

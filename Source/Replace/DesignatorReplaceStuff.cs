@@ -144,7 +144,7 @@ namespace Replace_Stuff
 		{
 			return CanReplaceStuffAt(stuffDef, cell, Map)
 				&& !cell.GetThingList(Map).Any(t => 
-				(t is ReplaceFrame rf && rf.UIStuff() == stuffDef) || 
+				(t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef) || 
 				(t.IsNewThingReplacement(out Thing oldThing)));
 		}
 
@@ -161,12 +161,12 @@ namespace Replace_Stuff
 
 			if (thing is Blueprint bp)
 			{
-				if (bp.UIStuff() == stuff)
+				if (bp.EntityToBuildStuff() == stuff)
 					return false;
 			}
 			else if (thing is Frame frame)
 			{
-				if (frame.UIStuff() == stuff)
+				if (frame.EntityToBuildStuff() == stuff)
 					return false;
 			}
 			else if (thing.def.HasReplaceFrame())

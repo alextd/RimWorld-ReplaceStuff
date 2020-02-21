@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.DestroyedRestore
 {
@@ -21,7 +21,7 @@ namespace Replace_Stuff.DestroyedRestore
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.opcode == OpCodes.Call && i.operand == PlaceBlueprintForBuildInfo)
+				if (i.opcode == OpCodes.Call && i.operand.Equals(PlaceBlueprintForBuildInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing thing
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map map

@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using RimWorld;
 using Verse;
 using Verse.AI;
-using Harmony;
+using HarmonyLib;
 using TD.Utilities;
 
 namespace Replace_Stuff.OverMineable
@@ -51,7 +51,7 @@ namespace Replace_Stuff.OverMineable
 		static HaulToBlueprintUnderRock()
 		{
 			HarmonyMethod transpiler = new HarmonyMethod(typeof(DeliverUnderRock), nameof(DeliverUnderRock.Transpiler));
-			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
 			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
 			Predicate<MethodInfo> check = delegate (MethodInfo method)
@@ -59,7 +59,7 @@ namespace Replace_Stuff.OverMineable
 				DynamicMethod dm = DynamicTools.CreateDynamicMethod(method, "-unused");
 
 				return (Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
-					Any(ilcode => ilcode.operand == CanConstructInfo));
+					Any(ilcode => ilcode.operand.Equals(CanConstructInfo)));
 			};
 
 			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
@@ -81,7 +81,7 @@ namespace Replace_Stuff.OverMineable
 			{
 				CodeInstruction inst = list[i];
 				yield return inst;
-				if (inst.opcode == OpCodes.Call && inst.operand == FirstBlockingThingInfo)
+				if (inst.opcode == OpCodes.Call && inst.operand.Equals(FirstBlockingThingInfo))
 				{
 					//Frame can be made
 					yield return new CodeInstruction(OpCodes.Pop);

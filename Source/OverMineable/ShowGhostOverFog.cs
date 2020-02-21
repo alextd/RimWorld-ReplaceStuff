@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 using UnityEngine;
@@ -39,12 +39,12 @@ namespace Replace_Stuff.OverMineable
 			{
 				yield return i;
 				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Call && i.operand == HashCombineInfo)
+				if (i.opcode == OpCodes.Call && i.operand.Equals(HashCombineInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, HashFogInfo);
 				}
 				//use meta shader if fog:
-				if (i.opcode == OpCodes.Ldsfld && i.operand == EdgeDetectInfo)
+				if (i.opcode == OpCodes.Ldsfld && i.operand.Equals(EdgeDetectInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, MakeMetaIfOverFogInfo);
 				}
@@ -80,7 +80,7 @@ namespace Replace_Stuff.OverMineable
 			{
 				yield return i;
 				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Ldfld && i.operand == graphicDataInfo)
+				if (i.opcode == OpCodes.Ldfld && i.operand.Equals(graphicDataInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing
 					yield return new CodeInstruction(OpCodes.Call, FogGraphicMakerInfo);

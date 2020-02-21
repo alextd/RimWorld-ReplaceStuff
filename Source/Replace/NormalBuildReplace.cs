@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Replace_Stuff.NewThing;
 using Verse;
@@ -57,7 +57,7 @@ namespace Replace_Stuff
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
 				{
-					ThingDef oldStuff = thing is Blueprint bp ? bp.UIStuff() : thing.Stuff;
+					ThingDef oldStuff = thing is Blueprint bp ? bp.EntityToBuildStuff() : thing.Stuff;
 					if (thing is ReplaceFrame rf && oldStuff == newStuff)
 					{
 						__result = false;
@@ -77,7 +77,7 @@ namespace Replace_Stuff
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.operand == RotationEquals)
+				if (i.operand.Equals(RotationEquals))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//BuildableDef entDef
 					yield return new CodeInstruction(OpCodes.Call, OrRotDoesntMatter);

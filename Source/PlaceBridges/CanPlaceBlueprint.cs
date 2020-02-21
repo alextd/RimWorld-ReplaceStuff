@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -35,7 +35,7 @@ namespace Replace_Stuff.PlaceBridges
 			bool firstOnly = true;
 			foreach(CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Callvirt && i.operand == ContainsInfo && firstOnly)
+				if(i.opcode == OpCodes.Callvirt && i.operand.Equals(ContainsInfo) && firstOnly)
 				{
 					firstOnly = false;
 					

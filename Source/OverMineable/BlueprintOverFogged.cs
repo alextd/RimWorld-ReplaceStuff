@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -56,7 +56,7 @@ namespace Replace_Stuff.OverMineable
 					yield return new CodeInstruction(OpCodes.Ret);
 					foundFogged = false;
 				}
-				if (i.opcode == OpCodes.Call && i.operand == FoggedInfo)
+				if (i.opcode == OpCodes.Call && i.operand.Equals(FoggedInfo))
 					foundFogged = true;
 			}
 		}
@@ -99,7 +99,7 @@ namespace Replace_Stuff.OverMineable
 					foundLdLoc = true;
 					currentThing.AddRange(iList.GetRange(k, 3));
 				}
-				if (i.opcode == OpCodes.Ldfld && i.operand == entityDefInfo)
+				if (i.opcode == OpCodes.Ldfld && i.operand.Equals(entityDefInfo))
 				{
 					continueLabel = iList[k+1].operand;
 					break;

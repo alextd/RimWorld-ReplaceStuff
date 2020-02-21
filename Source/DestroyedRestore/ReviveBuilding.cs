@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.DestroyedRestore
 {
@@ -25,7 +25,7 @@ namespace Replace_Stuff.DestroyedRestore
 
 			foreach(CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Call && i.operand == SpawnInfo)
+				if(i.opcode == OpCodes.Call && i.operand.Equals(SpawnInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, CheckForRevivalInfo);//CheckForRevival(thingDef, base.Stuff, Frame, map)
 				}

@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using RimWorld;
 using Verse;
 using Verse.AI;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.OverMineable
 {
@@ -28,7 +28,7 @@ namespace Replace_Stuff.OverMineable
 			for (int i = 1; i < list.Count; i++)
 			{
 				yield return list[i];
-				if (list[i-1].opcode == OpCodes.Ldfld && list[i-1].operand == mineableInfo)
+				if (list[i-1].opcode == OpCodes.Ldfld && list[i-1].operand.Equals(mineableInfo))
 				{
 					Label otherwise = iLGenerator.DefineLabel();
 					list[i + 1].labels.Add(otherwise);

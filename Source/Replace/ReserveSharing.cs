@@ -7,7 +7,7 @@ using System.Diagnostics;
 using RimWorld;
 using Verse;
 using Verse.AI;
-using Harmony;
+using HarmonyLib;
 using Replace_Stuff.NewThing;
 
 namespace Replace_Stuff.Replace
@@ -19,7 +19,7 @@ namespace Replace_Stuff.Replace
 		static ReserveSharing()
 		{
 			HarmonyMethod prefix = new HarmonyMethod(typeof(ReserveSharing), nameof(ReserveSharing.Prefix));
-			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
 			//HERE WE GO
 			foreach (MethodInfo method in AccessTools.GetDeclaredMethods(typeof(ReservationManager)))
