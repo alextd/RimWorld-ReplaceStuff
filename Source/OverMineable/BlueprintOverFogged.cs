@@ -19,16 +19,8 @@ namespace Replace_Stuff.OverMineable
 
 		public static bool IsUnderFog(this IntVec3 center, Rot4 rot, ThingDef thingDef)
 		{
-			CellRect.CellRectIterator iterator = GenAdj.OccupiedRect(center, rot, thingDef.Size).GetIterator();
-			while (!iterator.Done())
-			{
-				if (Find.CurrentMap.fogGrid.IsFogged(iterator.Current))
-				{
-					return true;
-				}
-				iterator.MoveNext();
-			}
-			return false;
+			return GenAdj.OccupiedRect(center, rot, thingDef.Size)
+			.Any(pos => Find.CurrentMap.fogGrid.IsFogged(pos));
 		}
 	}
 

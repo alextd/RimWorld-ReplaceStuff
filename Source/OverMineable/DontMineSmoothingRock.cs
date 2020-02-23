@@ -59,7 +59,7 @@ namespace Replace_Stuff.OverMineable
 
 		public static Job SmoothItJob(Pawn worker, Thing thing, bool forced)
 		{
-			if (worker.story != null && worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+			if (worker.story != null && worker.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
 			{
 				JobFailReason.Is("TD.IncapableOfSmoothing".Translate());
 				return null;

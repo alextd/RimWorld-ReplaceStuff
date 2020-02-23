@@ -25,7 +25,7 @@ namespace Replace_Stuff.OverMineable
 			//With
 			MethodInfo CanDeliverInfo = AccessTools.Method(typeof(DeliverUnderRock), "CanDeliver");
 
-			return Harmony.Transpilers.MethodReplacer(instructions, CanConstructInfo, CanDeliverInfo);
+			return Transpilers.MethodReplacer(instructions, CanConstructInfo, CanDeliverInfo);
 		}
 
 		//public static bool CanConstruct(Thing t, Pawn p, bool checkConstructionSkill = true, bool forced = false)
@@ -54,13 +54,7 @@ namespace Replace_Stuff.OverMineable
 			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
 			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
-			Predicate<MethodInfo> check = delegate (MethodInfo method)
-			{
-				DynamicMethod dm = DynamicTools.CreateDynamicMethod(method, "-unused");
-
-				return (Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
-					Any(ilcode => ilcode.operand.Equals(CanConstructInfo)));
-			};
+			Predicate<MethodInfo> check = m => m.Name.Contains("JumpToCarryToNextContainerIfPossible");
 
 			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
 		}
@@ -126,7 +120,7 @@ namespace Replace_Stuff.OverMineable
 		//public static bool CanPlaceBlueprintOver(BuildableDef newDef, ThingDef oldDef)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			return Harmony.Transpilers.MethodReplacer(instructions,
+			return Transpilers.MethodReplacer(instructions,
 				AccessTools.Method(typeof(EdificeUtility), "IsEdifice"),
 				AccessTools.Method(typeof(FramesAreEdificesInSomeCases), "IsEdificeOrFrame"));
 		}
