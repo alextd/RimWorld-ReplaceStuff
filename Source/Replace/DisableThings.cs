@@ -61,7 +61,7 @@ namespace Replace_Stuff.Replace
 			{
 				yield return i;
 
-				if(i.opcode == OpCodes.Call && i.operand.Equals(FindBedForInfo))
+				if(i.Calls(FindBedForInfo))
 				{
 					//Ideally filter out the bed in IsValidBedFor,
 					//but then FindBedFor would skip your owned bed, find another bed and claim it

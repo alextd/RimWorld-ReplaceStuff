@@ -75,7 +75,7 @@ namespace Replace_Stuff.OverMineable
 			{
 				CodeInstruction inst = list[i];
 				yield return inst;
-				if (inst.opcode == OpCodes.Call && inst.operand.Equals(FirstBlockingThingInfo))
+				if (inst.Calls(FirstBlockingThingInfo))
 				{
 					//Frame can be made
 					yield return new CodeInstruction(OpCodes.Pop);

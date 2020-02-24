@@ -45,7 +45,7 @@ namespace Replace_Stuff.NewThing
 				else
 					yield return i;
 
-				if (i.opcode == OpCodes.Callvirt && i.operand.Equals(MinifiableInfo))
+				if (i.Calls(MinifiableInfo))
 					yield return new CodeInstruction(OpCodes.Call, NevermindAboutMinifiableInfo);
 			}
 		}

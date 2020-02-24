@@ -23,7 +23,7 @@ namespace Replace_Stuff.CoolersOverWalls
 			{
 				yield return i;
 				//IL_0019: call         valuetype Verse.IntVec3 Verse.IntVec3::get_North()
-				if (i.opcode == OpCodes.Call && i.operand.Equals(NorthInfo))
+				if (i.Calls(NorthInfo))
 				{
 					yield return new CodeInstruction(paramCode);//def or thing
 					yield return new CodeInstruction(OpCodes.Call, DoubleItInfo);

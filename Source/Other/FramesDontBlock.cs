@@ -28,8 +28,8 @@ namespace Replace_Stuff.Other
 			for (int i = 0; i < instList.Count(); i++)
 			{
 				if (instList[i].opcode == OpCodes.Blt && //if(Fillage >= Partial)
-					instList[i - 1].opcode == OpCodes.Ldc_I4_1 && //FillCategory.Partial
-					instList[i - 2].opcode == OpCodes.Callvirt && instList[i - 2].operand.Equals(FillageInfo)) //Fillage
+					instList[i - 1].LoadsConstant(FillCategory.Partial) && //FillCategory.Partial
+					instList[i - 2].Calls(FillageInfo)) //Fillage
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_1);//t
 					yield return new CodeInstruction(OpCodes.Call, AndNotFrameInfo);//AndNotFrame(Fillage,  Partial, t)

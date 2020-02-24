@@ -48,7 +48,7 @@ namespace Replace_Stuff.OverMineable
 					yield return new CodeInstruction(OpCodes.Ret);
 					foundFogged = false;
 				}
-				if (i.opcode == OpCodes.Call && i.operand.Equals(FoggedInfo))
+				if (i.Calls(FoggedInfo))
 					foundFogged = true;
 			}
 		}
@@ -91,7 +91,7 @@ namespace Replace_Stuff.OverMineable
 					foundLdLoc = true;
 					currentThing.AddRange(iList.GetRange(k, 3));
 				}
-				if (i.opcode == OpCodes.Ldfld && i.operand.Equals(entityDefInfo))
+				if (i.LoadsField(entityDefInfo))
 				{
 					continueLabel = iList[k+1].operand;
 					break;

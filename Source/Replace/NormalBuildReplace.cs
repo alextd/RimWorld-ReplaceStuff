@@ -77,7 +77,7 @@ namespace Replace_Stuff
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.opcode == OpCodes.Call && i.operand.Equals(RotationEquals))
+				if (i.Calls(RotationEquals))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//BuildableDef entDef
 					yield return new CodeInstruction(OpCodes.Call, OrRotDoesntMatter);

@@ -28,7 +28,7 @@ namespace Replace_Stuff.OverMineable
 			for (int i = 1; i < list.Count; i++)
 			{
 				yield return list[i];
-				if (list[i-1].opcode == OpCodes.Ldfld && list[i-1].operand.Equals(mineableInfo))
+				if (list[i-1].LoadsField(mineableInfo))
 				{
 					Label otherwise = iLGenerator.DefineLabel();
 					list[i + 1].labels.Add(otherwise);

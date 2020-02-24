@@ -35,7 +35,7 @@ namespace Replace_Stuff.PlaceBridges
 			bool firstOnly = true;
 			foreach(CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Callvirt && i.operand.Equals(ContainsInfo) && firstOnly)
+				if(i.Calls(ContainsInfo) && firstOnly)
 				{
 					firstOnly = false;
 					

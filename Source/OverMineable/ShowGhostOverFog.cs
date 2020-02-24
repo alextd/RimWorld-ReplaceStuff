@@ -39,12 +39,12 @@ namespace Replace_Stuff.OverMineable
 			{
 				yield return i;
 				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Call && i.operand.Equals(HashCombineInfo))
+				if (i.Calls(HashCombineInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, HashFogInfo);
 				}
 				//use meta shader if fog:
-				if (i.opcode == OpCodes.Ldsfld && i.operand.Equals(EdgeDetectInfo))
+				if (i.LoadsField(EdgeDetectInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, MakeMetaIfOverFogInfo);
 				}
@@ -80,7 +80,7 @@ namespace Replace_Stuff.OverMineable
 			{
 				yield return i;
 				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Ldfld && i.operand.Equals(graphicDataInfo))
+				if (i.LoadsField(graphicDataInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing
 					yield return new CodeInstruction(OpCodes.Call, FogGraphicMakerInfo);

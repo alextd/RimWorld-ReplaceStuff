@@ -26,7 +26,7 @@ namespace Replace_Stuff.OverMineable
 				yield return inst;
 				//if (thingList2[index].def.passability == Traversability.Impassable)
 				//if (thingList2[index].def.passability == Traversability.Impassable && thingList2[index] is not rock)
-				if (inst.opcode == OpCodes.Ldc_I4_2 && !doneOnce)//Traversability.Impassable
+				if (inst.LoadsConstant(2) && !doneOnce)//Traversability.Impassable
 				{
 					doneOnce = true;
 

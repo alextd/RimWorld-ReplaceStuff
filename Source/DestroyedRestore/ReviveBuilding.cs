@@ -25,7 +25,7 @@ namespace Replace_Stuff.DestroyedRestore
 
 			foreach(CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Call && i.operand.Equals(SpawnInfo))
+				if(i.Calls(SpawnInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, CheckForRevivalInfo);//CheckForRevival(thingDef, base.Stuff, Frame, map)
 				}
