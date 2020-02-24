@@ -35,6 +35,7 @@ namespace Replace_Stuff
 	}
 
 	//[HarmonyPatch(typeof(DefGenerator), "GenerateImpliedDefs_PreResolve")]
+	[StaticConstructorOnStartup]
 	public static class ThingDefGenerator_ReplaceFrame
 	{
 		/*
@@ -87,7 +88,12 @@ namespace Replace_Stuff
 			}
 		}
 
-
+		public static Type qbType;//QualityBuilder
+		static ThingDefGenerator_ReplaceFrame()
+		{
+			//Maybe defining this above will load before QB so let's just do it here to be safe
+			qbType = AccessTools.TypeByName("CompProperties_QualityBuilderr");
+		}
 		public static ThingDef NewReplaceFrameDef_Thing(ThingDef def)
 		{
 			ThingDef thingDef = ThingDefGenerator_ReplaceFrame.BaseFrameDef();
@@ -110,7 +116,7 @@ namespace Replace_Stuff
 
 			//Support QualityBuilder
 			if (def.HasComp(typeof(CompQuality)) && def.building != null)
-				if (AccessTools.TypeByName("CompProperties_QualityBuilderr") is Type qbType)	//rr [sic]
+				if (qbType != null)	//rr [sic]
 					thingDef.comps.Add((CompProperties)Activator.CreateInstance(qbType));
 
 			thingDef.entityDefToBuild = def;
