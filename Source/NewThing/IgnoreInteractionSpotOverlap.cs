@@ -1,6 +1,4 @@
-﻿/* Weird Harmony problem patching PlaceWorker.AllowsPlacing. TODO.
- * 
-using System;
+﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Generic;
@@ -58,5 +56,3 @@ namespace Replace_Stuff.NewThing
 		}
 	}
 }
-
-*/

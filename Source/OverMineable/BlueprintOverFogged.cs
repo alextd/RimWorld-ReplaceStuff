@@ -68,7 +68,6 @@ namespace Replace_Stuff.OverMineable
 
 	//TL;DR: actually ignore the thingToIgnore argument
 	//I do not remember why this patch is needed? Maybe stuffed conduits? This isn't Replace Stuff responsiblity to patch though :/
-	/* Weird Harmony problem patching PlaceWorker.AllowsPlacing. TODO.
 	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
 	public static class FixConduitPlaceWorker
 	{
@@ -118,7 +117,7 @@ namespace Replace_Stuff.OverMineable
 			}
 		}
 	}
-	*/
+	
 
 	[HarmonyPatch(typeof(FogGrid), "UnfogWorker")]
 	public static class UnFogFix
