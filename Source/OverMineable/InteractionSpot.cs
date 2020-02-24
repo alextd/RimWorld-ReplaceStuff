@@ -34,7 +34,7 @@ namespace Replace_Stuff.OverMineable
 					yield return list[i - 4];//index
 					yield return list[i - 3];//thingList[index]
 					yield return new CodeInstruction(OpCodes.Call, AndIsNotRockInfo);
-					list[++i].opcode = OpCodes.Brfalse;
+					list[++i].opcode = OpCodes.Brtrue;
 					yield return list[i];
 				}
 			}
