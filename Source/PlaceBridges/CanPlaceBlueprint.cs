@@ -28,9 +28,10 @@ namespace Replace_Stuff.PlaceBridges
 	[HarmonyPatch(typeof(GenConstruct), "CanBuildOnTerrain")]
 	class CanPlaceBlueprint
 	{
-		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null, ThingDef stuffDef = null)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method)
 		{
+			LocalVariableInfo posInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(IntVec3));
 			MethodInfo ContainsInfo = AccessTools.Method(typeof(List<TerrainAffordanceDef>), nameof(List<TerrainAffordanceDef>.Contains));
 
 			bool firstOnly = true;
@@ -39,21 +40,34 @@ namespace Replace_Stuff.PlaceBridges
 				if(i.Calls(ContainsInfo) && firstOnly)
 				{
 					firstOnly = false;
-					
-					i.operand = AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo));
-				}
 
-				yield return i;
+					yield return new CodeInstruction(OpCodes.Ldloc, posInfo.LocalIndex);//IntVec3 pos
+					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo)));
+				}
+				else
+					yield return i;
 			}
 		}
 
-		public static bool TerrainOrBridgesCanDo(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef)
+		public static bool TerrainOrBridgesCanDo(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef, IntVec3 pos, Map map)
 		{
-			if (affordances.Contains(neededDef))  return true;
+			//Terrain already supports: vanilla, ok
+			if (affordances.Contains(neededDef))
+				return true;
 
-			if (DesignatorContext.designating)
-				return affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded)	//terrain can support bridges
-				&& TerrainDefOf.Bridge.affordances.Contains(neededDef);//bridges can support building
+			//If bridges won't help: no.
+			if (!TerrainDefOf.Bridge.affordances.Contains(neededDef))
+				return false;
+
+			//Bridge blueprint there: ok
+			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+				return true;
+
+			//Player choosing to build and bridges possible: ok (elsewhere will place blueprints)
+			if (DesignatorContext.designating &&
+				affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded))  //terrain can support bridges
+				return true;
 
 			return false;
 		}
