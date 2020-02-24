@@ -30,7 +30,7 @@ namespace Replace_Stuff.OverMineable
 		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			MethodInfo FoggedInfo = AccessTools.Method(typeof(GridsUtility), "Fogged", new Type[] { typeof(IntVec3), typeof(Map)});
+			MethodInfo FoggedInfo = AccessTools.Method(typeof(GridsUtility), "Fogged", new Type[] { typeof(IntVec3), typeof(Map) });
 
 			MethodInfo BlueprintAcceptedInfo = AccessTools.Method(typeof(BlueprintOverFogged), "BlueprintExistsAcceptance");
 
@@ -58,7 +58,7 @@ namespace Replace_Stuff.OverMineable
 		{
 			if (!OverMineable.PlaySettings_BlueprintOverRockToggle.blueprintOverRock)
 				return new AcceptanceReport("CannotPlaceInUndiscovered".Translate());
-			if(center.GetThingList(map).Any(t => t is Blueprint && t.def.entityDefToBuild == entDef))
+			if (center.GetThingList(map).Any(t => t is Blueprint && t.def.entityDefToBuild == entDef))
 				return new AcceptanceReport("IdenticalBlueprintExists".Translate());
 			if (entDef.GetStatValueAbstract(StatDefOf.WorkToBuild) == 0f)
 				return new AcceptanceReport("CannotPlaceInUndiscovered".Translate());
@@ -67,6 +67,8 @@ namespace Replace_Stuff.OverMineable
 	}
 
 	//TL;DR: actually ignore the thingToIgnore argument
+	//I do not remember why this patch is needed? Maybe stuffed conduits? This isn't Replace Stuff responsiblity to patch though :/
+	/* Weird Harmony problem patching PlaceWorker.AllowsPlacing. TODO.
 	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
 	public static class FixConduitPlaceWorker
 	{
@@ -74,7 +76,7 @@ namespace Replace_Stuff.OverMineable
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo entityDefInfo = AccessTools.Field(typeof(ThingDef), "entityDefToBuild");
-			
+
 			//need to find loop continue label
 			object continueLabel = null;
 
@@ -116,7 +118,7 @@ namespace Replace_Stuff.OverMineable
 			}
 		}
 	}
-
+	*/
 
 	[HarmonyPatch(typeof(FogGrid), "UnfogWorker")]
 	public static class UnFogFix
@@ -127,7 +129,7 @@ namespace Replace_Stuff.OverMineable
 			Map map = ___map;
 			if (c.GetThingList(map).FirstOrDefault(t => t.def.IsBlueprint) is Thing blueprint && !blueprint.IsUnderFog())
 			{
-				DesignatorContext.designating = true;	// as good as designating.
+				DesignatorContext.designating = true; // as good as designating.
 
 				if (!GenConstruct.CanPlaceBlueprintAt(blueprint.def.entityDefToBuild, blueprint.Position, blueprint.Rotation, map, false, blueprint).Accepted)
 					blueprint.Destroy();
