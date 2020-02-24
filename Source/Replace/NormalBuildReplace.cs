@@ -30,7 +30,7 @@ namespace Replace_Stuff
 		}
 	}
 
-	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt))]
 	public static class NormalBuildReplace
 	{
 		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
@@ -77,7 +77,7 @@ namespace Replace_Stuff
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.operand.Equals(RotationEquals))
+				if (i.opcode == OpCodes.Call && i.operand.Equals(RotationEquals))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//BuildableDef entDef
 					yield return new CodeInstruction(OpCodes.Call, OrRotDoesntMatter);
