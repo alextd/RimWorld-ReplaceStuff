@@ -109,7 +109,7 @@ namespace Replace_Stuff.NewThing
 					Building_Bed oldBed = o as Building_Bed;
 					newBed.ForPrisoners = oldBed.ForPrisoners;
 					newBed.Medical = oldBed.Medical;
-					oldBed.OwnersForReading.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
+					oldBed.OwnersForReading.ListFullCopy().ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
 			DesignationCategoryDef fencesDef = DefDatabase<DesignationCategoryDef>.GetNamed("Fences", false);
