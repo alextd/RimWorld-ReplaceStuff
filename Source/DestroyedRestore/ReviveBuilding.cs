@@ -37,6 +37,7 @@ namespace Replace_Stuff.DestroyedRestore
 		//public static Thing Spawn(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
 		public static Thing CheckForRevival(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
 		{
+			Log.Message($"Checking {newThing} for revival");
 			Thing thing = GenSpawn.Spawn(newThing, loc, map, rot, wipeMode, respawningAfterLoad);
 			DestroyedBuildings.ReviveBuilding(thing, loc, map);	//After spawn so SpawnSetup is called, comps created.
 			return thing;

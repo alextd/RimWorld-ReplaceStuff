@@ -30,7 +30,7 @@ namespace Replace_Stuff.PlaceBridges
 			yield return new CodeInstruction(OpCodes.Ldloc_S, curYInfo.LocalIndex);//y
 			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DesignatorBuildCostCountsBridges), nameof(DrawBridgeCost))); //DrawBridgeCost(Designator_Build, pos, curY)
 
-			 yield return instList[instList.Count - 1];
+			yield return instList[instList.Count - 1];
 		}
 
 		public static FieldInfo placingRotInfo = AccessTools.Field(typeof(Designator_Build), "placingRot");

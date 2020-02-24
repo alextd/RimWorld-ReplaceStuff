@@ -19,7 +19,7 @@ namespace Replace_Stuff.DestroyedRestore
 		}
 	}
 
-	[HarmonyPatch(typeof(Frame), nameof(Blueprint.Destroy))]
+	[HarmonyPatch(typeof(Frame), nameof(Frame.Destroy))]
 	class FrameRemoval
 	{
 		//public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
