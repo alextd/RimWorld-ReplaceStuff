@@ -16,21 +16,7 @@ namespace Replace_Stuff
 #if DEBUG
 			Harmony.DEBUG = true;
 #endif
-
-			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
-
-			//Turn off DefOf warning since harmony patches trigger it.
-			MethodInfo DefOfHelperInfo = AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor");
-			if (!harmony.GetPatchedMethods().Contains(DefOfHelperInfo))
-				harmony.Patch(DefOfHelperInfo, new HarmonyMethod(typeof(Mod), "EnsureInitializedInCtorPrefix"), null);
-			
-			harmony.PatchAll();
-		}
-
-		public static bool EnsureInitializedInCtorPrefix()
-		{
-			//No need to display this warning.
-			return false;
+			new Harmony("Uuugggg.rimworld.Replace_Stuff.main").PatchAll();
 		}
 
 		[StaticConstructorOnStartup]
