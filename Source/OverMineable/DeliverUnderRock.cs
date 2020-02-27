@@ -79,8 +79,8 @@ namespace Replace_Stuff.OverMineable
 				{
 					//Frame can be made
 					yield return new CodeInstruction(OpCodes.Pop);
-					list[++i].opcode = OpCodes.Br;
-					yield return list[i];
+					i++;
+					yield return new CodeInstruction(OpCodes.Br, list[i].operand) { labels = list[i].labels };
 				}
 			}
 		}
