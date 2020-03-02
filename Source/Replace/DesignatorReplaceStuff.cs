@@ -175,11 +175,12 @@ namespace Replace_Stuff
 					return false;
 			}
 			else return false;
-			
-			foreach (ThingDef def in GenStuff.AllowedStuffsFor(GenConstruct.BuiltDefOf(thing.def)))
-				if (def == stuff)
-					return true;
-			return false;
+
+			BuildableDef builtDef = GenConstruct.BuiltDefOf(thing.def);
+			if (!GenConstruct.CanBuildOnTerrain(builtDef, thing.Position, thing.Map, thing.Rotation, thing, stuff))
+				return false;//TODO: place bridges under
+
+			return GenStuff.AllowedStuffsFor(builtDef).Contains(stuff);
 		}
 
 		public override void DesignateSingleCell(IntVec3 cell)
