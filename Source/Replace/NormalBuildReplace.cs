@@ -63,7 +63,8 @@ namespace Replace_Stuff
 						__result = false;
 						return;
 					}
-					if (newStuff != oldStuff)
+					if (newStuff != oldStuff &&
+						GenConstruct.CanBuildOnTerrain(entDef, center, map, rot, thing, newStuff))
 						__result = true;
 				}
 			}
