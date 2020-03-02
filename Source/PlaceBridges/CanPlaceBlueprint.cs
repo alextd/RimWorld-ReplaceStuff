@@ -64,7 +64,7 @@ namespace Replace_Stuff.PlaceBridges
 			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
 				return true;
 
-			//Player choosing to build and bridges possible: ok (elsewhere will place blueprints)
+			//Player choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
 			if (DesignatorContext.designating &&
 				affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded))  //terrain can support bridges
 				return true;
@@ -85,8 +85,18 @@ namespace Replace_Stuff.PlaceBridges
 			TerrainAffordanceDef affNeeded = sourceDef.GetTerrainAffordanceNeed(stuff);
 
 			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
-				if (PlaceBridges.NeedsBridge(sourceDef, pos, map, stuff))
-					GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, pos, map, rotation, faction, null);
+				EnsureBridge.PlaceBridgeIfNeeded(sourceDef, pos, map, rotation, faction, stuff);
+		}
+	}
+
+	public class EnsureBridge
+	{
+		public static void PlaceBridgeIfNeeded(BuildableDef sourceDef, IntVec3 pos, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
+		{
+			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+				return;//Already building!
+			if (PlaceBridges.NeedsBridge(sourceDef, pos, map, stuff))
+				GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, pos, map, rotation, faction, null);
 		}
 	}
 

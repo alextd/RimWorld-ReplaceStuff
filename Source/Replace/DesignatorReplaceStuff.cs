@@ -142,10 +142,13 @@ namespace Replace_Stuff
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
-			return CanReplaceStuffAt(stuffDef, cell, Map)
+			DesignatorContext.designating = true;
+			bool result =  CanReplaceStuffAt(stuffDef, cell, Map)
 				&& !cell.GetThingList(Map).Any(t => 
 				(t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef) || 
 				(t.IsNewThingReplacement(out Thing oldThing)));
+			DesignatorContext.designating = false;
+			return result;
 		}
 
 		public static bool CanReplaceStuffAt(ThingDef stuff, IntVec3 cell, Map map)
@@ -190,6 +193,10 @@ namespace Replace_Stuff
 			{
 				Thing thing = things[i];
 				thing.SetFaction(Faction.OfPlayer);
+
+				//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
+				PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, thing.Position, Map, thing.Rotation, Faction.OfPlayer, stuffDef);
+
 				if (DebugSettings.godMode)
 				{
 					ReplaceFrame.FinalizeReplace(thing, stuffDef);
