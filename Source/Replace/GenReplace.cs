@@ -50,10 +50,11 @@ namespace Replace_Stuff
 		public static void AddReplaceFrames(bool addShortHash = true)
 		{
 			IEnumerable<ThingDef> enumerable = ThingDefGenerator_ReplaceFrame.ImpliedReplaceFrameDefs();
+			var hashMethod = AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash");
 			foreach (ThingDef current in enumerable)
 			{
 				if(addShortHash)	//Wouldn't need this if other mods added defs earlier. Oh well.
-					AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(null, new object[] { current, typeof(ThingDef) }); ;
+					hashMethod.Invoke(null, new object[] { current, typeof(ThingDef) }); ;
 				current.PostLoad();
 				DefDatabase<ThingDef>.Add(current);
 			}
