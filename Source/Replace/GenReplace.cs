@@ -8,6 +8,28 @@ using RimWorld;
 
 namespace Replace_Stuff
 {
+	[StaticConstructorOnStartup]
+	public static class QBTypes
+	{
+		public static DesignationDef qbDesDef;
+		public static Type compQBType;
+		public static Type compPropQBType;
+
+		static QBTypes()
+		{
+			try
+			{
+				compQBType = AccessTools.TypeByName("CompQualityBuilder");
+				compPropQBType = AccessTools.TypeByName("CompProperties_QualityBuilderr");
+				qbDesDef = DefDatabase<DesignationDef>.GetNamed("SkilledBuilder", false);
+			}
+			catch (System.Reflection.ReflectionTypeLoadException) //Aeh, this happens to people, should not happen, meh.
+			{
+				Verse.Log.Warning("Replace Stuff failed to check for Quality Builder");
+			}
+		}
+	}
+
 	static class GenReplace
 	{
 		public static ReplaceFrame PlaceReplaceFrame(Thing oldThing, ThingDef stuff)
@@ -21,10 +43,9 @@ namespace Replace_Stuff
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
 
 			//QualityBuilder
-			if(DefDatabase<DesignationDef>.GetNamed("SkilledBuilder", false) is DesignationDef d &&
-				AccessTools.TypeByName("CompQualityBuilder") is Type qbType &&
-				replaceFrame.def.HasComp(qbType))
-				oldThing.Map.designationManager.AddDesignation(new Designation(replaceFrame, d));
+			if(QBTypes.qbDesDef != null &&
+				replaceFrame.def.HasComp(QBTypes.compQBType))
+				oldThing.Map.designationManager.AddDesignation(new Designation(replaceFrame, QBTypes.qbDesDef));
 
 			replaceFrame.SetFactionDirect(Faction.OfPlayer);
 			replaceFrame.oldThing = oldThing;
@@ -88,13 +109,6 @@ namespace Replace_Stuff
 				}
 			}
 		}
-
-		public static Type qbType;//QualityBuilder
-		static ThingDefGenerator_ReplaceFrame()
-		{
-			//Maybe defining this above will load before QB so let's just do it here to be safe
-			qbType = AccessTools.TypeByName("CompProperties_QualityBuilderr");
-		}
 		public static ThingDef NewReplaceFrameDef_Thing(ThingDef def)
 		{
 			ThingDef thingDef = ThingDefGenerator_ReplaceFrame.BaseFrameDef();
@@ -116,9 +130,9 @@ namespace Replace_Stuff
 			thingDef.stuffCategories = def.stuffCategories;
 
 			//Support QualityBuilder
-			if (def.HasComp(typeof(CompQuality)) && def.building != null)
-				if (qbType != null)	//rr [sic]
-					thingDef.comps.Add((CompProperties)Activator.CreateInstance(qbType));
+			if (QBTypes.compPropQBType!= null)
+				if (def.HasComp(typeof(CompQuality)) && def.building != null)
+					thingDef.comps.Add((CompProperties)Activator.CreateInstance(QBTypes.compPropQBType));
 
 			thingDef.entityDefToBuild = def;
 			//def.replaceFrameDef = thingDef;	//Dictionary instead

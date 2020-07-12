@@ -19,6 +19,25 @@ namespace Replace_Stuff.NewThing
 		public static ThingDef ElectricTailoringBench;
 	}
 	[StaticConstructorOnStartup]
+	public static class FridgeCompat
+	{
+		public static Type fridgeType;
+		public static FieldInfo DesiredTempInfo;
+		static FridgeCompat()
+		{
+			try
+			{
+				fridgeType = AccessTools.TypeByName("Building_Refrigerator");
+				if (fridgeType != null)
+					DesiredTempInfo = AccessTools.Field(fridgeType, "DesiredTemp");
+			}
+			catch (System.Reflection.ReflectionTypeLoadException) //Aeh, this happens to people, should not happen, meh.
+			{
+				Verse.Log.Warning("Replace Stuff failed to check for RimFridges");
+			}
+		}
+	}
+	[StaticConstructorOnStartup]
 	static class NewThingReplacement
 	{
 		public class Replacement
@@ -83,8 +102,6 @@ namespace Replace_Stuff.NewThing
 		}
 
 
-		public static Type fridgeType = AccessTools.TypeByName("Building_Refrigerator");
-		public static FieldInfo DesiredTempInfo = AccessTools.Field(fridgeType, "DesiredTemp");
 		static NewThingReplacement()
 		{
 			replacements = new List<Replacement>();
@@ -131,10 +148,10 @@ namespace Replace_Stuff.NewThing
 
 			replacements.Add(new Replacement(d => d.IsTable));
 
-			replacements.Add(new Replacement(d => d.thingClass == fridgeType, 
+			replacements.Add(new Replacement(d => d.thingClass == FridgeCompat.fridgeType, 
 				postAction: (n, o) =>
 				{
-					DesiredTempInfo.SetValue(n, DesiredTempInfo.GetValue(o));
+					FridgeCompat.DesiredTempInfo.SetValue(n, FridgeCompat.DesiredTempInfo.GetValue(o));
 				}));
 
 			replacements.Add(new Replacement(d => d.building?.isSittable ?? false));
