@@ -184,7 +184,8 @@ namespace Replace_Stuff
 				{
 					Thing leftThing = ThingMaker.MakeThing(stuffDef);
 					leftThing.stackCount = leaveCount;
-					GenDrop.TryDropSpawn(leftThing, oldThing.Position, oldThing.Map, ThingPlaceMode.Near, out Thing dummyThing);
+					//TryDropSpawn_NewTmp OKAY.
+					GenDrop.TryDropSpawn_NewTmp(leftThing, oldThing.Position, oldThing.Map, ThingPlaceMode.Near, out Thing dummyThing);
 				}
 			}
 		}
