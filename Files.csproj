@@ -11,7 +11,7 @@
 	<OutputPath>..\$(SolutionName) - Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-		<ReleaseFiles Include="About\**;Defs\**;Patches\**;Languages\**;Sounds\**;Textures\**"
+		<ReleaseFiles Include="About\**;Defs\**;Patches\**;Languages\**;Sounds\**;Textures\**;LoadFolders.xml"
 									Exclude="About\About-Debug.xml;About\About-Release.xml;About\About.xml"/>
 		<AboutFiles Include="About\About-Debug.xml;About\About-Release.xml"/>
   </ItemGroup>
