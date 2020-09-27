@@ -137,7 +137,9 @@ namespace Replace_Stuff
 
 		protected virtual void DrawGhost(Color ghostCol)
 		{
+#pragma warning disable CS0618  
 			GhostDrawer.DrawGhostThing(UI.MouseCell(), Rot4.North, stuffDef, null, ghostCol, AltitudeLayer.Blueprint);
+#pragma warning restore CS0618
 		}
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)

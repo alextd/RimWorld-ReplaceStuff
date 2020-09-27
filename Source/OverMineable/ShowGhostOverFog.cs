@@ -11,10 +11,20 @@ using UnityEngine;
 
 namespace Replace_Stuff.OverMineable
 {
-	[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
+	//[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
+	[HarmonyPatch]
 	public static class GhostOverFogChecker
 	{
 		public static bool ghostIsOverFog;
+
+		//DrawGhostThing_NewTmp getting in the way of my patch. 
+		//Patch it if it exists. Patch the normal method if it doesn't exist. Which is hopefull both before/after it was added/removed
+		[HarmonyTargetMethod]
+		private static MethodBase TargetMethod()
+		{
+			return AccessTools.Method(typeof(GhostDrawer), nameof(GhostDrawer.DrawGhostThing_NewTmp)) ??
+				AccessTools.Method(typeof(GhostDrawer), nameof(GhostDrawer.DrawGhostThing));
+		}
 
 		//public static void DrawGhostThing(IntVec3 center, Rot4 rot, ThingDef thingDef, Graphic baseGraphic, Color ghostCol, AltitudeLayer drawAltitude)
 		public static void Prefix(IntVec3 center, Rot4 rot, ThingDef thingDef)
