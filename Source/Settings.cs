@@ -49,24 +49,25 @@ namespace Replace_Stuff
 	[HarmonyPatch(typeof(Designator_Build), "Visible", MethodType.Getter)]
 	public static class HideCoolerBuild
 	{
-		public static bool Prefix(Designator_Build __instance, ref bool __result)
+		public static void Postfix(Designator_Build __instance, ref bool __result)
 		{
+			if (!__result) return;
+
 			if (Settings.Get().hideOverwallCoolers &&
 				(__instance.PlacingDef == OverWallDef.Cooler_Over ||
 				__instance.PlacingDef == OverWallDef.Cooler_Over2W ||
 				__instance.PlacingDef == OverWallDef.Vent_Over))
 			{
 				__result = false;
-				return false;
+				return;
 			}
 			if (Settings.Get().hideNormalCoolers &&
 				(__instance.PlacingDef == ThingDefOf.Cooler ||
 				__instance.PlacingDef == OverWallDef.Vent))
 			{
 				__result = false;
-				return false;
+				return;
 			}
-			return true;
 		}
 	}
 }
