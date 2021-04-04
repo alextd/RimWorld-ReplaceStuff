@@ -67,7 +67,11 @@ namespace Replace_Stuff.OverMineable
 	}
 
 	//TL;DR: actually ignore the thingToIgnore argument
-	//I do not remember why this patch is needed? Maybe stuffed conduits? This isn't Replace Stuff responsiblity to patch though :/
+	//This patch fixes a vanilla bug/oversight, that forgot to check thingToIgnore in conduit's placeworker.
+	//This wasn't a problem in vanilla, but with replace stuff, conduit blueprints would disappear when doors are opened
+	//Since revealing new areas now triggers re-checking blueprints, power conduit blueprints would check their tile.
+	//They'd find themselves, and determine they can't exist because there's already a power conduit there.
+	//The thingToIgnore arguments already exists, to, you know, ignore that. But it wasn't checked.
 	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
 	public static class FixConduitPlaceWorker
 	{
