@@ -11,43 +11,24 @@ using UnityEngine;
 
 namespace Replace_Stuff.PlaceBridges
 {
-	[HarmonyPatch(typeof(Designator_Build), nameof(Designator_Build.DrawMouseAttachments))]
+	[HarmonyPatch(typeof(Designator_Build), "DrawPlaceMouseAttachments")]
 	static class DesignatorBuildCostCountsBridges
 	{
-		//public override void DrawMouseAttachments()
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method, ILGenerator generator)
-		{
-			LocalVariableInfo posInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(Vector2));
-			LocalVariableInfo curYInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(float));
-
-			FieldInfo StuffInfo = AccessTools.Field(typeof(Designator_Build), "stuffDef");
-
-			List<CodeInstruction> instList = instructions.ToList();
-			for (int i = 0; i < instList.Count - 1; i++)
-				yield return instList[i];
-
-			//after the for loop but before the ret call
-			yield return new CodeInstruction(OpCodes.Ldarg_0);//Designator_Build
-			yield return new CodeInstruction(OpCodes.Ldloc_S, posInfo.LocalIndex);//pos
-			yield return new CodeInstruction(OpCodes.Ldloc_S, curYInfo.LocalIndex);//y
-			yield return new CodeInstruction(OpCodes.Ldarg_0);//Designator_Build
-			yield return new CodeInstruction(OpCodes.Ldfld, StuffInfo);//Designator_Build.stuffDef
-			yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DesignatorBuildCostCountsBridges), nameof(DrawBridgeCost))); //DrawBridgeCost(Designator_Build, pos, curY, stuffDef)
-
-			yield return instList[instList.Count - 1];
-		}
 
 		public static FieldInfo placingRotInfo = AccessTools.Field(typeof(Designator_Build), "placingRot");
 		public static Rot4 PlacingRot(this Designator_Build designator) =>
 			(Rot4)placingRotInfo.GetValue(designator);
-		public static void DrawBridgeCost(Designator_Build designator, Vector2 drawPos, float curY, ThingDef stuff)
+
+		//protected override void DrawPlaceMouseAttachments(float curX, ref float curY)
+		public static void Postfix(Designator_Build __instance, float curX, float curY)
 		{
+			ThingDef stuff = __instance.StuffDef;
 			DesignationDragger dragger = Find.DesignatorManager.Dragger;
 			int bridgeCount = 0;
 			IEnumerable<IntVec3> cells = dragger.Dragging ? dragger.DragCells :
-				GenAdj.OccupiedRect(UI.MouseCell(), designator.PlacingRot(), designator.PlacingDef.Size).Cells;
+				GenAdj.OccupiedRect(UI.MouseCell(), __instance.PlacingRot(), __instance.PlacingDef.Size).Cells;
 			foreach (IntVec3 dragPos in cells)
-				if (PlaceBridges.NeedsBridge(designator.PlacingDef, dragPos, designator.Map, stuff))
+				if (PlaceBridges.NeedsBridge(__instance.PlacingDef, dragPos, __instance.Map, stuff))
 					bridgeCount++;
 
 			if (bridgeCount == 0) return;
@@ -55,20 +36,20 @@ namespace Replace_Stuff.PlaceBridges
 			//could just say wood here, this is still assuming it costs only one thing.
 			ThingDefCountClass bridgeCost = TerrainDefOf.Bridge.costList.First();	
 
-			Widgets.ThingIcon(new Rect(drawPos.x, drawPos.y + curY, 27f, 27f), bridgeCost.thingDef);
+			Widgets.ThingIcon(new Rect(curX, curY, 27f, 27f), bridgeCost.thingDef);
 
 			int totalCost = bridgeCost.count * bridgeCount;
 
 			string label = $"{totalCost} ({TerrainDefOf.Bridge.LabelCap})";
 			//This doesn't account for normal building cost + under bridge cost, but what can you do
-			if (designator.Map.resourceCounter.GetCount(bridgeCost.thingDef) < totalCost)
+			if (__instance.Map.resourceCounter.GetCount(bridgeCost.thingDef) < totalCost)
 			{
 				GUI.color = Color.red;
 				label = label + " (" + "NotEnoughStoredLower".Translate() + ")";
 			}
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.MiddleLeft;
-			Widgets.Label(new Rect(drawPos.x + 29f, drawPos.y + curY, 999f, 29f), label);
+			Widgets.Label(new Rect(curX + 29f, curY, 999f, 29f), label);
 			Text.Anchor = TextAnchor.UpperLeft;
 			GUI.color = Color.white;
 		}

@@ -20,7 +20,7 @@ namespace Replace_Stuff.OverMineable
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			//Replace
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
+			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
 
 			//With
 			MethodInfo CanDeliverInfo = AccessTools.Method(typeof(DeliverUnderRock), "CanDeliver");
@@ -53,7 +53,7 @@ namespace Replace_Stuff.OverMineable
 			HarmonyMethod transpiler = new HarmonyMethod(typeof(DeliverUnderRock), nameof(DeliverUnderRock.Transpiler));
 			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
+			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
 			Predicate<MethodInfo> check = m => m.Name.Contains("JumpToCarryToNextContainerIfPossible");
 
 			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
