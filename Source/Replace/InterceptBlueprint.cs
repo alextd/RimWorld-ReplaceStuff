@@ -47,7 +47,9 @@ namespace Replace_Stuff.Replace
 			else if (thingsHere.FirstOrDefault(newReplaceCheck) is Thing oldThing)
 			{
 				GenReplace.PlaceReplaceFrame(oldThing, stuff);
-				__result = null;
+				//Okay so 1.3 uses the returned blueprint. Should we handle that, or pass it a dummy object?
+				__result = new Blueprint_Build();
+				//__result = null;
 				return false;
 			}
 			return true;
