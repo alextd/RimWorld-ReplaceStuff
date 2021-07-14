@@ -50,9 +50,9 @@ namespace Replace_Stuff
 			stuffDef = ThingDefOf.WoodLog;
 		}
 
-		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth)
+		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
 		{
-			GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth);
+			GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth, parms);
 
 			float w = GetWidth(maxWidth);
 			Rect rect = new Rect(topLeft.x + w / 2, topLeft.y, w / 2, Height / 2);
