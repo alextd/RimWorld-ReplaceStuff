@@ -74,7 +74,7 @@ namespace Replace_Stuff.PlaceBridges
 	}
 
 	//This should technically go inside Designator's DesignateSingleCell, but this is easier.
-	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForBuild")]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp))]
 	class InterceptBlueprintPlaceBridgeFrame
 	{
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
@@ -96,7 +96,7 @@ namespace Replace_Stuff.PlaceBridges
 			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
 				return;//Already building!
 			if (PlaceBridges.NeedsBridge(sourceDef, pos, map, stuff))
-				GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, pos, map, rotation, faction, null);
+				GenConstruct.PlaceBlueprintForBuild_NewTemp(TerrainDefOf.Bridge, pos, map, rotation, faction, null);//Are there bridge precepts/styles?...
 		}
 	}
 

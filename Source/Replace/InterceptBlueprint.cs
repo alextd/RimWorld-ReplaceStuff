@@ -8,7 +8,7 @@ using Verse;
 
 namespace Replace_Stuff.Replace
 {
-	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForBuild")]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp))]
 	class InterceptBlueprint
 	{
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
