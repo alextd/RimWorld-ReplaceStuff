@@ -38,7 +38,7 @@ namespace Replace_Stuff.NewThing
 		}
 	}
 	[StaticConstructorOnStartup]
-	static class NewThingReplacement
+	public static class NewThingReplacement
 	{
 		public class Replacement
 		{
