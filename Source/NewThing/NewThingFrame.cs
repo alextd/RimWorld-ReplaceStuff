@@ -109,7 +109,7 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 			//---------------------------------------------
 			//Here are valid replacements:
-			replacements.Add(new Replacement(d => d.IsWall() || typeof(Building_Door).IsAssignableFrom(d.thingClass)));
+			replacements.Add(new Replacement(d => d.IsWall() || (d.building?.isFence ?? false) || typeof(Building_Door).IsAssignableFrom(d.thingClass)));
 			replacements.Add(new Replacement(d => typeof(Building_Cooler).IsAssignableFrom(d.thingClass),
 				postAction: (n, o) =>
 				{
