@@ -36,7 +36,9 @@ namespace Replace_Stuff.Replace
 					oldReplaceFrame.Destroy(DestroyMode.Cancel);
 				else
 					oldReplaceFrame.ChangeStuff(stuff);
-				__result = null;
+				//Okay so 1.3 uses the returned blueprint. Should we handle that, or pass it a dummy object?
+				__result = new Blueprint_Build();
+				//__result = null;
 				return false;
 			}
 			else if (thingsHere.FirstOrDefault(changeFrameStuffCheck) is Thing oldFrame)
