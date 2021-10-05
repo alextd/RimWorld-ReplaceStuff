@@ -18,9 +18,9 @@ namespace Replace_Stuff
 		public static ThingDef stuffDef;
 		public static bool designating;
 
-		public static void Prefix(ThingDef ___stuffDef)
+		public static void Prefix(Designator_Build __instance)
 		{
-			stuffDef = ___stuffDef;
+			stuffDef = __instance.StuffDef;
 			designating = true;
 		}
 		public static void Postfix()
