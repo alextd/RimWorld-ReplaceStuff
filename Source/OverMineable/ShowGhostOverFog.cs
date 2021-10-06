@@ -57,6 +57,7 @@ namespace Replace_Stuff.OverMineable
 		public static void Postfix(ThingDef __result)
 		{
 			__result.graphicData.renderQueue = ShowGhostOverFog.queueOverFog;
+			__result.graphicData.linkFlags &= ~LinkFlags.Rock;//Prevent blueprint walls from showing links with rocks
 		}
 	}
 }
