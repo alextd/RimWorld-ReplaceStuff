@@ -9,15 +9,10 @@ using HarmonyLib;
 
 namespace Replace_Stuff
 {
-	class Settings : ModSettings
+	public class Settings : ModSettings
 	{
 		public bool hideOverwallCoolers = false;
 		public bool hideNormalCoolers = false;
-
-		public static Settings Get()
-		{
-			return LoadedModManager.GetMod<Replace_Stuff.Mod>().GetSettings<Settings>();
-		}
 
 		public void DoWindowContents(Rect wrect)
 		{
@@ -46,7 +41,7 @@ namespace Replace_Stuff
 		{
 			if (!__result) return;
 
-			if (Settings.Get().hideOverwallCoolers &&
+			if (Mod.settings.hideOverwallCoolers &&
 				(__instance.PlacingDef == OverWallDef.Cooler_Over ||
 				__instance.PlacingDef == OverWallDef.Cooler_Over2W ||
 				__instance.PlacingDef == OverWallDef.Vent_Over))
@@ -54,7 +49,7 @@ namespace Replace_Stuff
 				__result = false;
 				return;
 			}
-			if (Settings.Get().hideNormalCoolers &&
+			if (Mod.settings.hideNormalCoolers &&
 				(__instance.PlacingDef == ThingDefOf.Cooler ||
 				__instance.PlacingDef == OverWallDef.Vent))
 			{
