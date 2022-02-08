@@ -4,28 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
+using Replace_Stuff.NewThing;
 using Verse;
 
 namespace Replace_Stuff
 {
 	//public override AcceptanceReport CanDesignateCell(IntVec3 c)
 	[HarmonyPatch(typeof(Designator_Build), "CanDesignateCell")]
-	static class Designator_Build_Stuff
+	static class DesignatorContext
 	{
 		public static ThingDef stuffDef;
-		public static void Prefix(Designator_Build __instance, ThingDef ___stuffDef)
+		public static bool designating;
+
+		public static void Prefix(Designator_Build __instance)
 		{
-			stuffDef = ___stuffDef;
+			stuffDef = __instance.StuffDef;
+			designating = true;
 		}
 		public static void Postfix()
 		{
 			stuffDef = null;
+			designating = false;
 		}
 	}
 
-	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt))]
 	public static class NormalBuildReplace
 	{
 		//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
@@ -36,25 +41,33 @@ namespace Replace_Stuff
 
 			if (!entDef.MadeFromStuff) return;
 
-			ThingDef newStuff = Designator_Build_Stuff.stuffDef;
+			ThingDef newStuff = DesignatorContext.stuffDef;
 
 			//It would not be so easy to transpile this part
 			//it doesn't simply change __result to true when a replace frame can be placed,
 			//it also checks if the replace frame is already there and overrides that with false
 			foreach (Thing thing in center.GetThingList(map))
+			{
+				if (thing.IsNewThingReplacement(out Thing oldThing))
+				{
+					__result = false;
+					return;
+				}
 				if (thing != thingToIgnore && thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
 				{
-					ThingDef oldStuff = thing is Blueprint bp ? bp.UIStuff() : thing.Stuff;
+					ThingDef oldStuff = thing is Blueprint bp ? bp.EntityToBuildStuff() : thing.Stuff;
 					if (thing is ReplaceFrame rf && oldStuff == newStuff)
 					{
 						__result = false;
 						return;
 					}
-					if (newStuff != oldStuff)
+					if (newStuff != oldStuff &&
+						GenConstruct.CanBuildOnTerrain(entDef, center, map, rot, thing, newStuff))
 						__result = true;
 				}
+			}
 		}
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -65,7 +78,7 @@ namespace Replace_Stuff
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.operand == RotationEquals)
+				if (i.Calls(RotationEquals))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//BuildableDef entDef
 					yield return new CodeInstruction(OpCodes.Call, OrRotDoesntMatter);
@@ -80,7 +93,7 @@ namespace Replace_Stuff
 
 		public static bool PlacingRotationDoesntMatter(BuildableDef entDef)
 		{
-			return (entDef is ThingDef def && def.thingClass == typeof(Building_Door));
+			return entDef is ThingDef def && typeof(Building_Door).IsAssignableFrom(def.thingClass);
 		}
 	}
 }

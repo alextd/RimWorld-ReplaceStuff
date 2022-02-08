@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <BuildersTryMine.label>建築工人可以開採有價值的礦物</BuildersTryMine.label>
+  <BuildersTryMine.helpText>注意：將建築物放置在有價值的礦石之上將允許分配到建築的人開採礦石。然而，過低的採礦技能可能導致礦石的浪費。如果您的建築工人不熟練採礦技能，您可能希望取消您設定的施工藍圖，並讓熟練的礦工先開採完畢後再行施工。</BuildersTryMine.helpText>
+
+
+</LanguageData>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.NewThing
 {
@@ -15,6 +15,8 @@ namespace Replace_Stuff.NewThing
 		public static void Postfix(ref bool __result, BuildableDef newDef, ThingDef oldDef)
 		{
 			if (__result) return;
+
+			if (!DesignatorContext.designating) return;
 
 			if(newDef is ThingDef newD && newD.CanReplace(oldDef))
 				__result = true;

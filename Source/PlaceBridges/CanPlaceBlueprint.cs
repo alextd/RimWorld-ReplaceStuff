@@ -2,59 +2,101 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Harmony;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
 namespace Replace_Stuff.PlaceBridges
 {
+	public static class PlaceBridges
+	{
+		public static bool NeedsBridge(BuildableDef def, IntVec3 pos, Map map, ThingDef stuff)
+		{
+			TerrainAffordanceDef needed = def.GetTerrainAffordanceNeed(stuff);
+			return pos.InBounds(map) &&
+				!pos.SupportsStructureType(map, needed) &&
+				pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
+				TerrainDefOf.Bridge.affordances.Contains(needed);
+		}
+
+		public static bool CantEvenBridge(IntVec3 pos, Map map) =>
+			!pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded);
+	}
+
 	[HarmonyPatch(typeof(GenConstruct), "CanBuildOnTerrain")]
 	class CanPlaceBlueprint
 	{
-		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
-		public static bool Prefix(ref bool __result, BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null)
+		//public static bool CanBuildOnTerrain(BuildableDef entDef, IntVec3 c, Map map, Rot4 rot, Thing thingToIgnore = null, ThingDef stuffDef = null)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method)
 		{
-			CellRect cellRect = GenAdj.OccupiedRect(c, rot, entDef.Size);
-			cellRect.ClipInsideMap(map);
-			CellRect.CellRectIterator iterator = cellRect.GetIterator();
-			while (!iterator.Done())
-			{
-				if (iterator.Current.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
-					TerrainDefOf.Bridge.affordances.Contains(entDef.terrainAffordanceNeeded))
-				{
-					__result = true;
-					return false;
-				}
-				iterator.MoveNext();
-			}
+			LocalVariableInfo posInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(IntVec3));
+			MethodInfo ContainsInfo = AccessTools.Method(typeof(List<TerrainAffordanceDef>), nameof(List<TerrainAffordanceDef>.Contains));
 
-			return true;
+			bool firstOnly = true;
+			foreach(CodeInstruction i in instructions)
+			{
+				if(i.Calls(ContainsInfo) && firstOnly)
+				{
+					firstOnly = false;
+
+					yield return new CodeInstruction(OpCodes.Ldloc, posInfo.LocalIndex);//IntVec3 pos
+					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo)));
+				}
+				else
+					yield return i;
+			}
+		}
+
+		public static bool TerrainOrBridgesCanDo(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef, IntVec3 pos, Map map)
+		{
+			//Terrain already supports: vanilla, ok
+			if (affordances.Contains(neededDef))
+				return true;
+
+			//If bridges won't help: no.
+			if (!TerrainDefOf.Bridge.affordances.Contains(neededDef))
+				return false;
+
+			//Bridge blueprint there: ok
+			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+				return true;
+
+			//Player choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
+			if (DesignatorContext.designating &&
+				affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded))  //terrain can support bridges
+				return true;
+
+			return false;
 		}
 	}
 
 	//This should technically go inside Designator's DesignateSingleCell, but this is easier.
-	[HarmonyPatch(typeof(GenConstruct), "PlaceBlueprintForBuild")]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp))]
 	class InterceptBlueprintPlaceBridgeFrame
 	{
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
-		public static void Prefix(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction)
+		public static void Prefix(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
 		{
 			if (faction != Faction.OfPlayer || sourceDef == TerrainDefOf.Bridge) return;
 
-			TerrainAffordanceDef affNeeded = sourceDef.terrainAffordanceNeeded;
+			TerrainAffordanceDef affNeeded = sourceDef.GetTerrainAffordanceNeed(stuff);
 
-			foreach (IntVec3 cell in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
-			{
-				if (cell.SupportsStructureType(map, affNeeded))
-					continue;
+			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
+				EnsureBridge.PlaceBridgeIfNeeded(sourceDef, pos, map, rotation, faction, stuff);
+		}
+	}
 
-
-				if (cell.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) && 
-					TerrainDefOf.Bridge.affordances.Contains(affNeeded))
-				{
-					GenConstruct.PlaceBlueprintForBuild(TerrainDefOf.Bridge, cell, map, rotation, faction, null);
-				}
-			}
+	public class EnsureBridge
+	{
+		public static void PlaceBridgeIfNeeded(BuildableDef sourceDef, IntVec3 pos, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
+		{
+			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+				return;//Already building!
+			if (PlaceBridges.NeedsBridge(sourceDef, pos, map, stuff))
+				GenConstruct.PlaceBlueprintForBuild_NewTemp(TerrainDefOf.Bridge, pos, map, rotation, faction, null);//Are there bridge precepts/styles?...
 		}
 	}
 
@@ -65,7 +107,7 @@ namespace Replace_Stuff.PlaceBridges
 		public static void Prefix(MinifiedThing itemToInstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
 		{
 			ThingDef def = itemToInstall.InnerThing.def;
-			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction);
+			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction, itemToInstall.InnerThing.Stuff);
 		}
 	}
 
@@ -76,7 +118,7 @@ namespace Replace_Stuff.PlaceBridges
 		public static void Prefix(Building buildingToReinstall, IntVec3 center, Map map, Rot4 rotation, Faction faction)
 		{
 			ThingDef def = buildingToReinstall.def;
-			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction);
+			InterceptBlueprintPlaceBridgeFrame.Prefix(def, center, map, rotation, faction, buildingToReinstall.Stuff);
 		}
 	}
 

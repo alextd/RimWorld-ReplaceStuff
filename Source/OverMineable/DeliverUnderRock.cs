@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using RimWorld;
 using Verse;
 using Verse.AI;
-using Harmony;
+using HarmonyLib;
 using TD.Utilities;
 
 namespace Replace_Stuff.OverMineable
@@ -20,12 +20,12 @@ namespace Replace_Stuff.OverMineable
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			//Replace
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
+			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
 
 			//With
 			MethodInfo CanDeliverInfo = AccessTools.Method(typeof(DeliverUnderRock), "CanDeliver");
 
-			return Harmony.Transpilers.MethodReplacer(instructions, CanConstructInfo, CanDeliverInfo);
+			return Transpilers.MethodReplacer(instructions, CanConstructInfo, CanDeliverInfo);
 		}
 
 		//public static bool CanConstruct(Thing t, Pawn p, bool checkConstructionSkill = true, bool forced = false)
@@ -51,16 +51,10 @@ namespace Replace_Stuff.OverMineable
 		static HaulToBlueprintUnderRock()
 		{
 			HarmonyMethod transpiler = new HarmonyMethod(typeof(DeliverUnderRock), nameof(DeliverUnderRock.Transpiler));
-			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
+			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct");
-			Predicate<MethodInfo> check = delegate (MethodInfo method)
-			{
-				DynamicMethod dm = DynamicTools.CreateDynamicMethod(method, "-unused");
-
-				return (Harmony.ILCopying.MethodBodyReader.GetInstructions(dm.GetILGenerator(), method).
-					Any(ilcode => ilcode.operand == CanConstructInfo));
-			};
+			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
+			Predicate<MethodInfo> check = m => m.Name.Contains("JumpToCarryToNextContainerIfPossible");
 
 			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
 		}
@@ -81,12 +75,12 @@ namespace Replace_Stuff.OverMineable
 			{
 				CodeInstruction inst = list[i];
 				yield return inst;
-				if (inst.opcode == OpCodes.Call && inst.operand == FirstBlockingThingInfo)
+				if (inst.Calls(FirstBlockingThingInfo))
 				{
 					//Frame can be made
 					yield return new CodeInstruction(OpCodes.Pop);
-					list[++i].opcode = OpCodes.Br;
-					yield return list[i];
+					i++;
+					yield return new CodeInstruction(OpCodes.Br, list[i].operand) { labels = list[i].labels };
 				}
 			}
 		}
@@ -123,10 +117,10 @@ namespace Replace_Stuff.OverMineable
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintOver")]
 	public static class FramesAreEdificesInSomeCases
 	{
-		//private static ThingDef NewFrameDef_Thing(ThingDef def)
+		//public static bool CanPlaceBlueprintOver(BuildableDef newDef, ThingDef oldDef)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			return Harmony.Transpilers.MethodReplacer(instructions,
+			return Transpilers.MethodReplacer(instructions,
 				AccessTools.Method(typeof(EdificeUtility), "IsEdifice"),
 				AccessTools.Method(typeof(FramesAreEdificesInSomeCases), "IsEdificeOrFrame"));
 		}

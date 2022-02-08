@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.NewThing
 {
@@ -15,7 +15,7 @@ namespace Replace_Stuff.NewThing
 		public static void Postfix(Frame __instance, ref float __result)
 		{
 			if (__instance.IsNewThingReplacement(out Thing oldThing))
-				__result += ReplaceFrame.WorkToDeconstruct(oldThing.def, oldThing.Stuff);
+				__result += ReplaceFrame.WorkToDeconstructDef(oldThing.def, oldThing.Stuff);
 		}
 	}
 	[HarmonyPatch(typeof(Blueprint_Build), "WorkTotal", MethodType.Getter)]
@@ -25,7 +25,7 @@ namespace Replace_Stuff.NewThing
 		public static void Postfix(Frame __instance, ref float __result)
 		{
 			if (__instance.IsNewThingReplacement(out Thing oldThing))
-				__result += ReplaceFrame.WorkToDeconstruct(oldThing.def, oldThing.Stuff);
+				__result += ReplaceFrame.WorkToDeconstructDef(oldThing.def, oldThing.Stuff);
 		}
 	}
 }

@@ -4,61 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 using UnityEngine;
 
 namespace Replace_Stuff.OverMineable
 {
-	[HarmonyPatch(typeof(GhostDrawer), "DrawGhostThing")]
-	public static class GhostOverFogChecker
-	{
-		public static bool ghostIsOverFog;
-
-		//public static void DrawGhostThing(IntVec3 center, Rot4 rot, ThingDef thingDef, Graphic baseGraphic, Color ghostCol, AltitudeLayer drawAltitude)
-		public static void Prefix(IntVec3 center, Rot4 rot, ThingDef thingDef)
-		{
-			ghostIsOverFog = center.IsUnderFog(rot, thingDef);
-		}
-	}
-	
+	//Cursor
 	[HarmonyPatch(typeof(GhostUtility), "GhostGraphicFor")]
 	public static class ShowGhostOverFog
 	{
+		public const int queueOverFog = 3176; //Just above fog at 3175 it seems
+
 		//public static Graphic GhostGraphicFor(Graphic baseGraphic, ThingDef thingDef, Color ghostCol)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			MethodInfo HashCombineInfo = AccessTools.Method(typeof(Gen), nameof(Gen.HashCombineStruct), null, new Type[] { typeof(UnityEngine.Color) });
-			MethodInfo HashFogInfo = AccessTools.Method(typeof(ShowGhostOverFog), nameof(ShowGhostOverFog.HashFog));
+			MethodInfo CopyFromInfo = AccessTools.Method(typeof(GraphicData), nameof(GraphicData.CopyFrom));
+			MethodInfo CopyFromRenderHighInfo = AccessTools.Method(typeof(ShowGhostOverFog), nameof(CopyFromRenderHigh));
 
-			FieldInfo EdgeDetectInfo = AccessTools.Field(typeof(ShaderTypeDefOf), "EdgeDetect");
-			MethodInfo MakeMetaIfOverFogInfo = AccessTools.Method(typeof(ShowGhostOverFog), nameof(ShowGhostOverFog.MakeMetaIfOverFog));
+			MethodInfo GraphicGetInfo = AccessTools.Method(typeof(GraphicDatabase), nameof(GraphicDatabase.Get),
+				parameters: new Type[] { typeof(string), typeof(Shader), typeof(Vector2), typeof(Color) },
+				generics: new Type[] { typeof(Graphic_Single)});
+			MethodInfo GraphicGetRenderHighInfo = AccessTools.Method(typeof(ShowGhostOverFog), nameof(GetRenderHigh));
 
-			foreach (CodeInstruction i in instructions)
-			{
-				yield return i;
-				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Call && i.operand == HashCombineInfo)
-				{
-					yield return new CodeInstruction(OpCodes.Call, HashFogInfo);
-				}
-				//use meta shader if fog:
-				if (i.opcode == OpCodes.Ldsfld && i.operand == EdgeDetectInfo)
-				{
-					yield return new CodeInstruction(OpCodes.Call, MakeMetaIfOverFogInfo);
-				}
-			}
+			return HarmonyLib.Transpilers.MethodReplacer(
+				HarmonyLib.Transpilers.MethodReplacer(instructions, GraphicGetInfo, GraphicGetRenderHighInfo)
+				, CopyFromInfo, CopyFromRenderHighInfo);
 		}
 
-		public static int HashFog(int hash)
+		//public void CopyFrom(GraphicData other)
+		public static void CopyFromRenderHigh(GraphicData instance, GraphicData other)
 		{
-			return Gen.HashCombine(hash, GhostOverFogChecker.ghostIsOverFog);
+			instance.CopyFrom(other);
+			instance.renderQueue = queueOverFog;
 		}
 
-		public static ShaderTypeDef MakeMetaIfOverFog(ShaderTypeDef def)
+		//public static Graphic Get<T>(string path, Shader shader, Vector2 drawSize, Color color) where T : Graphic, new()
+		public static Graphic GetRenderHigh(string path, Shader shader, Vector2 drawSize, Color color)
 		{
-			return GhostOverFogChecker.ghostIsOverFog ? ShaderTypeDefOf.MetaOverlay : def;
+			return GraphicDatabase.Get<Graphic_Single>(path, shader, drawSize, color, queueOverFog);
 		}
 	}
 
@@ -66,46 +51,59 @@ namespace Replace_Stuff.OverMineable
 	//Blueprint
 	//-------------------------------------------
 
-	[HarmonyPatch(typeof(Thing), "DefaultGraphic", MethodType.Getter)]
-	public static class ShowBluePrintOverFogDynamic
+	//Can't do BaseBlueprintDef since NewBlueprintDef_Thing overwrites drawerType
+	[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Thing")]
+	public static class BlueprintOverFog
 	{
-		//public Graphic DefaultGraphic
+		public static void Postfix(ThingDef __result)
+		{
+			__result.graphicData.renderQueue = ShowGhostOverFog.queueOverFog;
+			__result.graphicData.linkFlags &= ~LinkFlags.Rock;//Prevent blueprint walls from showing links with rocks
+		}
+	}
+
+	//Graphic_Appearances doesn't pass renderQueue along.
+	//Fences blueprints uses Graphic_Appearances and nothing else does.
+	//Fix that bug so fences blueprints can render over fog
+
+	[HarmonyPatch(typeof(Graphic_Appearances), nameof(Graphic_Appearances.Init))]
+	public static class GraphicAppearancesPassData
+	{
+		//public override void Init(GraphicRequest req)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			FieldInfo graphicDataInfo = AccessTools.Field(typeof(ThingDef), "graphicData");
+			//public static Graphic Get<T>(string path, Shader shader, Vector2 drawSize, Color color) where T : Graphic, new()
+			//public static Graphic Get<T>(string path, Shader shader, Vector2 drawSize, Color color, Color colorTwo, GraphicData data, string maskPath = null) where T : Graphic, new()
 
-			MethodInfo FogGraphicMakerInfo = AccessTools.Method(typeof(ShowBluePrintOverFogDynamic), nameof(ShowBluePrintOverFogDynamic.FogGraphicMaker));
+			MethodInfo GetInfo = AccessTools.Method(typeof(GraphicDatabase), nameof(GraphicDatabase.Get),
+					parameters: new Type[] { typeof(string), typeof(Shader), typeof(Vector2), typeof(Color) },
+					generics: new Type[] { typeof(Graphic_Single) });
+			MethodInfo GetWithDataInfo = AccessTools.Method(typeof(GraphicDatabase), nameof(GraphicDatabase.Get),
+					parameters: new Type[] { typeof(string), typeof(Shader), typeof(Vector2), typeof(Color), typeof(Color), typeof(GraphicData), typeof(string) },
+					generics: new Type[] { typeof(Graphic_Single) });
 
-			foreach (CodeInstruction i in instructions)
+			//Color.white
+			MethodInfo ColorWhiteInfo = AccessTools.Property(typeof(Color), nameof(Color.white)).GetGetMethod();
+
+			//Graphic.data
+			FieldInfo dataInfo = AccessTools.Field(typeof(Graphic), nameof(Graphic.data));
+
+			foreach (var inst in instructions)
 			{
-				yield return i;
-				//hash with fog bool for graphics cache:
-				if (i.opcode == OpCodes.Ldfld && i.operand == graphicDataInfo)
+				if(inst.Calls(GetInfo))
 				{
-					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing
-					yield return new CodeInstruction(OpCodes.Call, FogGraphicMakerInfo);
+					//From:	GraphicDatabase.Get<Graphic_Single>(text + "/" + texture2D.name, req.shader, drawSize, color);
+					//To:		GraphicDatabase.Get<Graphic_Single>(text + "/" + texture2D.name, req.shader, drawSize, color, Color.white, this.data, null);
+					yield return new CodeInstruction(OpCodes.Call, ColorWhiteInfo);//Color.white (property getter)
+					yield return new CodeInstruction(OpCodes.Ldarg_0);//this(Graphic_Appearances)
+					yield return new CodeInstruction(OpCodes.Ldfld, dataInfo);//this.data(GraphicData)
+					yield return new CodeInstruction(OpCodes.Ldnull);//null (string)
+					inst.operand = GetWithDataInfo;//Override method...
+					yield return inst;//Get(path, shader, drawSize, color, Color.white, this.data, null);
 				}
+				else
+					yield return inst;
 			}
-		}
-
-		public static GraphicData FogGraphicMaker(GraphicData normalGraphicData, Thing thing)
-		{
-			return thing.def.IsBlueprint && thing.IsUnderFog() ? FogBlueprintGraphicFor(normalGraphicData) : normalGraphicData;
-		}
-
-		private static Dictionary<int, GraphicData> fogGraphics = new Dictionary<int, GraphicData>();
-		public static GraphicData FogBlueprintGraphicFor(GraphicData baseGraphicData)
-		{
-			int hashKey = Gen.HashCombine<GraphicData>(0, baseGraphicData);
-			GraphicData graphicData;
-			if (!fogGraphics.TryGetValue(hashKey, out graphicData))
-			{
-				graphicData = new GraphicData();
-				graphicData.CopyFrom(baseGraphicData);
-				graphicData.shaderType = ShaderTypeDefOf.MetaOverlay;
-				fogGraphics.Add(hashKey, graphicData);
-			}
-			return graphicData;
 		}
 	}
 

@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
+using System.Linq;
 using Verse;
 using UnityEngine;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 
 namespace Replace_Stuff
@@ -13,22 +14,9 @@ namespace Replace_Stuff
 			// initialize settings
 			GetSettings<Settings>();
 #if DEBUG
-			HarmonyInstance.DEBUG = true;
+			Harmony.DEBUG = true;
 #endif
-
-			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Replace_Stuff.main");
-
-			//Turn off DefOf warning since harmony patches trigger it.
-			harmony.Patch(AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor"),
-				new HarmonyMethod(typeof(Mod), "EnsureInitializedInCtorPrefix"), null);
-			
-			harmony.PatchAll();
-		}
-
-		public static bool EnsureInitializedInCtorPrefix()
-		{
-			//No need to display this warning.
-			return false;
+			new Harmony("Uuugggg.rimworld.Replace_Stuff.main").PatchAll();
 		}
 
 		[StaticConstructorOnStartup]
@@ -39,6 +27,7 @@ namespace Replace_Stuff
 				//Hugslibs-added defs will be queued up before this Static Constructor
 				//So queue replace frame generation after that
 				LongEventHandler.QueueLongEvent(() => ThingDefGenerator_ReplaceFrame.AddReplaceFrames(), null, true, null);
+				LongEventHandler.QueueLongEvent(() => CoolersOverWalls.DesignatorBuildDropdownStuffFix.SanityCheck(), null, true, null);
 			}
 		}
 

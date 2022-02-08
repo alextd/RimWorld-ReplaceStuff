@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using RimWorld;
+using Replace_Stuff.NewThing;
 
 namespace Replace_Stuff
 {
@@ -48,9 +50,9 @@ namespace Replace_Stuff
 			stuffDef = ThingDefOf.WoodLog;
 		}
 
-		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth)
+		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
 		{
-			GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth);
+			GizmoResult result = base.GizmoOnGUI(topLeft, maxWidth, parms);
 
 			float w = GetWidth(maxWidth);
 			Rect rect = new Rect(topLeft.x + w / 2, topLeft.y, w / 2, Height / 2);
@@ -135,12 +137,20 @@ namespace Replace_Stuff
 
 		protected virtual void DrawGhost(Color ghostCol)
 		{
+#pragma warning disable CS0618  
 			GhostDrawer.DrawGhostThing(UI.MouseCell(), Rot4.North, stuffDef, null, ghostCol, AltitudeLayer.Blueprint);
+#pragma warning restore CS0618
 		}
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
-			return CanReplaceStuffAt(stuffDef, cell, Map) && !cell.GetThingList(Map).Any(t => t is ReplaceFrame rf && rf.UIStuff() == stuffDef);
+			DesignatorContext.designating = true;
+			bool result =  CanReplaceStuffAt(stuffDef, cell, Map)
+				&& !cell.GetThingList(Map).Any(t => 
+				(t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef) || 
+				(t.IsNewThingReplacement(out Thing oldThing)));
+			DesignatorContext.designating = false;
+			return result;
 		}
 
 		public static bool CanReplaceStuffAt(ThingDef stuff, IntVec3 cell, Map map)
@@ -156,12 +166,12 @@ namespace Replace_Stuff
 
 			if (thing is Blueprint bp)
 			{
-				if (bp.UIStuff() == stuff)
+				if (bp.EntityToBuildStuff() == stuff)
 					return false;
 			}
 			else if (thing is Frame frame)
 			{
-				if (frame.UIStuff() == stuff)
+				if (frame.EntityToBuildStuff() == stuff)
 					return false;
 			}
 			else if (thing.def.HasReplaceFrame())
@@ -170,11 +180,12 @@ namespace Replace_Stuff
 					return false;
 			}
 			else return false;
-			
-			foreach (ThingDef def in GenStuff.AllowedStuffsFor(GenConstruct.BuiltDefOf(thing.def)))
-				if (def == stuff)
-					return true;
-			return false;
+
+			BuildableDef builtDef = GenConstruct.BuiltDefOf(thing.def);
+			if (!GenConstruct.CanBuildOnTerrain(builtDef, thing.Position, thing.Map, thing.Rotation, thing, stuff))
+				return false;//TODO: place bridges under
+
+			return GenStuff.AllowedStuffsFor(builtDef).Contains(stuff);
 		}
 
 		public override void DesignateSingleCell(IntVec3 cell)
@@ -184,6 +195,10 @@ namespace Replace_Stuff
 			{
 				Thing thing = things[i];
 				thing.SetFaction(Faction.OfPlayer);
+
+				//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
+				PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, thing.Position, Map, thing.Rotation, Faction.OfPlayer, stuffDef);
+
 				if (DebugSettings.godMode)
 				{
 					ReplaceFrame.FinalizeReplace(thing, stuffDef);
@@ -198,11 +213,30 @@ namespace Replace_Stuff
 						if (replaceFrame.oldStuff == stuffDef)
 							replaceFrame.Destroy(DestroyMode.Cancel);
 						else
+						{
 							replaceFrame.ChangeStuff(stuffDef);
+
+							//Interrupt any workers - they don't have the required new stuff
+							if (replaceFrame.Map.mapPawns.FreeColonists.First() is Pawn sampleColonist &&
+								replaceFrame.Map.reservationManager.FirstRespectedReserver(replaceFrame, sampleColonist) is Pawn worker)
+							{
+								if (worker.CurJob.def == JobDefOf.FinishFrame &&
+									worker.CurJob.targetA == replaceFrame)
+									worker.jobs.EndCurrentJob(JobCondition.InterruptForced);
+
+								for (int jobI = worker.jobs.jobQueue.Count - 1; jobI >= 0; jobI--)
+								{
+									Job qJob = worker.jobs.jobQueue[jobI].job;
+									if (qJob.def == JobDefOf.FinishFrame &&
+										qJob.targetA == replaceFrame)
+										worker.jobs.EndCurrentOrQueuedJob(qJob, JobCondition.InterruptForced);
+								}
+							}
+						}
 					}
 					else if (thing is Frame frame)
 					{
-						GenConstruct.PlaceBlueprintForBuild(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
+						GenConstruct.PlaceBlueprintForBuild_NewTemp(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
 					}
 					else
 						GenReplace.PlaceReplaceFrame(thing, stuffDef);

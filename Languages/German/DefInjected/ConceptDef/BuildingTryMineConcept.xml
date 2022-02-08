@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <BuildersTryMine.label>Bauarbeiter werden versuchen Erze abzubauen</BuildersTryMine.label>
+  <BuildersTryMine.helpText>Hinweis: Setzt man ein Gebäude über ein wertvolles Mineral, werden Bauarbeiter es abbauen. Wenn die Bauarbeiter keine Bergbauexperten sind, wird allerdings eine Menge Erz verloren gehen. Überlege Dir also vorher, ob du es im vorraus von Bergarbeitern abbauen möchtest.</BuildersTryMine.helpText>
+
+
+</LanguageData>

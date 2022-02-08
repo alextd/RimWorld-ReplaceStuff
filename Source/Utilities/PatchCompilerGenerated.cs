@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using Verse;
 
 namespace TD.Utilities
 {
 	static class PatchCompilerGenerated
 	{
-		public static void PatchGeneratedMethod(this HarmonyInstance harmony, Type masterType, Predicate<MethodInfo> check,
+		public static void PatchGeneratedMethod(this Harmony harmony, Type masterType, Predicate<MethodInfo> check,
 			HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
 		{
 			//Find the compiler-created method nested in masterType that passes the check, Patch it
@@ -26,7 +26,6 @@ namespace TD.Utilities
 
 					if (check(method))
 					{
-						Log.Message($"Dynamic patching {method}");
 						harmony.Patch(method, prefix, postfix, transpiler);
 					}
 				}

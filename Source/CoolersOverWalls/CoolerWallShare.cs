@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -14,8 +14,8 @@ namespace Replace_Stuff
 		public static bool IsWall(this BuildableDef bdef)
 		{
 			//return bdef == ThingDefOf.Wall || bdef.IsSmoothed;//Just IsSmoothed doesn't account for modded walls
-			return bdef is ThingDef def && def.coversFloor &&
-				(!def.building?.isNaturalRock ?? true);
+			return bdef is ThingDef def && def.coversFloor && def.holdsRoof && def.passability == Traversability.Impassable &&
+				(def.building?.canBuildNonEdificesUnder ?? true);
 		}
 
 		public static ThingDef Cooler_Over;

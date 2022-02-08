@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
-using Harmony;
+using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -31,6 +31,15 @@ namespace Replace_Stuff.BlueprintReplace
 				if (i.opcode == OpCodes.Isinst)
 					next = true;
 			}
+		}
+
+		public static void Prefix()
+		{
+			DesignatorContext.designating = true;
+		}
+		public static void Postfix()
+		{
+			DesignatorContext.designating = false;
 		}
 	}
 }

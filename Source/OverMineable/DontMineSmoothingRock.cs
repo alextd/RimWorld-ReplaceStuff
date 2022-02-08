@@ -7,11 +7,13 @@ using System.Reflection.Emit;
 using RimWorld;
 using Verse;
 using Verse.AI;
-using Harmony;
+using HarmonyLib;
 
 namespace Replace_Stuff.OverMineable
 {
-	[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
+	//Smooth walls before replacing with other wall, don't mine them away and rebuild.
+	//TODO: Doesn't seem to work though.
+	//[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
 	static class DontMineSmoothingRock
 	{
 		//public static Job HandleBlockingThingJob(Thing constructible, Pawn worker, bool forced = false)
@@ -28,7 +30,7 @@ namespace Replace_Stuff.OverMineable
 			for (int i = 1; i < list.Count; i++)
 			{
 				yield return list[i];
-				if (list[i-1].opcode == OpCodes.Ldfld && list[i-1].operand == mineableInfo)
+				if (list[i-1].LoadsField(mineableInfo))
 				{
 					Label otherwise = iLGenerator.DefineLabel();
 					list[i + 1].labels.Add(otherwise);
@@ -59,7 +61,7 @@ namespace Replace_Stuff.OverMineable
 
 		public static Job SmoothItJob(Pawn worker, Thing thing, bool forced)
 		{
-			if (worker.story != null && worker.story.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
+			if (worker.story != null && worker.WorkTypeIsDisabled(WorkTypeDefOf.Construction))
 			{
 				JobFailReason.Is("TD.IncapableOfSmoothing".Translate());
 				return null;

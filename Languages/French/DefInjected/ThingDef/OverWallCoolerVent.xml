@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Cooler_Over.label>Climatiseur mural</Cooler_Over.label>
+  <Cooler_Over.description>Contrairement aux réglages généraux du climatiseur, il ne peut pas être utilisé comme partie du mur, mais doit être installé sur le mur. \nL'électricité envoie de l'air froid dans la pièce via le climatiseur, mais elle génère beaucoup de chaleur à l'extérieur. Il peut être utilisé pour rafraîchir la pièce en été ou pour construire un magasin de glace.</Cooler_Over.description>
+  <Blueprint_Cooler_Over.label>Climatiseur mural (plan)</Blueprint_Cooler_Over.label>
+  <Frame_Cooler_Over.label>Climatiseur mural (en construction)</Frame_Cooler_Over.label>
+  <Frame_Cooler_Over.description>Contrairement aux réglages généraux du climatiseur, il ne peut pas être utilisé comme partie du mur, mais doit être installé sur le mur. \nL'électricité envoie de l'air froid dans la pièce via le climatiseur, mais elle génère beaucoup de chaleur à l'extérieur. Il peut être utilisé pour rafraîchir la pièce en été ou pour construire un magasin de glace.</Frame_Cooler_Over.description>
+
+  <Cooler_Over2W.label>Climatiseur large mural</Cooler_Over2W.label>
+  <Cooler_Over2W.description>C'est un grand climatiseur installé sur le mur. \nL'électricité envoie de l'air froid dans la pièce via le climatiseur, mais elle génère beaucoup de chaleur à l'extérieur. Il peut être utilisé pour rafraîchir la pièce en été ou pour construire un magasin de glace.</Cooler_Over2W.description>
+  <Blueprint_Cooler_Over2W.label>Climatiseur large mural (plan)</Blueprint_Cooler_Over2W.label>
+  <Frame_Cooler_Over2W.label>Climatiseur large mural (en construction)</Frame_Cooler_Over2W.label>
+  <Frame_Cooler_Over2W.description>C'est un grand climatiseur installé sur le mur. \nL'électricité envoie de l'air froid dans la pièce via le climatiseur, mais elle génère beaucoup de chaleur à l'extérieur. Il peut être utilisé pour rafraîchir la pièce en été ou pour construire un magasin de glace.</Frame_Cooler_Over2W.description>
+
+  <Vent_Over.label>Évent mural</Vent_Over.label>
+  <Vent_Over.description>Même s'il n'y a pas de connexion physique dans l'espace, un simple évent permet d'équilibrer progressivement la température entre les deux pièces connectées.</Vent_Over.description>
+  <Blueprint_Vent_Over.label>Évent mural (plan)</Blueprint_Vent_Over.label>
+  <Frame_Vent_Over.label>Évent mural (en construction)</Frame_Vent_Over.label>
+  <Frame_Vent_Over.description>Même s'il n'y a pas de connexion physique dans l'espace, un simple évent permet d'équilibrer progressivement la température entre les deux pièces connectées.</Frame_Vent_Over.description>
+
+</LanguageData>

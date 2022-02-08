@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>替换</TD.Replace>
+	<TD.ReplaceDesc>替换某个东西的材质，例如将木墙换成石墙</TD.ReplaceDesc>
+	<TD.ReplacingTag>(替换中)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>将蓝图放于山岩上</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>从建筑菜单中隐藏炒鸡漂亮的越墙式制冷机</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>从建筑菜单中隐藏原版的制冷机和通风孔</TD.SettingsNoNormalCoolers>
+	<TD.SettingsCornerBuildable>允许在角落内部建造或是开采方块</TD.SettingsCornerBuildable>
+	<TD.SettingsCornerBuildableDesc>这有时候会导致奇怪的寻路问题-关闭这个选项也许能修复该问题。</TD.SettingsCornerBuildableDesc>
+	<TD.IncapableOfSmoothing>无法兼容</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>替换完毕</TD.FailedStuffBeingReplaced>
+	
+</LanguageData>

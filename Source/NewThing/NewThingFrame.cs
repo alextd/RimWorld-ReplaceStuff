@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Harmony;
+using System.Reflection;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -18,7 +19,26 @@ namespace Replace_Stuff.NewThing
 		public static ThingDef ElectricTailoringBench;
 	}
 	[StaticConstructorOnStartup]
-	static class NewThingReplacement
+	public static class FridgeCompat
+	{
+		public static Type fridgeType;
+		public static FieldInfo DesiredTempInfo;
+		static FridgeCompat()
+		{
+			try
+			{
+				fridgeType = AccessTools.TypeByName("Building_Refrigerator");
+				if (fridgeType != null)
+					DesiredTempInfo = AccessTools.Field(fridgeType, "DesiredTemp");
+			}
+			catch (System.Reflection.ReflectionTypeLoadException) //Aeh, this happens to people, should not happen, meh.
+			{
+				Verse.Log.Warning("Replace Stuff failed to check for RimFridges");
+			}
+		}
+	}
+	[StaticConstructorOnStartup]
+	public static class NewThingReplacement
 	{
 		public class Replacement
 		{
@@ -81,6 +101,7 @@ namespace Replace_Stuff.NewThing
 			});
 		}
 
+
 		static NewThingReplacement()
 		{
 			replacements = new List<Replacement>();
@@ -88,8 +109,8 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 			//---------------------------------------------
 			//Here are valid replacements:
-			replacements.Add(new Replacement(d => d.IsWall() || d.thingClass == typeof(Building_Door)));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Cooler),
+			replacements.Add(new Replacement(d => d.IsWall() || (d.building?.isFence ?? false) || typeof(Building_Door).IsAssignableFrom(d.thingClass)));
+			replacements.Add(new Replacement(d => typeof(Building_Cooler).IsAssignableFrom(d.thingClass),
 				postAction: (n, o) =>
 				{
 					Building_Cooler newCooler = n as Building_Cooler;
@@ -98,14 +119,14 @@ namespace Replace_Stuff.NewThing
 					newCooler.compTempControl.targetTemperature = oldCooler.compTempControl.targetTemperature;
 				}
 				));
-			replacements.Add(new Replacement(d => d.thingClass == typeof(Building_Bed),
+			replacements.Add(new Replacement(d => typeof(Building_Bed).IsAssignableFrom(d.thingClass),
 				preAction: (n, o) =>
 				{
 					Building_Bed newBed = n as Building_Bed;
 					Building_Bed oldBed = o as Building_Bed;
 					newBed.ForPrisoners = oldBed.ForPrisoners;
 					newBed.Medical = oldBed.Medical;
-					oldBed.owners.ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
+					oldBed.OwnersForReading.ListFullCopy().ForEach(p => p.ownership.ClaimBedIfNonMedical(newBed));
 				}
 				));
 			DesignationCategoryDef fencesDef = DefDatabase<DesignationCategoryDef>.GetNamed("Fences", false);
@@ -124,6 +145,16 @@ namespace Replace_Stuff.NewThing
 				};
 			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricStove, n => n == NewThingDefOf.FueledStove, transferBills));
 			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricTailoringBench, n => n == NewThingDefOf.HandTailoringBench, transferBills));
+
+			replacements.Add(new Replacement(d => d.IsTable));
+
+			replacements.Add(new Replacement(d => d.thingClass == FridgeCompat.fridgeType, 
+				postAction: (n, o) =>
+				{
+					FridgeCompat.DesiredTempInfo.SetValue(n, FridgeCompat.DesiredTempInfo.GetValue(o));
+				}));
+
+			replacements.Add(new Replacement(d => d.building?.isSittable ?? false));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
