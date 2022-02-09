@@ -36,10 +36,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Lib.Harmony.2.1.0\lib\net472\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -68,7 +64,7 @@
     <Compile Include="**\*.cs" Exclude="obj\**\*" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="Lib.Harmony" Version="2.*" ExcludeAssets="runtime"/>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
