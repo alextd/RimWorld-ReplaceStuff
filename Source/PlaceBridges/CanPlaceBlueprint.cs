@@ -12,17 +12,12 @@ namespace Replace_Stuff.PlaceBridges
 {
 	public static class PlaceBridges
 	{
-		public static bool NeedsBridge(BuildableDef def, IntVec3 pos, Map map, ThingDef stuff)
+		public static TerrainDef GetNeededBridge(BuildableDef def, IntVec3 pos, Map map, ThingDef stuff)
 		{
+			if (!pos.InBounds(map)) return null;
 			TerrainAffordanceDef needed = def.GetTerrainAffordanceNeed(stuff);
-			return pos.InBounds(map) &&
-				!pos.SupportsStructureType(map, needed) &&
-				pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded) &&
-				TerrainDefOf.Bridge.affordances.Contains(needed);
+			return BridgelikeTerrain.FindBridgeFor(map.terrainGrid.TerrainAt(pos), needed);
 		}
-
-		public static bool CantEvenBridge(IntVec3 pos, Map map) =>
-			!pos.SupportsStructureType(map, TerrainDefOf.Bridge.terrainAffordanceNeeded);
 	}
 
 	[HarmonyPatch(typeof(GenConstruct), "CanBuildOnTerrain")]
@@ -32,41 +27,62 @@ namespace Replace_Stuff.PlaceBridges
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method)
 		{
 			LocalVariableInfo posInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(IntVec3));
-			MethodInfo ContainsInfo = AccessTools.Method(typeof(List<TerrainAffordanceDef>), nameof(List<TerrainAffordanceDef>.Contains));
+			FieldInfo affordancesInfo = AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.affordances));
 
 			bool firstOnly = true;
-			foreach(CodeInstruction i in instructions)
+			var instList = instructions.ToList();
+			for(int i=0;i<instList.Count();i++)
 			{
-				if(i.Calls(ContainsInfo) && firstOnly)
+				var inst = instList[i];
+				if(inst.LoadsField(affordancesInfo) && firstOnly)
 				{
 					firstOnly = false;
 
+					//
+					// IL_0053: ldarg.2      // map
+					// IL_0054: ldfld        class Verse.TerrainGrid Verse.Map::terrainGrid
+					// IL_0059: ldloc.3      // c1
+					// IL_005a: callvirt     instance class Verse.TerrainDef Verse.TerrainGrid::TerrainAt(valuetype Verse.IntVec3)
+					// IL_005f: ldfld        class [mscorlib]System.Collections.Generic.List`1<class Verse.TerrainAffordanceDef> Verse.TerrainDef::affordances
+					// IL_0064: ldloc.0      // terrainAffordanceNeed
+					// IL_0065: callvirt     instance bool class [mscorlib]System.Collections.Generic.List`1<class Verse.TerrainAffordanceDef>::Contains(!0/*class Verse.TerrainAffordanceDef*/)
+					// IL_006a: brtrue.s     IL_0071
+
+					//Skip ldfld affordances, load terrainAffordanceNeed
+					i++;
+					yield return instList[i];
+
+					//skip call to Contains
+					i++;
+
+					//replace with TerrainOrBridgesCanDo (below)
 					yield return new CodeInstruction(OpCodes.Ldloc, posInfo.LocalIndex);//IntVec3 pos
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo)));
+
+					//and it'll continue with the brtrue
 				}
 				else
-					yield return i;
+					yield return inst;
 			}
 		}
 
-		public static bool TerrainOrBridgesCanDo(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef, IntVec3 pos, Map map)
+		public static bool TerrainOrBridgesCanDo(TerrainDef tDef, TerrainAffordanceDef neededDef, IntVec3 pos, Map map)
 		{
-			//Terrain already supports: vanilla, ok
-			if (affordances.Contains(neededDef))
+			//Code Used to be:
+			if (tDef.affordances.Contains(neededDef))
 				return true;
 
-			//If bridges won't help: no.
-			if (!TerrainDefOf.Bridge.affordances.Contains(neededDef))
-				return false;
-
-			//Bridge blueprint there: ok
-			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+			//Now it's gonna also check bridges:
+			//Bridge blueprint there that will support this:
+			//TODO isn't this redundant?
+			if (pos.GetThingList(map).Any(t =>
+				t.def.entityDefToBuild is TerrainDef bpTDef &&
+				bpTDef.affordances.Contains(neededDef)))
 				return true;
 
-			//Player choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
-			if (DesignatorContext.designating &&
-				affordances.Contains(TerrainDefOf.Bridge.terrainAffordanceNeeded))  //terrain can support bridges
+			//Player not choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
+			if (DesignatorContext.designating && BridgelikeTerrain.FindBridgeFor(tDef, neededDef) != null)
 				return true;
 
 			return false;
@@ -80,9 +96,7 @@ namespace Replace_Stuff.PlaceBridges
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
 		public static void Prefix(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
 		{
-			if (faction != Faction.OfPlayer || sourceDef == TerrainDefOf.Bridge) return;
-
-			TerrainAffordanceDef affNeeded = sourceDef.GetTerrainAffordanceNeed(stuff);
+			if (faction != Faction.OfPlayer || sourceDef.IsBridgelike()) return;
 
 			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(center, rotation, sourceDef.Size))
 				EnsureBridge.PlaceBridgeIfNeeded(sourceDef, pos, map, rotation, faction, stuff);
@@ -93,10 +107,15 @@ namespace Replace_Stuff.PlaceBridges
 	{
 		public static void PlaceBridgeIfNeeded(BuildableDef sourceDef, IntVec3 pos, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
 		{
-			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == TerrainDefOf.Bridge))
+			TerrainDef bridgeDef = PlaceBridges.GetNeededBridge(sourceDef, pos, map, stuff);
+
+			if (bridgeDef == null)
+				return;
+
+			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == bridgeDef))
 				return;//Already building!
-			if (PlaceBridges.NeedsBridge(sourceDef, pos, map, stuff))
-				GenConstruct.PlaceBlueprintForBuild_NewTemp(TerrainDefOf.Bridge, pos, map, rotation, faction, null);//Are there bridge precepts/styles?...
+
+			GenConstruct.PlaceBlueprintForBuild_NewTemp(bridgeDef, pos, map, rotation, faction, null);//Are there bridge precepts/styles?...
 		}
 	}
 
@@ -129,10 +148,7 @@ namespace Replace_Stuff.PlaceBridges
 		//public static bool SpawningWipes(BuildableDef newEntDef, BuildableDef oldEntDef)
 		public static bool Prefix(BuildableDef oldEntDef, bool __result)
 		{
-			if (oldEntDef as ThingDef == null)
-				return true;
-
-			if ((GenConstruct.BuiltDefOf(oldEntDef as ThingDef) ?? oldEntDef) == TerrainDefOf.Bridge)
+			if (oldEntDef is ThingDef tdef && (GenConstruct.BuiltDefOf(tdef) ?? oldEntDef).IsBridgelike())
 			{
 				__result = false;
 				return false;
