@@ -20,37 +20,48 @@ namespace Replace_Stuff.PlaceBridges
 			(Rot4)placingRotInfo.GetValue(designator);
 
 		//protected override void DrawPlaceMouseAttachments(float curX, ref float curY)
-		public static void Postfix(Designator_Build __instance, float curX, float curY)
+		public static void Postfix(Designator_Build __instance, float curX, ref float curY)
 		{
+			List<TerrainDef> neededBridges = new List<TerrainDef>();
+
 			ThingDef stuff = __instance.StuffDef;
 			DesignationDragger dragger = Find.DesignatorManager.Dragger;
-			int bridgeCount = 0;
 			IEnumerable<IntVec3> cells = dragger.Dragging ? dragger.DragCells :
 				GenAdj.OccupiedRect(UI.MouseCell(), __instance.PlacingRot(), __instance.PlacingDef.Size).Cells;
+
 			foreach (IntVec3 dragPos in cells)
-				if (PlaceBridges.NeedsBridge(__instance.PlacingDef, dragPos, __instance.Map, stuff))
-					bridgeCount++;
+				if (PlaceBridges.GetNeededBridge(__instance.PlacingDef, dragPos, __instance.Map, stuff) is TerrainDef tdef)
+					neededBridges.Add(tdef);
 
-			if (bridgeCount == 0) return;
+			if (neededBridges.Count == 0) return;
 
-			//could just say wood here, this is still assuming it costs only one thing.
-			ThingDefCountClass bridgeCost = TerrainDefOf.Bridge.costList.First();	
-
-			Widgets.ThingIcon(new Rect(curX, curY, 27f, 27f), bridgeCost.thingDef);
-
-			int totalCost = bridgeCost.count * bridgeCount;
-
-			string label = $"{totalCost} ({TerrainDefOf.Bridge.LabelCap})";
-			//This doesn't account for normal building cost + under bridge cost, but what can you do
-			if (__instance.Map.resourceCounter.GetCount(bridgeCost.thingDef) < totalCost)
+			Dictionary<ThingDef, int> bridgeTotalCost = new Dictionary<ThingDef, int>();
+			foreach(TerrainDef bridgeDef in neededBridges)
 			{
-				GUI.color = Color.red;
-				label = label + " (" + "NotEnoughStoredLower".Translate() + ")";
+				foreach (ThingDefCountClass bridgeCost in bridgeDef.costList)
+				{
+					bridgeTotalCost.TryGetValue(bridgeCost.thingDef, out int costCount);
+					bridgeTotalCost[bridgeCost.thingDef] = costCount + bridgeCost.count;
+				}
 			}
-			Text.Font = GameFont.Small;
-			Text.Anchor = TextAnchor.MiddleLeft;
-			Widgets.Label(new Rect(curX + 29f, curY, 999f, 29f), label);
-			Text.Anchor = TextAnchor.UpperLeft;
+
+			foreach (var (bridgeCostDef, bridgeCostCount) in bridgeTotalCost.Select(x => (x.Key, x.Value)))
+			{
+				Widgets.ThingIcon(new Rect(curX, curY, 27f, 27f), bridgeCostDef);
+
+				string label = $"{bridgeCostCount} ({TerrainDefOf.Bridge.LabelCap})"; //Not bridgeCostDef.LabelCap
+				//This doesn't account for normal building cost + under bridge cost, but what can you do
+				if (__instance.Map.resourceCounter.GetCount(bridgeCostDef) < bridgeCostCount)
+				{
+					GUI.color = Color.red;
+					label = label + " (" + "NotEnoughStoredLower".Translate() + ")";
+				}
+				Text.Font = GameFont.Small;
+				Text.Anchor = TextAnchor.MiddleLeft;
+				Widgets.Label(new Rect(curX + 29f, curY, 999f, 29f), label); //private const float DragPriceDrawNumberX
+				curY += 29f;
+				Text.Anchor = TextAnchor.UpperLeft;
+			}
 			GUI.color = Color.white;
 		}
 	}

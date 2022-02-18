@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
+using Replace_Stuff.PlaceBridges;
 
 namespace Replace_Stuff
 {
-	class Settings : ModSettings
+	public class Settings : ModSettings
 	{
 		public bool hideOverwallCoolers = false;
 		public bool hideNormalCoolers = false;
-
-		public static Settings Get()
-		{
-			return LoadedModManager.GetMod<Replace_Stuff.Mod>().GetSettings<Settings>();
-		}
 
 		public void DoWindowContents(Rect wrect)
 		{
@@ -26,15 +23,65 @@ namespace Replace_Stuff
 			
 			options.CheckboxLabeled("TD.SettingsNoOverwallCoolers".Translate(), ref hideOverwallCoolers);
 			options.CheckboxLabeled("TD.SettingsNoNormalCoolers".Translate(), ref hideNormalCoolers);
-			options.Gap();
+			options.GapLine();
+
+			Text.Font = GameFont.Medium;
+			options.Label("TD.SettingsPreferredBridge".Translate());
+			Text.Font = GameFont.Small;
+
+			float itemHeight = Text.LineHeight;
+			Rect reorderRect = options.GetRect(BridgelikeTerrain.allBridgeTerrains.Count * itemHeight + 2);
+			Widgets.DrawBox(reorderRect);
+
+			Rect labelRect = reorderRect.ContractedBy(1).TopPartPixels(itemHeight);
+
+			int reorderID = ReorderableWidget.NewGroup_NewTemp(BridgelikeTerrain.Reorder, ReorderableDirection.Vertical);
+
+			foreach (TerrainDef terDef in BridgelikeTerrain.allBridgeTerrains)
+			{
+				Widgets.DefLabelWithIcon(labelRect, terDef, 0);
+				ReorderableWidget.Reorderable(reorderID, labelRect);
+
+				labelRect.y += itemHeight;
+			}
+			options.Label("TD.SettingsBridgeResources".Translate());
 
 			options.End();
 		}
-		
+
 		public override void ExposeData()
 		{
 			Scribe_Values.Look(ref hideOverwallCoolers, "hideOverwallCoolers", false);
 			Scribe_Values.Look(ref hideNormalCoolers, "hideNormalCoolers", false);
+
+			if (Scribe.mode == LoadSaveMode.Saving)
+			{
+				Scribe_Collections.Look(ref BridgelikeTerrain.allBridgeTerrains, "bridgePrefNames");
+			}
+			else if (Scribe.mode == LoadSaveMode.LoadingVars)
+			{
+				List<string> defNames = null;
+				Scribe_Collections.Look(ref defNames, "bridgePrefNames");
+
+				//Gotta wait for DefOfs to load to use DefDatabase
+				if(defNames != null)
+				LongEventHandler.ExecuteWhenFinished(() =>
+					{
+						List<TerrainDef> loadedBridgeOrder = defNames.Select(n => DefDatabase<TerrainDef>.GetNamed(n, false)).ToList();
+						loadedBridgeOrder.RemoveAll(d => d == null);//Any removed mods, forget about em.
+
+						//To merge with maybe new modded bridges:
+						//Take all from known loadedBridgeOrder and push to front:
+						//Any new modded terrains will be in back - which is normal for modded terrain anyway.
+						//TODO: order default list by cost or something. Meh.
+						loadedBridgeOrder.Reverse();
+						foreach (TerrainDef terDef in loadedBridgeOrder)
+						{
+							BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
+							BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+						}
+					});
+			}
 		}
 	}
 
@@ -46,7 +93,7 @@ namespace Replace_Stuff
 		{
 			if (!__result) return;
 
-			if (Settings.Get().hideOverwallCoolers &&
+			if (Mod.settings.hideOverwallCoolers &&
 				(__instance.PlacingDef == OverWallDef.Cooler_Over ||
 				__instance.PlacingDef == OverWallDef.Cooler_Over2W ||
 				__instance.PlacingDef == OverWallDef.Vent_Over))
@@ -54,7 +101,7 @@ namespace Replace_Stuff
 				__result = false;
 				return;
 			}
-			if (Settings.Get().hideNormalCoolers &&
+			if (Mod.settings.hideNormalCoolers &&
 				(__instance.PlacingDef == ThingDefOf.Cooler ||
 				__instance.PlacingDef == OverWallDef.Vent))
 			{

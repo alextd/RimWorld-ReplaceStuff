@@ -12,5 +12,7 @@
 	<TD.SettingsCornerBuildableDesc>This might sometime cause weird pathing issues - turn it off to maybe fix that.</TD.SettingsCornerBuildableDesc>
 	<TD.IncapableOfSmoothing>incapable of smoothing</TD.IncapableOfSmoothing>
 	<TD.FailedStuffBeingReplaced>stuff being replaced</TD.FailedStuffBeingReplaced>
+	<TD.SettingsPreferredBridge>Preferred Bridge order to place when needed:</TD.SettingsPreferredBridge>
+	<TD.SettingsBridgeResources>(First priority is bridges you have resources for ; Second priority is this list order - drag-and-drop to re-order)</TD.SettingsBridgeResources>
 	
 </LanguageData>
