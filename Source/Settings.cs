@@ -26,7 +26,7 @@ namespace Replace_Stuff
 			options.GapLine();
 
 			Text.Font = GameFont.Medium;
-			options.Label("TD.PreferredBridge".Translate());
+			options.Label("TD.SettingsPreferredBridge".Translate());
 			Text.Font = GameFont.Small;
 
 			float itemHeight = Text.LineHeight;
@@ -44,6 +44,7 @@ namespace Replace_Stuff
 
 				labelRect.y += itemHeight;
 			}
+			options.Label("TD.SettingsBridgeResources".Translate());
 
 			options.End();
 		}
