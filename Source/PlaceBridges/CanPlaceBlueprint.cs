@@ -16,7 +16,7 @@ namespace Replace_Stuff.PlaceBridges
 		{
 			if (!pos.InBounds(map)) return null;
 			TerrainAffordanceDef needed = def.GetTerrainAffordanceNeed(stuff);
-			return BridgelikeTerrain.FindBridgeFor(map.terrainGrid.TerrainAt(pos), needed);
+			return BridgelikeTerrain.FindBridgeFor(map.terrainGrid.TerrainAt(pos), needed, map);
 		}
 	}
 
@@ -82,7 +82,7 @@ namespace Replace_Stuff.PlaceBridges
 				return true;
 
 			//Player not choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
-			if (DesignatorContext.designating && BridgelikeTerrain.FindBridgeFor(tDef, neededDef) != null)
+			if (DesignatorContext.designating && BridgelikeTerrain.FindBridgeFor(tDef, neededDef, map) != null)
 				return true;
 
 			return false;

@@ -94,18 +94,28 @@ namespace Replace_Stuff.PlaceBridges
 
 		public static bool IsBridgelike(this BuildableDef tdef) => allBridgeTerrains.Contains(tdef);
 
-		public static TerrainDef FindBridgeFor(TerrainDef tDef, TerrainAffordanceDef needed)
+		public static TerrainDef FindBridgeFor(TerrainDef tDef, TerrainAffordanceDef needed, Map map)
 		{
-			if(bridgesForTerrain.TryGetValue((tDef, needed), out var bridges))
+			TerrainDef bestBridge = null;
+			TerrainDef backupBridge = null;
+			if (bridgesForTerrain.TryGetValue((tDef, needed), out var bridges))
 			{
 				foreach (TerrainDef bridge in allBridgeTerrains)
 					if (bridges.Contains(bridge))
 					{
-						//TODO more checks., like, do we have resources. User-selectable preference.
-						return bridge;
+						if(backupBridge == null) backupBridge = bridge;	//First possible option
+
+						ThingDefCount cost = bridge.CostList.FirstOrDefault();
+						int resourceCount = map.resourceCounter.GetCount(cost.ThingDef);
+
+						if (resourceCount > cost.Count * 10)
+							return bridge;//Plently. Use this.
+
+						if( resourceCount > 0 )
+							bestBridge = bridge;//Not enough but at least this will work.
 					}
 			}
-			return null;
+			return bestBridge ?? backupBridge;
 		}
 	}
 }
