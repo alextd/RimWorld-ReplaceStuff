@@ -105,7 +105,10 @@ namespace Replace_Stuff.PlaceBridges
 					{
 						if(backupBridge == null) backupBridge = bridge;	//First possible option
 
-						ThingDefCount cost = bridge.CostList.FirstOrDefault();
+						ThingDefCount cost = bridge.CostList?.FirstOrDefault();
+						if (cost == null)	//Free bridge? Okay.
+							return bridge;
+
 						int resourceCount = map.resourceCounter.GetCount(cost.ThingDef);
 
 						if (resourceCount > cost.Count * 10)
