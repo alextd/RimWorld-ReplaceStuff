@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using HarmonyLib;
+using Replace_Stuff.PlaceBridges;
 
 namespace Replace_Stuff
 {
@@ -21,7 +22,27 @@ namespace Replace_Stuff
 			
 			options.CheckboxLabeled("TD.SettingsNoOverwallCoolers".Translate(), ref hideOverwallCoolers);
 			options.CheckboxLabeled("TD.SettingsNoNormalCoolers".Translate(), ref hideNormalCoolers);
-			options.Gap();
+			options.GapLine();
+
+			Text.Font = GameFont.Medium;
+			options.Label("TD.PreferredBridge".Translate());
+			Text.Font = GameFont.Small;
+
+			float itemHeight = Text.LineHeight;
+			Rect reorderRect = options.GetRect(BridgelikeTerrain.allBridgeTerrains.Count * itemHeight + 2);
+			Widgets.DrawBox(reorderRect);
+
+			Rect labelRect = reorderRect.ContractedBy(1).TopPartPixels(itemHeight);
+
+			int reorderID = ReorderableWidget.NewGroup_NewTemp(BridgelikeTerrain.Reorder, ReorderableDirection.Vertical);
+
+			foreach (TerrainDef terDef in BridgelikeTerrain.allBridgeTerrains)
+			{
+				Widgets.DefLabelWithIcon(labelRect, terDef, 0);
+				ReorderableWidget.Reorderable(reorderID, labelRect);
+
+				labelRect.y += itemHeight;
+			}
 
 			options.End();
 		}

@@ -13,7 +13,7 @@ namespace Replace_Stuff.PlaceBridges
 		//If you have TerrainDef and need Affordance, you can build bridge from from TerrainDefs to get that affordance
 		//TODO: group terrains by affordances. eg different water types all have the same set of bridges that would work but are all handled separately
 		private static Dictionary<ValueTuple<TerrainDef, TerrainAffordanceDef>, HashSet<TerrainDef>> bridgesForTerrain;
-		private static List<TerrainDef> allBridgeTerrains;
+		public static List<TerrainDef> allBridgeTerrains;
 
 		public static HashSet<TerrainAffordanceDef> ignoreAff;
 
@@ -116,6 +116,15 @@ namespace Replace_Stuff.PlaceBridges
 					}
 			}
 			return bestBridge ?? backupBridge;
+		}
+
+
+		public static void Reorder(int terIndex, int newIndex)
+		{
+			if (terIndex == newIndex)	return;
+
+			allBridgeTerrains.Insert(newIndex, allBridgeTerrains[terIndex]);
+			allBridgeTerrains.RemoveAt((terIndex < newIndex) ? terIndex : (terIndex + 1));
 		}
 	}
 }
