@@ -64,22 +64,23 @@ namespace Replace_Stuff
 				Scribe_Collections.Look(ref defNames, "bridgePrefNames");
 
 				//Gotta wait for DefOfs to load to use DefDatabase
+				if(defNames != null)
 				LongEventHandler.ExecuteWhenFinished(() =>
-				{
-					List<TerrainDef> loadedBridgeOrder = defNames.Select(n => DefDatabase<TerrainDef>.GetNamed(n, false)).ToList();
-					loadedBridgeOrder.RemoveAll(d => d == null);//Any removed mods, forget about em.
-
-					//To merge with maybe new modded bridges:
-					//Take all from known loadedBridgeOrder and push to front:
-					//Any new modded terrains will be in back - which is normal for modded terrain anyway.
-					//TODO: order default list by cost or something. Meh.
-					loadedBridgeOrder.Reverse();
-					foreach (TerrainDef terDef in loadedBridgeOrder)
 					{
-						BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
-						BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
-					}
-				});
+						List<TerrainDef> loadedBridgeOrder = defNames.Select(n => DefDatabase<TerrainDef>.GetNamed(n, false)).ToList();
+						loadedBridgeOrder.RemoveAll(d => d == null);//Any removed mods, forget about em.
+
+						//To merge with maybe new modded bridges:
+						//Take all from known loadedBridgeOrder and push to front:
+						//Any new modded terrains will be in back - which is normal for modded terrain anyway.
+						//TODO: order default list by cost or something. Meh.
+						loadedBridgeOrder.Reverse();
+						foreach (TerrainDef terDef in loadedBridgeOrder)
+						{
+							BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
+							BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+						}
+					});
 			}
 		}
 	}
