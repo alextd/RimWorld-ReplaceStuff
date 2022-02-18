@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
@@ -12,5 +12,7 @@
   <TD.SettingsCornerBuildableDesc>これは時々変わった経路の問題を引き起こすかもしれません。－それを修正するためにはこれを無効化してください。</TD.SettingsCornerBuildableDesc>
   <TD.IncapableOfSmoothing>床の張替え(壁の磨き)ができません</TD.IncapableOfSmoothing>
   <TD.FailedStuffBeingReplaced>材料が置き換えられました</TD.FailedStuffBeingReplaced>
+  <TD.SettingsPreferredBridge>必要に応じて設置する橋の優先順位:</TD.SettingsPreferredBridge>
+  <TD.SettingsBridgeResources>(優先順位第一は資源がある橋;優先順位第二はこのリストの順位です-ドラッグアンドドロップで並べ替え)</TD.SettingsBridgeResources>
 
 </LanguageData>
