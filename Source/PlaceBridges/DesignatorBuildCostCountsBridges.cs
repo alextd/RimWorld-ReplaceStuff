@@ -20,7 +20,7 @@ namespace Replace_Stuff.PlaceBridges
 			(Rot4)placingRotInfo.GetValue(designator);
 
 		//protected override void DrawPlaceMouseAttachments(float curX, ref float curY)
-		public static void Postfix(Designator_Build __instance, float curX, float curY)
+		public static void Postfix(Designator_Build __instance, float curX, ref float curY)
 		{
 			List<TerrainDef> neededBridges = new List<TerrainDef>();
 
@@ -45,7 +45,6 @@ namespace Replace_Stuff.PlaceBridges
 				}
 			}
 
-			float adjust = 29f;
 			foreach (var (bridgeCostDef, bridgeCostCount) in bridgeTotalCost.Select(x => (x.Key, x.Value)))
 			{
 				Widgets.ThingIcon(new Rect(curX, curY, 27f, 27f), bridgeCostDef);
@@ -59,8 +58,8 @@ namespace Replace_Stuff.PlaceBridges
 				}
 				Text.Font = GameFont.Small;
 				Text.Anchor = TextAnchor.MiddleLeft;
-				Widgets.Label(new Rect(curX + adjust, curY, 999f, 29f), label);
-				adjust += 29f;
+				Widgets.Label(new Rect(curX + 29f, curY, 999f, 29f), label); //private const float DragPriceDrawNumberX
+				curY += 29f;
 				Text.Anchor = TextAnchor.UpperLeft;
 			}
 			GUI.color = Color.white;
