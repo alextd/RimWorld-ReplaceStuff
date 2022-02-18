@@ -50,7 +50,7 @@ namespace Replace_Stuff.PlaceBridges
 			{
 				Widgets.ThingIcon(new Rect(curX, curY, 27f, 27f), bridgeCostDef);
 
-				string label = $"{bridgeCostCount} ({bridgeCostDef.LabelCap})";
+				string label = $"{bridgeCostCount} ({TerrainDefOf.Bridge.LabelCap})"; //Not bridgeCostDef.LabelCap
 				//This doesn't account for normal building cost + under bridge cost, but what can you do
 				if (__instance.Map.resourceCounter.GetCount(bridgeCostDef) < bridgeCostCount)
 				{
