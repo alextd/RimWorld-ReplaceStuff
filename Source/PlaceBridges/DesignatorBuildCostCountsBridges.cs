@@ -36,14 +36,27 @@ namespace Replace_Stuff.PlaceBridges
 			if (neededBridges.Count == 0) return;
 
 			Dictionary<ThingDef, int> bridgeTotalCost = new Dictionary<ThingDef, int>();
+			float work = 0;
 			foreach(TerrainDef bridgeDef in neededBridges)
 			{
+				work += bridgeDef.GetStatValueAbstract(StatDefOf.WorkToBuild);
 				if(bridgeDef.costList != null)
 					foreach (ThingDefCountClass bridgeCost in bridgeDef.costList)
 					{
 						bridgeTotalCost.TryGetValue(bridgeCost.thingDef, out int costCount);
 						bridgeTotalCost[bridgeCost.thingDef] = costCount + bridgeCost.count;
 					}
+			}
+
+			if(bridgeTotalCost.Count == 0)
+			{
+				string label = $"{StatDefOf.WorkToBuild.LabelCap}: {work.ToStringWorkAmount()} ({TerrainDefOf.Bridge.LabelCap})"; //Not bridgeCostDef.LabelCap
+
+				Text.Font = GameFont.Small;
+				Text.Anchor = TextAnchor.MiddleLeft;
+				Widgets.Label(new Rect(curX + 29f, curY, 999f, 29f), label); //private const float DragPriceDrawNumberX
+				curY += 29f;
+				Text.Anchor = TextAnchor.UpperLeft;
 			}
 
 			foreach (var (bridgeCostDef, bridgeCostCount) in bridgeTotalCost.Select(x => (x.Key, x.Value)))
