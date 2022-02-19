@@ -38,11 +38,12 @@ namespace Replace_Stuff.PlaceBridges
 			Dictionary<ThingDef, int> bridgeTotalCost = new Dictionary<ThingDef, int>();
 			foreach(TerrainDef bridgeDef in neededBridges)
 			{
-				foreach (ThingDefCountClass bridgeCost in bridgeDef.costList)
-				{
-					bridgeTotalCost.TryGetValue(bridgeCost.thingDef, out int costCount);
-					bridgeTotalCost[bridgeCost.thingDef] = costCount + bridgeCost.count;
-				}
+				if(bridgeDef.costList != null)
+					foreach (ThingDefCountClass bridgeCost in bridgeDef.costList)
+					{
+						bridgeTotalCost.TryGetValue(bridgeCost.thingDef, out int costCount);
+						bridgeTotalCost[bridgeCost.thingDef] = costCount + bridgeCost.count;
+					}
 			}
 
 			foreach (var (bridgeCostDef, bridgeCostCount) in bridgeTotalCost.Select(x => (x.Key, x.Value)))
