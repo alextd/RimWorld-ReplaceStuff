@@ -15,8 +15,6 @@ namespace Replace_Stuff.PlaceBridges
 		private static Dictionary<ValueTuple<TerrainDef, TerrainAffordanceDef>, HashSet<TerrainDef>> bridgesForTerrain;
 		public static List<TerrainDef> allBridgeTerrains;
 
-		public static HashSet<TerrainAffordanceDef> ignoreAff;
-
 		private static bool IsFloorBase(this TerrainDef def)
 		{
 			//Nothing special with these, is not a bridgelike terrain
@@ -32,7 +30,7 @@ namespace Replace_Stuff.PlaceBridges
 		static BridgelikeTerrain()
 		{
 			//Ignore providing diggable because VFE's dirt can turn any terrain into diggable
-			ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable };
+			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable };
 
 
 			//If you have Affordance 1 and need Affordance 2, you can build one of these TerrainDef
@@ -63,7 +61,20 @@ namespace Replace_Stuff.PlaceBridges
 
 			bridgesForTerrain = new Dictionary<(TerrainDef, TerrainAffordanceDef), HashSet<TerrainDef>>();
 			allBridgeTerrains = new List<TerrainDef>();
-			foreach (TerrainAffordanceDef needDef in DefDatabase<TerrainAffordanceDef>.AllDefs)
+
+			//Check for Affordances are actually neeeded by any buildind
+			HashSet<TerrainAffordanceDef> actuallyRequiredAffordances = new HashSet<TerrainAffordanceDef>();
+			foreach (ThingDef thingDef in DefDatabase<ThingDef>.AllDefs.Where(d => d.IsBuildingArtificial))
+			{
+				var aff = thingDef.terrainAffordanceNeeded;
+				if (aff != null && !ignoreAff.Contains(aff))
+					actuallyRequiredAffordances.Add(aff);
+			}
+
+			Log.Message($"All affordances: {DefDatabase<TerrainAffordanceDef>.AllDefs.ToStringSafeEnumerable()}");
+			Log.Message($"Affordances worth caring about: {actuallyRequiredAffordances.ToStringSafeEnumerable()}");
+
+			foreach (TerrainAffordanceDef needDef in actuallyRequiredAffordances)
 			{
 				foreach (TerrainDef terDef in DefDatabase<TerrainDef>.AllDefs)
 				{
@@ -88,9 +99,12 @@ namespace Replace_Stuff.PlaceBridges
 					{
 						allBridgeTerrains.AddRange(possibleBridges);
 					}
+					else
+						Log.Message($"There is no bridge for {terDef} => {needDef}");
 				}
 			}
 			allBridgeTerrains.RemoveDuplicates();
+			Log.Message($"Bridges: {allBridgeTerrains.ToStringSafeEnumerable()}");
 		}
 
 		public static bool IsBridgelike(this BuildableDef tdef) => allBridgeTerrains.Contains(tdef);
