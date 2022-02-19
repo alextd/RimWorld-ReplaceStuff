@@ -80,6 +80,7 @@ namespace Replace_Stuff.PlaceBridges
 								possibleBridges = new HashSet<TerrainDef>();
 								bridgesForTerrain[(terDef, needDef)] = possibleBridges;
 							}
+							Log.Message($"Adding {terDef} => {bridgeTerrains.ToStringSafeEnumerable()} for {affDef} => {needDef}");
 							possibleBridges.AddRange(bridgeTerrains);
 						}
 					}
