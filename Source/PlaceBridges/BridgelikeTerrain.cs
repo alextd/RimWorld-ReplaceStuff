@@ -30,7 +30,7 @@ namespace Replace_Stuff.PlaceBridges
 		static BridgelikeTerrain()
 		{
 			//Ignore providing diggable because VFE's dirt can turn any terrain into diggable
-			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable };
+			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable, TerrainAffordanceDefOf.GrowSoil};
 
 
 			//If you have Affordance 1 and need Affordance 2, you can build one of these TerrainDef
@@ -41,8 +41,13 @@ namespace Replace_Stuff.PlaceBridges
 			{
 				//Filter out some terrains
 				if (terdef.IsFloorBase()) continue;//nothing special, so easy pass on these
+
 				TerrainAffordanceDef bridgeAff = terdef.terrainAffordanceNeeded;
 				if (bridgeAff == null) continue;//nothing needed implies it's not buildable
+
+				if (ignoreAff.Contains(bridgeAff)) continue;//don't care to bridge from these types aka growsoil -> heavy, marsh->tilled soil 
+
+				if (!terdef.Removable) continue;//If you can't remove it, it's a permanent change, let's not do that automatically
 
 				foreach (TerrainAffordanceDef provideAff in terdef.affordances)
 				{
