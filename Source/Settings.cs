@@ -117,8 +117,12 @@ namespace Replace_Stuff
 						loadedBridgeOrder.Reverse();
 						foreach (TerrainDef terDef in loadedBridgeOrder)
 						{
-							BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
-							BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+							//Sanity check if terDef is still counted as a bridge in case we eliminated it in a patch and settings still saved it
+							if (BridgelikeTerrain.allBridgeTerrains.Contains(terDef))
+							{
+								BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
+								BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+							}
 						}
 					});
 			}
