@@ -79,7 +79,8 @@ namespace Replace_Stuff.PlaceBridges
 				foreach (TerrainDef terDef in DefDatabase<TerrainDef>.AllDefs)
 				{
 					//If we have terdef and we need affdef
-					if (terDef.affordances.Contains(needDef)) continue;//Can already do it
+					if (terDef.Removable ||	//Can't build terrain over removable terrain
+						terDef.affordances.Contains(needDef)) continue;//Can already do it
 
 					HashSet<TerrainDef> possibleBridges = null;//Bridge terrains to get needDef on top of terDef
 					foreach (TerrainAffordanceDef affDef in terDef.affordances)
