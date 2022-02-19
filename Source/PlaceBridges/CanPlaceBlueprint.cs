@@ -56,6 +56,7 @@ namespace Replace_Stuff.PlaceBridges
 					i++;
 
 					//replace with TerrainOrBridgesCanDo (below)
+					yield return new CodeInstruction(OpCodes.Ldarg_0);//entDef
 					yield return new CodeInstruction(OpCodes.Ldloc, posInfo.LocalIndex);//IntVec3 pos
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo)));
@@ -67,11 +68,14 @@ namespace Replace_Stuff.PlaceBridges
 			}
 		}
 
-		public static bool TerrainOrBridgesCanDo(TerrainDef tDef, TerrainAffordanceDef neededDef, IntVec3 pos, Map map)
+		public static bool TerrainOrBridgesCanDo(TerrainDef tDef, TerrainAffordanceDef neededDef, BuildableDef def, IntVec3 pos, Map map)
 		{
 			//Code Used to be:
 			if (tDef.affordances.Contains(neededDef))
 				return true;
+
+			if (def is TerrainDef)
+				return false;
 
 			//Now it's gonna also check bridges:
 			//Bridge blueprint there that will support this:
@@ -115,6 +119,7 @@ namespace Replace_Stuff.PlaceBridges
 			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == bridgeDef))
 				return;//Already building!
 
+			Log.Message($"Replace Stuff placing {bridgeDef} for {sourceDef}({sourceDef.GetTerrainAffordanceNeed(stuff)}) on {map.terrainGrid.TerrainAt(pos)}");
 			GenConstruct.PlaceBlueprintForBuild_NewTemp(bridgeDef, pos, map, rotation, faction, null);//Are there bridge precepts/styles?...
 		}
 	}
