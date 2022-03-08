@@ -76,8 +76,8 @@ namespace Replace_Stuff.PlaceBridges
 					actuallyRequiredAffordances.Add(aff);
 			}
 
-			Log.Message($"All affordances: {DefDatabase<TerrainAffordanceDef>.AllDefs.ToStringSafeEnumerable()}");
-			Log.Message($"Affordances worth caring about: {actuallyRequiredAffordances.ToStringSafeEnumerable()}");
+			//Log.Message($"All affordances: {DefDatabase<TerrainAffordanceDef>.AllDefs.ToStringSafeEnumerable()}");
+			Log.Message($"Affordances worth bridging: {actuallyRequiredAffordances.ToStringSafeEnumerable()}");
 
 			foreach (TerrainAffordanceDef needDef in actuallyRequiredAffordances)
 			{
@@ -97,7 +97,7 @@ namespace Replace_Stuff.PlaceBridges
 								possibleBridges = new HashSet<TerrainDef>();
 								bridgesForTerrain[(terDef, needDef)] = possibleBridges;
 							}
-							Log.Message($"Adding {terDef} => {bridgeTerrains.ToStringSafeEnumerable()} for {affDef} => {needDef}");
+							//Log.Message($"Adding {terDef} => {bridgeTerrains.ToStringSafeEnumerable()} for {affDef} => {needDef}");
 							possibleBridges.AddRange(bridgeTerrains);
 						}
 					}
@@ -105,8 +105,8 @@ namespace Replace_Stuff.PlaceBridges
 					{
 						allBridgeTerrains.AddRange(possibleBridges);
 					}
-					else
-						Log.Message($"There is no bridge for {terDef} => {needDef}");
+					//else
+						//Log.Message($"There is no bridge for {terDef} => {needDef}");
 				}
 			}
 			allBridgeTerrains.RemoveDuplicates();
