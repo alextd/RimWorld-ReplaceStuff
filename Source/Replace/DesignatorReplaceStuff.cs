@@ -145,10 +145,8 @@ namespace Replace_Stuff
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
 			DesignatorContext.designating = true;
-			bool result =  CanReplaceStuffAt(stuffDef, cell, Map)
-				&& !cell.GetThingList(Map).Any(t => 
-				(t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef) || 
-				(t.IsNewThingReplacement(out Thing oldThing)));
+			bool result = CanReplaceStuffAt(stuffDef, cell, Map)
+				&& !cell.GetThingList(Map).Any(t => t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef);
 			DesignatorContext.designating = false;
 			return result;
 		}
@@ -190,58 +188,65 @@ namespace Replace_Stuff
 
 		public override void DesignateSingleCell(IntVec3 cell)
 		{
-			List<Thing> things = cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t));
-			for(int i=0; i<things.Count; i++)
+			List<Thing> replaceables = cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t));
+
+			//If there is a blueprint or frame, replace that and ignore the underlying replaceable thing - it's already being replaced.
+			//If there's not, just use the thing, starting a basic replacement
+			Thing thing = replaceables.FirstOrFallback(t => t is Blueprint_Build || t is Frame, replaceables.FirstOrDefault());
+
+			if (thing == null)//should not happen, CanDesignateCell
+				return;
+
+			thing.SetFaction(Faction.OfPlayer);
+
+			//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
+			PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, thing.Position, Map, thing.Rotation, Faction.OfPlayer, stuffDef);
+
+			if (DebugSettings.godMode)
 			{
-				Thing thing = things[i];
-				thing.SetFaction(Faction.OfPlayer);
-
-				//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
-				PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, thing.Position, Map, thing.Rotation, Faction.OfPlayer, stuffDef);
-
-				if (DebugSettings.godMode)
-				{
-					ReplaceFrame.FinalizeReplace(thing, stuffDef);
-				}
+				ReplaceFrame.FinalizeReplace(thing, stuffDef);
+				return;
+			}
+			Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
+			if (thing is Blueprint_Build blueprint)
+				blueprint.stuffToUse = stuffDef;
+			else if (thing is ReplaceFrame replaceFrame)
+			{
+				if (replaceFrame.oldStuff == stuffDef)
+					replaceFrame.Destroy(DestroyMode.Cancel);
 				else
 				{
-					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
-					if (thing is Blueprint_Build blueprint)
-						blueprint.stuffToUse = stuffDef;
-					else if (thing is ReplaceFrame replaceFrame)
+					replaceFrame.ChangeStuff(stuffDef);
+
+					//Interrupt any workers - they don't have the required new stuff
+					if (replaceFrame.Map.mapPawns.FreeColonists.First() is Pawn sampleColonist &&
+						replaceFrame.Map.reservationManager.FirstRespectedReserver(replaceFrame, sampleColonist) is Pawn worker)
 					{
-						if (replaceFrame.oldStuff == stuffDef)
-							replaceFrame.Destroy(DestroyMode.Cancel);
-						else
+						if (worker.CurJob.def == JobDefOf.FinishFrame &&
+							worker.CurJob.targetA == replaceFrame)
 						{
-							replaceFrame.ChangeStuff(stuffDef);
+							worker.jobs.EndCurrentJob(JobCondition.InterruptForced);
+						}
 
-							//Interrupt any workers - they don't have the required new stuff
-							if (replaceFrame.Map.mapPawns.FreeColonists.First() is Pawn sampleColonist &&
-								replaceFrame.Map.reservationManager.FirstRespectedReserver(replaceFrame, sampleColonist) is Pawn worker)
+						for (int jobI = worker.jobs.jobQueue.Count - 1; jobI >= 0; jobI--)
+						{
+							Job qJob = worker.jobs.jobQueue[jobI].job;
+							if (qJob.def == JobDefOf.FinishFrame &&
+								qJob.targetA == replaceFrame)
 							{
-								if (worker.CurJob.def == JobDefOf.FinishFrame &&
-									worker.CurJob.targetA == replaceFrame)
-									worker.jobs.EndCurrentJob(JobCondition.InterruptForced);
-
-								for (int jobI = worker.jobs.jobQueue.Count - 1; jobI >= 0; jobI--)
-								{
-									Job qJob = worker.jobs.jobQueue[jobI].job;
-									if (qJob.def == JobDefOf.FinishFrame &&
-										qJob.targetA == replaceFrame)
-										worker.jobs.EndCurrentOrQueuedJob(qJob, JobCondition.InterruptForced);
-								}
+								worker.jobs.EndCurrentOrQueuedJob(qJob, JobCondition.InterruptForced);
 							}
 						}
 					}
-					else if (thing is Frame frame)
-					{
-						GenConstruct.PlaceBlueprintForBuild_NewTemp(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
-					}
-					else
-						GenReplace.PlaceReplaceFrame(thing, stuffDef);
 				}
 			}
+			else if (thing is Frame frame)
+			{
+				GenConstruct.PlaceBlueprintForBuild_NewTemp(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
+				frame.Destroy(DestroyMode.Cancel);
+			}
+			else
+				GenReplace.PlaceReplaceFrame(thing, stuffDef);
 		}
 
 		public override void DrawPanelReadout(ref float curY, float width)
