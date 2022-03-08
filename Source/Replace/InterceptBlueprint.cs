@@ -8,52 +8,78 @@ using Verse;
 
 namespace Replace_Stuff.Replace
 {
-	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp))]
-	class InterceptBlueprint
+	[HarmonyPatch(typeof(Designator_Build), nameof(Designator_Build.DesignateSingleCell))]
+	class InterceptDesignator_Build
 	{
-		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
-		public static bool Prefix(ref Blueprint_Build __result, BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)
+		//Replace the entire Designator_Build.DesignateSingleCell to behave differently in these cases:
+		//- Changing the stuff of a replace frame
+		//- Changing the stuff of an upgrade (just kill it and let it handle normal)
+		//- Make a replaceframe
+		// (TODO: Just use DesignatorReplaceStuff? That'd probably be easier.)
+		// (Wouldn't handle upgrades though. Sigh)
+		// Technically this is bypassing godmode, tutorial, PlayerKnowledgeDatabase, PlaceWorkers, but none of that should matter.
+		// But I made to to keep ThrowMetaPuffs.
+
+		//public override void DesignateSingleCell(IntVec3 c)
+		public static bool Prefix(Designator_Build __instance, IntVec3 c, BuildableDef ___entDef, Rot4 ___placingRot)
 		{
-			if (faction != Faction.OfPlayer) return true;
+			Map map = __instance.Map;
+			ThingDef stuff = __instance.StuffDef;
 
 			//Fix for door rotation
-			if (sourceDef is ThingDef thingDef && typeof(Building_Door).IsAssignableFrom(thingDef.thingClass))
-				rotation = Building_Door.DoorRotationAt(center, map);
+			if (___entDef is ThingDef thingDef && typeof(Building_Door).IsAssignableFrom(thingDef.thingClass))
+				___placingRot = Building_Door.DoorRotationAt(c, map);
 
-			Func<Thing, bool> posCheck = t => t.Position == center && t.Rotation == rotation;
-			
-			Func<Thing, bool> newReplaceCheck = t => posCheck(t) &&
-				t.def == sourceDef && t.Stuff != stuff;
-			Func<Thing, bool> changeFrameStuffCheck = t => posCheck(t) &&
-				t is Frame f && f.EntityToBuildStuff() != stuff && f.def.entityDefToBuild == sourceDef;
-			Func<Thing, bool> changeReplaceStuffCheck = t => posCheck(t) &&
-				t is ReplaceFrame rf && rf.EntityToBuildStuff() != stuff && rf.def.entityDefToBuild == sourceDef;
+			List<Thing> oldThings = c.GetThingList(map).FindAll(t => t.Position == c && t.Rotation == ___placingRot);
 
-			List<Thing> thingsHere = center.GetThingList(map);
-			if (thingsHere.FirstOrDefault(changeReplaceStuffCheck) is ReplaceFrame oldReplaceFrame)
+			Log.Message($"Can Designator_Build Replace something from ({oldThings.ToStringSafeEnumerable()})?");
+
+			//First check for Replace Frames, and change the stuff.
+			foreach (Thing oldThing in oldThings)
 			{
-				if (oldReplaceFrame.oldStuff == stuff)
-					oldReplaceFrame.Destroy(DestroyMode.Cancel);
-				else
-					oldReplaceFrame.ChangeStuff(stuff);
-				//Okay so 1.3 uses the returned blueprint. Should we handle that, or pass it a dummy object?
-				__result = new Blueprint_Build();
-				//__result = null;
-				return false;
+				if (oldThing is ReplaceFrame oldReplaceFrame &&
+					oldReplaceFrame.def.entityDefToBuild == ___entDef &&
+					oldReplaceFrame.EntityToBuildStuff() != stuff)
+				{
+					Log.Message($"It's a ReplaceFrame {oldReplaceFrame} from {oldReplaceFrame.oldStuff} to {oldReplaceFrame.EntityToBuildStuff()}, now {stuff}");
+					if (oldReplaceFrame.oldStuff == stuff)
+						oldReplaceFrame.Destroy(DestroyMode.Cancel);
+					else
+						oldReplaceFrame.ChangeStuff(stuff);
+
+					FleckMaker.ThrowMetaPuffs(GenAdj.OccupiedRect(c, ___placingRot, ___entDef.Size), map);
+					return false;
+				}
 			}
-			else if (thingsHere.FirstOrDefault(changeFrameStuffCheck) is Thing oldFrame)
+
+			//First check for Frames, and kill it to re-place it
+			foreach (Thing oldThing in oldThings)
 			{
-				oldFrame.Destroy(DestroyMode.Cancel);
-				return true;
+				if (oldThing is Frame oldFrame &&
+					oldFrame.def.entityDefToBuild == ___entDef &&
+					oldFrame.EntityToBuildStuff() != stuff)
+				{
+					Log.Message($"It's a Frame {oldFrame} (just canceling it)");
+					oldFrame.Destroy(DestroyMode.Cancel);
+					return true;
+				}
 			}
-			else if (thingsHere.FirstOrDefault(newReplaceCheck) is Thing oldThing)
+
+			//Then if it's the same thing, create replace frame (should already have verified in CanDesignate)
+			foreach (Thing oldThing in oldThings)
 			{
-				GenReplace.PlaceReplaceFrame(oldThing, stuff);
-				//Okay so 1.3 uses the returned blueprint. Should we handle that, or pass it a dummy object?
-				__result = new Blueprint_Build();
-				//__result = null;
-				return false;
+				if (
+					oldThing.def == ___entDef &&
+					oldThing.Stuff != stuff)
+				{
+					Log.Message($"It's a Thing {oldThing}");
+					GenReplace.PlaceReplaceFrame(oldThing, stuff);
+
+					FleckMaker.ThrowMetaPuffs(GenAdj.OccupiedRect(c, ___placingRot, ___entDef.Size), map);
+					return false;
+				}
 			}
+				
 			return true;
 		}
 	}
