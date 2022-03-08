@@ -108,7 +108,8 @@ namespace Replace_Stuff
 						base.ProcessInput(ev);
 						Find.DesignatorManager.Select(this);
 						stuffDef = current;
-					}));
+					},
+					current));
 				}
 			}
 			if (list.Count == 0)
