@@ -14,5 +14,6 @@
 	<TD.FailedStuffBeingReplaced>stuff being replaced</TD.FailedStuffBeingReplaced>
 	<TD.SettingsPreferredBridge>Preferred Bridge order to place when needed:</TD.SettingsPreferredBridge>
 	<TD.SettingsBridgeResources>(First priority is bridges you have resources for ; Second priority is this list order - drag-and-drop to re-order)</TD.SettingsBridgeResources>
+	<TD.ReplacementAlreadyInProgess>Replacement already in progess.</TD.ReplacementAlreadyInProgess>
 	
 </LanguageData>

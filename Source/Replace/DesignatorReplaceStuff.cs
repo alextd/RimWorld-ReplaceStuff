@@ -108,7 +108,8 @@ namespace Replace_Stuff
 						base.ProcessInput(ev);
 						Find.DesignatorManager.Select(this);
 						stuffDef = current;
-					}));
+					},
+					current));
 				}
 			}
 			if (list.Count == 0)
@@ -145,10 +146,8 @@ namespace Replace_Stuff
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
 		{
 			DesignatorContext.designating = true;
-			bool result =  CanReplaceStuffAt(stuffDef, cell, Map)
-				&& !cell.GetThingList(Map).Any(t => 
-				(t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef) || 
-				(t.IsNewThingReplacement(out Thing oldThing)));
+			bool result = CanReplaceStuffAt(stuffDef, cell, Map)
+				&& !cell.GetThingList(Map).Any(t => t is ReplaceFrame rf && rf.EntityToBuildStuff() == stuffDef);
 			DesignatorContext.designating = false;
 			return result;
 		}
@@ -158,11 +157,15 @@ namespace Replace_Stuff
 			return cell.GetThingList(map).Any(t => t.Position == cell && CanReplaceStuffFor(stuff, t));
 		}
 
-		public static bool CanReplaceStuffFor(ThingDef stuff, Thing thing)
+		public static bool CanReplaceStuffFor(ThingDef stuff, Thing thing, ThingDef matchDef = null)
 		{
-			if (thing.Faction != Faction.OfPlayer && thing.Faction != null)
+			if (thing.Faction != Faction.OfPlayer && thing.Faction != null)	//can't replace enemy things
 				return false;
 
+			BuildableDef builtDef = GenConstruct.BuiltDefOf(thing.def);
+
+			if (matchDef != null && builtDef != matchDef)
+				return false;
 
 			if (thing is Blueprint bp)
 			{
@@ -181,67 +184,86 @@ namespace Replace_Stuff
 			}
 			else return false;
 
-			BuildableDef builtDef = GenConstruct.BuiltDefOf(thing.def);
 			if (!GenConstruct.CanBuildOnTerrain(builtDef, thing.Position, thing.Map, thing.Rotation, thing, stuff))
-				return false;//TODO: place bridges under
+				return false;//TODO: place bridges under && 
+
+			if (thing.BeingReplacedByNewThing() != null)
+				return false;//being upgraded.
 
 			return GenStuff.AllowedStuffsFor(builtDef).Contains(stuff);
 		}
 
 		public override void DesignateSingleCell(IntVec3 cell)
 		{
-			List<Thing> things = cell.GetThingList(Map).FindAll(t => CanReplaceStuffFor(stuffDef, t));
-			for(int i=0; i<things.Count; i++)
+			FindReplace(Map, cell, stuffDef);
+		}
+
+		public static void FindReplace(Map map, IntVec3 cell, ThingDef stuffDef)
+		{
+			List<Thing> replaceable = cell.GetThingList(map).FindAll(t => CanReplaceStuffFor(stuffDef, t));
+
+			ChooseReplace(replaceable, stuffDef);
+		}
+
+		public static void ChooseReplace(List<Thing> replaceables, ThingDef stuffDef)
+		{
+			//TODO Godmode. Replace the thing and kill any blueprints/frames.
+
+			//If there is a blueprint or frame, replace that and ignore the underlying replaceable thing - it's already being replaced.
+			//If there's not, just use the thing, starting a basic replacement
+			Thing thing = replaceables.FirstOrFallback(t => t is Blueprint_Build || t is Frame, replaceables.FirstOrDefault());
+
+			if (thing == null)//should not happen, CanDesignateCell
+				return;
+
+			DoReplace(thing, stuffDef);
+		}
+
+		public static void DoReplace(Thing thing, ThingDef stuffDef)
+		{
+			var pos = thing.Position;
+			var rot = thing.Rotation;
+			var map = thing.Map;
+
+			//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
+			PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, pos, map, rot, Faction.OfPlayer, stuffDef);
+
+			//CanReplaceStuffFor has verified this is different stuff
+			//so the task here is: place new replacements, kill old replacement
+			//Too finicky to change stuff of current replacement - canceling jobs and such.
+			if (thing is Blueprint_Build oldBP)
 			{
-				Thing thing = things[i];
-				thing.SetFaction(Faction.OfPlayer);
+				oldBP.Destroy(DestroyMode.Cancel);
+				//Destroy before Place beacause GenSpawn.Spawn will wipe it
 
-				//In case you're replacing with a stuff that needs a higher affordance that bridges can handle.
-				PlaceBridges.EnsureBridge.PlaceBridgeIfNeeded(thing.def, thing.Position, Map, thing.Rotation, Faction.OfPlayer, stuffDef);
-
-				if (DebugSettings.godMode)
-				{
-					ReplaceFrame.FinalizeReplace(thing, stuffDef);
-				}
-				else
-				{
-					Log.Message($"PlaceReplaceFrame on {thing} with {stuffDef}");
-					if (thing is Blueprint_Build blueprint)
-						blueprint.stuffToUse = stuffDef;
-					else if (thing is ReplaceFrame replaceFrame)
-					{
-						if (replaceFrame.oldStuff == stuffDef)
-							replaceFrame.Destroy(DestroyMode.Cancel);
-						else
-						{
-							replaceFrame.ChangeStuff(stuffDef);
-
-							//Interrupt any workers - they don't have the required new stuff
-							if (replaceFrame.Map.mapPawns.FreeColonists.First() is Pawn sampleColonist &&
-								replaceFrame.Map.reservationManager.FirstRespectedReserver(replaceFrame, sampleColonist) is Pawn worker)
-							{
-								if (worker.CurJob.def == JobDefOf.FinishFrame &&
-									worker.CurJob.targetA == replaceFrame)
-									worker.jobs.EndCurrentJob(JobCondition.InterruptForced);
-
-								for (int jobI = worker.jobs.jobQueue.Count - 1; jobI >= 0; jobI--)
-								{
-									Job qJob = worker.jobs.jobQueue[jobI].job;
-									if (qJob.def == JobDefOf.FinishFrame &&
-										qJob.targetA == replaceFrame)
-										worker.jobs.EndCurrentOrQueuedJob(qJob, JobCondition.InterruptForced);
-								}
-							}
-						}
-					}
-					else if (thing is Frame frame)
-					{
-						GenConstruct.PlaceBlueprintForBuild_NewTemp(frame.def.entityDefToBuild, frame.Position, frame.Map, frame.Rotation, frame.Faction, stuffDef);
-					}
-					else
-						GenReplace.PlaceReplaceFrame(thing, stuffDef);
-				}
+				GenConstruct.PlaceBlueprintForBuild_NewTemp(oldBP.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
 			}
+			else if (thing is ReplaceFrame oldRF)
+			{
+				if (oldRF.oldStuff != stuffDef)
+				{
+					//replacement frame should keep deconstruction work mount
+					ReplaceFrame newFrame = GenReplace.PlaceReplaceFrame(oldRF.oldThing, stuffDef);
+					newFrame.workDone = Mathf.Min(oldRF.workDone, oldRF.WorkToDeconstruct);
+				}
+				//else, if same stuff as old stuff, we just chose replace with original stuff, so we're already done - just destroy the frame.
+				//upgrade frames/blueprints
+
+				oldRF.Destroy(DestroyMode.Cancel);
+			}
+			else if (thing is Frame oldFrame)
+			{
+				oldFrame.Destroy(DestroyMode.Cancel);
+
+				GenConstruct.PlaceBlueprintForBuild_NewTemp(oldFrame.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
+			}
+			else
+			{
+				//Oh of course the standard case is, just place a replace frame! I almost forgot about that.
+				GenReplace.PlaceReplaceFrame(thing, stuffDef);
+			}
+
+			FleckMaker.ThrowMetaPuffs(GenAdj.OccupiedRect(pos, rot, thing.def.size), map);
 		}
 
 		public override void DrawPanelReadout(ref float curY, float width)

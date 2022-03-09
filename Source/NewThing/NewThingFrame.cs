@@ -80,6 +80,7 @@ namespace Replace_Stuff.NewThing
 
 		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
+			newDef = GenConstruct.BuiltDefOf(newDef) as ThingDef;
 			return newDef != oldDef && replacements.Any(r => r.Matches(newDef, oldDef));
 		}
 
@@ -176,8 +177,9 @@ namespace Replace_Stuff.NewThing
 
 		public static bool IsNewThingReplacement(this Thing newThing, out Thing oldThing)
 		{
-			if (newThing.Spawned && GenConstruct.BuiltDefOf(newThing.def) is ThingDef newDef)
-				return newDef.IsNewThingReplacement(newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
+			if (newThing.Spawned)
+				return newThing.def.IsNewThingReplacement(newThing.Position, newThing.Rotation, newThing.Map, out oldThing);
+
 			oldThing = null;
 			return false;
 		}
@@ -200,10 +202,19 @@ namespace Replace_Stuff.NewThing
 			return false;
 		}
 		
-		public static bool CanReplaceOldThing(this Thing newThing, Thing oldThing)
+		public static bool CanReplace(this Thing newThing, Thing oldThing)
 		{
-			ThingDef newDef = GenConstruct.BuiltDefOf(newThing.def) as ThingDef;
-			return newDef?.CanReplace(oldThing.def) ?? false;
+			return newThing.def.CanReplace(oldThing.def);
+		}
+
+		public static Thing BeingReplacedByNewThing(this Thing oldThing)
+		{
+			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(oldThing.Position, oldThing.Rotation, oldThing.def.size))
+				foreach (Thing newThing in checkPos.GetThingList(oldThing.Map))
+					if (newThing.CanReplace(oldThing))
+						return newThing;
+
+			return null;
 		}
 	}
 }

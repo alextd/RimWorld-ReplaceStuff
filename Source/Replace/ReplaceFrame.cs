@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
+using Verse.AI;
 using RimWorld;
 using UnityEngine;
 using HarmonyLib;
@@ -12,27 +13,6 @@ using HarmonyLib;
 
 namespace Replace_Stuff
 {
-	public static class StuffChanger
-	{
-		public static void ChangeStuff(this Thing thing, ThingDef stuff)
-		{
-			thing.SetStuffDirect(stuff);
-			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
-			if(thing is Frame frame)
-			{
-				GenLeaving.DoLeavingsFor(thing, thing.Map, DestroyMode.Cancel);
-				if (frame is ReplaceFrame replaceFrame)
-					replaceFrame.workDone = Mathf.Min(replaceFrame.workDone, replaceFrame.WorkToDeconstruct);
-				else
-					frame.workDone = 0;
-			}
-
-			thing.Notify_ColorChanged();
-
-			thing.Map.reservationManager.ReleaseAllForTarget(thing);
-		}
-	}
-
 	class ReplaceFrame : Frame, IConstructible
 	{
 		public Thing oldThing;
@@ -195,7 +175,9 @@ namespace Replace_Stuff
 		{
 			DeconstructDropStuff(thing);
 
-			thing.ChangeStuff(stuff);
+			thing.SetStuffDirect(stuff);
+			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
+			thing.Notify_ColorChanged();
 
 			if (worker != null && thing.TryGetComp<CompQuality>() is CompQuality compQuality)
 			{

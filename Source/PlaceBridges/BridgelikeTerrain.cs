@@ -15,8 +15,6 @@ namespace Replace_Stuff.PlaceBridges
 		private static Dictionary<ValueTuple<TerrainDef, TerrainAffordanceDef>, HashSet<TerrainDef>> bridgesForTerrain;
 		public static List<TerrainDef> allBridgeTerrains;
 
-		public static HashSet<TerrainAffordanceDef> ignoreAff;
-
 		private static bool IsFloorBase(this TerrainDef def)
 		{
 			//Nothing special with these, is not a bridgelike terrain
@@ -32,7 +30,7 @@ namespace Replace_Stuff.PlaceBridges
 		static BridgelikeTerrain()
 		{
 			//Ignore providing diggable because VFE's dirt can turn any terrain into diggable
-			ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable };
+			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable, TerrainAffordanceDefOf.GrowSoil};
 
 
 			//If you have Affordance 1 and need Affordance 2, you can build one of these TerrainDef
@@ -43,8 +41,13 @@ namespace Replace_Stuff.PlaceBridges
 			{
 				//Filter out some terrains
 				if (terdef.IsFloorBase()) continue;//nothing special, so easy pass on these
+
 				TerrainAffordanceDef bridgeAff = terdef.terrainAffordanceNeeded;
 				if (bridgeAff == null) continue;//nothing needed implies it's not buildable
+
+				if (ignoreAff.Contains(bridgeAff)) continue;//don't care to bridge from these types aka growsoil -> heavy, marsh->tilled soil 
+
+				if (!terdef.Removable) continue;//If you can't remove it, it's a permanent change, let's not do that automatically
 
 				foreach (TerrainAffordanceDef provideAff in terdef.affordances)
 				{
@@ -63,12 +66,26 @@ namespace Replace_Stuff.PlaceBridges
 
 			bridgesForTerrain = new Dictionary<(TerrainDef, TerrainAffordanceDef), HashSet<TerrainDef>>();
 			allBridgeTerrains = new List<TerrainDef>();
-			foreach (TerrainAffordanceDef needDef in DefDatabase<TerrainAffordanceDef>.AllDefs)
+
+			//Check for Affordances are actually neeeded by any buildind
+			HashSet<TerrainAffordanceDef> actuallyRequiredAffordances = new HashSet<TerrainAffordanceDef>();
+			foreach (ThingDef thingDef in DefDatabase<ThingDef>.AllDefs.Where(d => d.IsBuildingArtificial))
+			{
+				var aff = thingDef.terrainAffordanceNeeded;
+				if (aff != null && !ignoreAff.Contains(aff))
+					actuallyRequiredAffordances.Add(aff);
+			}
+
+			//Log.Message($"All affordances: {DefDatabase<TerrainAffordanceDef>.AllDefs.ToStringSafeEnumerable()}");
+			Log.Message($"Affordances worth bridging: {actuallyRequiredAffordances.ToStringSafeEnumerable()}");
+
+			foreach (TerrainAffordanceDef needDef in actuallyRequiredAffordances)
 			{
 				foreach (TerrainDef terDef in DefDatabase<TerrainDef>.AllDefs)
 				{
 					//If we have terdef and we need affdef
-					if (terDef.affordances.Contains(needDef)) continue;//Can already do it
+					if (terDef.Removable ||	//Can't build terrain over removable terrain
+						terDef.affordances.Contains(needDef)) continue;//Can already do it
 
 					HashSet<TerrainDef> possibleBridges = null;//Bridge terrains to get needDef on top of terDef
 					foreach (TerrainAffordanceDef affDef in terDef.affordances)
@@ -80,6 +97,7 @@ namespace Replace_Stuff.PlaceBridges
 								possibleBridges = new HashSet<TerrainDef>();
 								bridgesForTerrain[(terDef, needDef)] = possibleBridges;
 							}
+							//Log.Message($"Adding {terDef} => {bridgeTerrains.ToStringSafeEnumerable()} for {affDef} => {needDef}");
 							possibleBridges.AddRange(bridgeTerrains);
 						}
 					}
@@ -87,9 +105,12 @@ namespace Replace_Stuff.PlaceBridges
 					{
 						allBridgeTerrains.AddRange(possibleBridges);
 					}
+					//else
+						//Log.Message($"There is no bridge for {terDef} => {needDef}");
 				}
 			}
 			allBridgeTerrains.RemoveDuplicates();
+			Log.Message($"Bridges: {allBridgeTerrains.ToStringSafeEnumerable()}");
 		}
 
 		public static bool IsBridgelike(this BuildableDef tdef) => allBridgeTerrains.Contains(tdef);
@@ -105,7 +126,10 @@ namespace Replace_Stuff.PlaceBridges
 					{
 						if(backupBridge == null) backupBridge = bridge;	//First possible option
 
-						ThingDefCount cost = bridge.CostList.FirstOrDefault();
+						ThingDefCount cost = bridge.CostList?.FirstOrDefault();
+						if (cost == null)	//Free bridge? Okay.
+							return bridge;
+
 						int resourceCount = map.resourceCounter.GetCount(cost.ThingDef);
 
 						if (resourceCount > cost.Count * 10)

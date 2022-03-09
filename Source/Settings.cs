@@ -34,8 +34,24 @@ namespace Replace_Stuff
 			Widgets.DrawBox(reorderRect);
 
 			Rect labelRect = reorderRect.ContractedBy(1).TopPartPixels(itemHeight);
+			Rect globalDragRect = labelRect;
+			globalDragRect.position = GUIUtility.GUIToScreenPoint(globalDragRect.position);
 
-			int reorderID = ReorderableWidget.NewGroup_NewTemp(BridgelikeTerrain.Reorder, ReorderableDirection.Vertical);
+			int reorderID = ReorderableWidget.NewGroup_NewTemp(
+				BridgelikeTerrain.Reorder,
+				ReorderableDirection.Vertical,
+				extraDraggedItemOnGUI: delegate (int index, Vector2 dragStartPos)
+				{
+					Rect dragRect = globalDragRect;//copy it in so multiple frames don't edit the same thing
+					dragRect.y += index * itemHeight;//i-th item
+					dragRect.position += Event.current.mousePosition - dragStartPos;//adjust for mouse vs starting point
+
+					//Same id 34003428 as GenUI.DrawMouseAttachment
+					Find.WindowStack.ImmediateWindow(34003428, dragRect, WindowLayer.Super, () =>
+						DefLabelWithIconButNoTooltipCmonReally(dragRect.AtZero(), BridgelikeTerrain.allBridgeTerrains[index], 0)
+					);
+
+				});
 
 			foreach (TerrainDef terDef in BridgelikeTerrain.allBridgeTerrains)
 			{
@@ -47,6 +63,30 @@ namespace Replace_Stuff
 			options.Label("TD.SettingsBridgeResources".Translate());
 
 			options.End();
+		}
+
+
+
+		//public static void DefLabelWithIcon(Rect rect, Def def, float iconMargin = 2f, float textOffsetX = 6f)
+		//copypaste
+		public static void DefLabelWithIconButNoTooltipCmonReally(Rect rect, Def def, float iconMargin = 2f, float textOffsetX = 6f)
+		{
+			//DrawHighlightIfMouseover(rect);
+			//TooltipHandler.TipRegion(rect, def.description);
+			GUI.BeginGroup(rect);
+			Rect rect2 = new Rect(0f, 0f, rect.height, rect.height);
+			if (iconMargin != 0f)
+			{
+				rect2 = rect2.ContractedBy(iconMargin);
+			}
+			Widgets.DefIcon(rect2, def, null, 1f, null, drawPlaceholder: true);
+			Rect rect3 = new Rect(rect2.xMax + textOffsetX, 0f, rect.width, rect.height);
+			Text.Anchor = TextAnchor.MiddleLeft;
+			Text.WordWrap = false;
+			Widgets.Label(rect3, def.LabelCap);
+			Text.Anchor = TextAnchor.UpperLeft;
+			Text.WordWrap = true;
+			GUI.EndGroup();
 		}
 
 		public override void ExposeData()
@@ -77,8 +117,12 @@ namespace Replace_Stuff
 						loadedBridgeOrder.Reverse();
 						foreach (TerrainDef terDef in loadedBridgeOrder)
 						{
-							BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
-							BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+							//Sanity check if terDef is still counted as a bridge in case we eliminated it in a patch and settings still saved it
+							if (BridgelikeTerrain.allBridgeTerrains.Contains(terDef))
+							{
+								BridgelikeTerrain.allBridgeTerrains.Remove(terDef);
+								BridgelikeTerrain.allBridgeTerrains.Insert(0, terDef);
+							}
 						}
 					});
 			}

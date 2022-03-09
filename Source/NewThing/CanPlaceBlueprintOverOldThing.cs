@@ -18,8 +18,18 @@ namespace Replace_Stuff.NewThing
 
 			if (!DesignatorContext.designating) return;
 
-			if(newDef is ThingDef newD && newD.CanReplace(oldDef))
+			if (newDef is ThingDef newD && newD.CanReplace(oldDef))
 				__result = true;
+		}
+	}
+
+	[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing")]
+	public static class FramesDrawOverBuildingsEvenTheDoors
+	{
+		//		private static ThingDef NewFrameDef_Thing(ThingDef def)
+		public static void Postfix(ThingDef __result)
+		{
+			__result.altitudeLayer = AltitudeLayer.BuildingOnTop;
 		}
 	}
 }

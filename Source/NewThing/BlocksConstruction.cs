@@ -16,7 +16,7 @@ namespace Replace_Stuff.NewThing
 		{
 			if (!__result || constructible is Blueprint_Install) return;
 			
-			if (constructible.CanReplaceOldThing(t))
+			if (constructible.CanReplace(t))
 				__result = false;
 		}
 	}

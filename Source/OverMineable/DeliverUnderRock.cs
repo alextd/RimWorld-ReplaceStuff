@@ -130,4 +130,15 @@ namespace Replace_Stuff.OverMineable
 			return def.IsEdifice() || (def is ThingDef thingDef && thingDef.IsFrame);
 		}
 	}
+
+	[HarmonyPatch(typeof(GenConstruct))]//, "CanPlaceBlueprintOver.IsEdificeOverNonEdifice")]
+	public static class FramesAreEdificesInSomeCasesAndAlsoInTheCompilerGeneratedMethod
+	{
+		public static MethodInfo TargetMethod() =>
+			// "IsEdificeOverNonEdifice" Isn't compiled away? Okay I'll use that
+			AccessTools.FirstMethod(typeof(GenConstruct), method => method.Name.Contains("IsEdificeOverNonEdifice"));
+
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) => 
+			FramesAreEdificesInSomeCases.Transpiler(instructions);
+	}
 }
