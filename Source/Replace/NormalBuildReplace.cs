@@ -78,7 +78,7 @@ namespace Replace_Stuff
 				else if ((thing is Blueprint || thing is Frame) && thing.def.entityDefToBuild is ThingDef)
 				{
 					//Upgrade blueprint/frame exists
-					__result = "Replacement already in progess."; 
+					__result = "TD.ReplacementAlreadyInProgess".Translate(); 
 					return;
 				}
 			}
