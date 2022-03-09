@@ -41,28 +41,43 @@ namespace Replace_Stuff
 
 			if (!entDef.MadeFromStuff) return;
 
+			Log.Message($" Can't Build {entDef} because {__result.Reason}");
 			ThingDef newStuff = DesignatorContext.stuffDef;
 
 			//It would not be so easy to transpile this part
 			//it doesn't simply change __result to true when a replace frame can be placed,
 			//it also checks if the replace frame is already there and overrides that with false
+			bool makeItTrue = false;
 			foreach (Thing thing in center.GetThingList(map))
 			{
-				if (thing != thingToIgnore && thing.Position == center &&
+				if (thing == thingToIgnore) continue;
+
+				Log.Message($"Is {thing} in the way?");
+				if (thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
 				{
+					//Same thing or Building the same thing
 					ThingDef oldStuff = thing is Blueprint bp ? bp.EntityToBuildStuff() : thing.Stuff;
 					if (thing is ReplaceFrame rf && oldStuff == newStuff)
 					{
-						__result = "Replacement already in progress here";
+						//Identical things already exists
 						return;
 					}
+
 					if (newStuff != oldStuff &&
 						GenConstruct.CanBuildOnTerrain(entDef, center, map, rot, thing, newStuff))
-						__result = true;
+						makeItTrue = true;
+				}
+				else if (thing is Blueprint || thing is Frame)
+				{
+					__result = "Replacement already in progess.";
+					return;
 				}
 			}
+
+			if (makeItTrue) //Only if We found a replaceable, identical thing, and no other blueprints/frames for other defs
+				__result = true;
 		}
 
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
