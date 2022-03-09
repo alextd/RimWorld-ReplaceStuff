@@ -19,7 +19,7 @@ namespace Replace_Stuff.Replace
 			return thing != null && thing.Spawned &&
 				thing.Position.GetThingList(thing.Map)
 				.Any(t => (t is ReplaceFrame rf && rf.oldThing == thing && rf.workDone > 0)
-					|| (t is Frame f && f.CanReplaceOldThing(thing) && f.workDone > 0));
+					|| (t is Frame f && f.CanReplace(thing) && f.workDone > 0));
 		}
 	}
 

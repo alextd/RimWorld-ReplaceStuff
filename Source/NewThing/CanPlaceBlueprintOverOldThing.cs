@@ -18,7 +18,7 @@ namespace Replace_Stuff.NewThing
 
 			if (!DesignatorContext.designating) return;
 
-			if(newDef is ThingDef newD && newD.CanReplace(oldDef))
+			if (newDef is ThingDef newD && newD.CanReplace(oldDef))
 				__result = true;
 		}
 	}

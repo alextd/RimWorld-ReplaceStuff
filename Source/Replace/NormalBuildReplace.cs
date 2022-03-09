@@ -48,11 +48,6 @@ namespace Replace_Stuff
 			//it also checks if the replace frame is already there and overrides that with false
 			foreach (Thing thing in center.GetThingList(map))
 			{
-				if (thing.IsNewThingReplacement(out Thing oldThing))
-				{
-					__result = false;
-					return;
-				}
 				if (thing != thingToIgnore && thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
@@ -60,7 +55,7 @@ namespace Replace_Stuff
 					ThingDef oldStuff = thing is Blueprint bp ? bp.EntityToBuildStuff() : thing.Stuff;
 					if (thing is ReplaceFrame rf && oldStuff == newStuff)
 					{
-						__result = false;
+						__result = "Replacement already in progress here";
 						return;
 					}
 					if (newStuff != oldStuff &&

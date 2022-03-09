@@ -38,7 +38,7 @@ namespace Replace_Stuff
 
 			if (replaceFrameDef == null) return null;
 
-			if (oldThing.Position.GetFirstThing(oldThing.Map, replaceFrameDef) != null) return null;
+			//if (oldThing.Position.GetFirstThing(oldThing.Map, replaceFrameDef) != null) return null;
 
 			ReplaceFrame replaceFrame = (ReplaceFrame)ThingMaker.MakeThing(replaceFrameDef, stuff);
 
@@ -48,6 +48,7 @@ namespace Replace_Stuff
 				oldThing.Map.designationManager.AddDesignation(new Designation(replaceFrame, QBTypes.qbDesDef));
 
 			replaceFrame.SetFactionDirect(Faction.OfPlayer);
+			oldThing.SetFaction(Faction.OfPlayer);
 			replaceFrame.oldThing = oldThing;
 			replaceFrame.oldStuff = oldThing.Stuff;
 			GenSpawn.Spawn(replaceFrame, oldThing.Position, oldThing.Map, oldThing.Rotation);
