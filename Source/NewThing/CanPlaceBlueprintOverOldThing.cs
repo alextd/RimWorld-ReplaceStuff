@@ -22,4 +22,14 @@ namespace Replace_Stuff.NewThing
 				__result = true;
 		}
 	}
+
+	[HarmonyPatch(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Thing")]
+	public static class FramesDrawOverBuildingsEvenTheDoors
+	{
+		//		private static ThingDef NewFrameDef_Thing(ThingDef def)
+		public static void Postfix(ThingDef __result)
+		{
+			__result.altitudeLayer = AltitudeLayer.BuildingOnTop;
+		}
+	}
 }
