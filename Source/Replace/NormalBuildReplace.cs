@@ -39,9 +39,10 @@ namespace Replace_Stuff
 			if (__result.Reason != "IdenticalThingExists".Translate() &&
 				__result.Reason != "IdenticalBlueprintExists".Translate()) return;
 
+			if (!(entDef is ThingDef)) return;
+
 			if (!entDef.MadeFromStuff) return;
 
-			Log.Message($" Can't Build {entDef} because {__result.Reason}");
 			ThingDef newStuff = DesignatorContext.stuffDef;
 
 			//It would not be so easy to transpile this part
@@ -52,7 +53,6 @@ namespace Replace_Stuff
 			{
 				if (thing == thingToIgnore) continue;
 
-				Log.Message($"Is {thing} in the way?");
 				if (thing.Position == center &&
 					(thing.Rotation == rot || PlacingRotationDoesntMatter(entDef)) &&
 					GenConstruct.BuiltDefOf(thing.def) == entDef)
@@ -65,13 +65,20 @@ namespace Replace_Stuff
 						return;
 					}
 
-					if (newStuff != oldStuff &&
-						GenConstruct.CanBuildOnTerrain(entDef, center, map, rot, thing, newStuff))
-						makeItTrue = true;
+					if (newStuff != oldStuff)
+					{
+						if (GenConstruct.CanBuildOnTerrain(entDef, center, map, rot, thing, newStuff))
+							makeItTrue = true;
+						else
+						{
+							__result = "TerrainCannotSupport_TerrainAffordanceFromStuff".Translate(entDef, entDef.GetTerrainAffordanceNeed(newStuff), newStuff).CapitalizeFirst();
+						}
+					}
 				}
-				else if (thing is Blueprint || thing is Frame)
+				else if ((thing is Blueprint || thing is Frame) && thing.def.entityDefToBuild is ThingDef)
 				{
-					__result = "Replacement already in progess.";
+					//Upgrade blueprint/frame exists
+					__result = "Replacement already in progess."; 
 					return;
 				}
 			}
