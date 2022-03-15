@@ -115,8 +115,8 @@ namespace Replace_Stuff
 				this.resourceContainer.ClearAndDestroyContents(DestroyMode.Vanish);
 				this.Destroy(DestroyMode.Vanish);
 
-				worker.records.Increment(RecordDefOf.ThingsConstructed);
-				worker.records.Increment(RecordDefOf.ThingsDeconstructed);
+				worker?.records.Increment(RecordDefOf.ThingsConstructed);
+				worker?.records.Increment(RecordDefOf.ThingsDeconstructed);
 			}
 			else
 			{

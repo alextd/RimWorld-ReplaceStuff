@@ -240,6 +240,10 @@ namespace Replace_Stuff
 			}
 			else if (thing is ReplaceFrame oldRF)
 			{
+				if (DebugSettings.godMode)
+				{
+					ReplaceFrame.FinalizeReplace(thing, stuffDef);
+				}
 				if (oldRF.oldStuff != stuffDef)
 				{
 					//replacement frame should keep deconstruction work mount
@@ -256,6 +260,10 @@ namespace Replace_Stuff
 				oldFrame.Destroy(DestroyMode.Cancel);
 
 				GenConstruct.PlaceBlueprintForBuild_NewTemp(oldFrame.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
+			}
+			else if (DebugSettings.godMode)
+			{
+				ReplaceFrame.FinalizeReplace(thing, stuffDef);
 			}
 			else
 			{
