@@ -22,6 +22,9 @@ namespace Replace_Stuff.Replace
 			if (thingDef == null)//Terrain?
 				return true;
 
+			if (DebugSettings.godMode || ___entDef.GetStatValueAbstract(StatDefOf.WorkToBuild, __instance.StuffDef) == 0f)
+				return true;
+
 
 			//Fix for door rotation so we find any rotation of doors
 			if (typeof(Building_Door).IsAssignableFrom(thingDef.thingClass))
