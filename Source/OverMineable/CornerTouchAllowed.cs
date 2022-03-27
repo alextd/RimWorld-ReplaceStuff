@@ -78,28 +78,28 @@ namespace Replace_Stuff.OverMineable
 				.Where(mi => mi.Name == "TryPlaceThing")
 				.MinBy(mi => mi.GetParameters().Length);
 
-			//Same thing put takes a pawn to validate region.
-			MethodInfo TryPlaceThingInSameRegionInfo = AccessTools.Method(typeof(DropOnPawn), nameof(TryPlaceThingInSameRegion));
+			//Same thing put takes a pawn to validate room.
+			MethodInfo TryPlaceThingInSameRoomInfo = AccessTools.Method(typeof(DropOnPawn), nameof(TryPlaceThingInSameRoom));
 
 			foreach(var inst in instructions)
 			{
 				if(inst.Calls(TryPlaceThingInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_S, 4);//Pawn pawn
-					yield return new CodeInstruction(OpCodes.Call, TryPlaceThingInSameRegionInfo);
+					yield return new CodeInstruction(OpCodes.Call, TryPlaceThingInSameRoomInfo);
 				}
 				else yield return inst;
 			}
 		}
 
 		//public static bool TryPlaceThing(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction = null, Predicate<IntVec3> nearPlaceValidator = null, Rot4 rot = default(Rot4))
-		public static bool TryPlaceThingInSameRegion(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction, Predicate<IntVec3> nearPlaceValidator, Rot4 rot, Pawn miner)
+		public static bool TryPlaceThingInSameRoom(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction, Predicate<IntVec3> nearPlaceValidator, Rot4 rot, Pawn miner)
 		{
 			//Given that nearPlaceValidator will be null as it's a call from TrySpawnYield:
 
 			//(Good luck setting this up in ILCode so I'll do it here)
 			nearPlaceValidator = pos => {
-				return pos.GetRegion(miner.Map) == miner.GetRegion();
+				return pos.GetRoom(miner.Map) == miner.GetRoom();
 			};
 
 			return GenPlace.TryPlaceThing(thing, center, map, mode, placedAction, nearPlaceValidator, rot);
