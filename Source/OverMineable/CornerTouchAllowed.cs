@@ -96,11 +96,11 @@ namespace Replace_Stuff.OverMineable
 		public static bool TryPlaceThingInSameRoom(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction, Predicate<IntVec3> nearPlaceValidator, Rot4 rot, Pawn miner)
 		{
 			//Given that nearPlaceValidator will be null as it's a call from TrySpawnYield:
-
-			//(Good luck setting this up in ILCode so I'll do it here)
-			nearPlaceValidator = pos => {
-				return pos.GetRoom(miner.Map) == miner.GetRoom();
-			};
+			
+			//For godmode mining there is no pawn
+			if (miner != null)
+				//(Good luck setting this up in ILCode so I'll do it here)
+				nearPlaceValidator = pos => pos.GetRoom(miner.Map) == miner.GetRoom();
 
 			return GenPlace.TryPlaceThing(thing, center, map, mode, placedAction, nearPlaceValidator, rot);
 		}
