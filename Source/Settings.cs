@@ -23,6 +23,16 @@ namespace Replace_Stuff
 			
 			options.CheckboxLabeled("TD.SettingsNoOverwallCoolers".Translate(), ref hideOverwallCoolers);
 			options.CheckboxLabeled("TD.SettingsNoNormalCoolers".Translate(), ref hideNormalCoolers);
+
+			if (BridgelikeTerrain.allBridgeTerrains.Count > 1)
+				DoBridgeList(options);
+
+
+			options.End();
+		}
+
+		public void DoBridgeList(Listing_Standard options)
+		{
 			options.GapLine();
 
 			Text.Font = GameFont.Medium;
@@ -61,8 +71,6 @@ namespace Replace_Stuff
 				labelRect.y += itemHeight;
 			}
 			options.Label("TD.SettingsBridgeResources".Translate());
-
-			options.End();
 		}
 
 

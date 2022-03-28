@@ -62,4 +62,47 @@ namespace Replace_Stuff.OverMineable
 			return instructions;
 		}
 	}
+
+
+	//Make sure mineable drop is in miner's region so it's not blocked off 
+	[HarmonyPatch(typeof(Mineable), "TrySpawnYield")]
+	public static class DropOnPawn
+	{
+		//private void TrySpawnYield(Map map, float yieldChance, bool moteOnWaste, Pawn pawn)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			//There's two overloads for TryPlaceThing, one just literally calls the other and tosses out the (out Thing)..
+			//I don't want to write out all the generic params here...
+			//so just find the one with less parameters.
+			MethodInfo TryPlaceThingInfo = typeof(GenPlace).GetMethods(AccessTools.all)
+				.Where(mi => mi.Name == "TryPlaceThing")
+				.MinBy(mi => mi.GetParameters().Length);
+
+			//Same thing put takes a pawn to validate room.
+			MethodInfo TryPlaceThingInSameRoomInfo = AccessTools.Method(typeof(DropOnPawn), nameof(TryPlaceThingInSameRoom));
+
+			foreach(var inst in instructions)
+			{
+				if(inst.Calls(TryPlaceThingInfo))
+				{
+					yield return new CodeInstruction(OpCodes.Ldarg_S, 4);//Pawn pawn
+					yield return new CodeInstruction(OpCodes.Call, TryPlaceThingInSameRoomInfo);
+				}
+				else yield return inst;
+			}
+		}
+
+		//public static bool TryPlaceThing(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction = null, Predicate<IntVec3> nearPlaceValidator = null, Rot4 rot = default(Rot4))
+		public static bool TryPlaceThingInSameRoom(Thing thing, IntVec3 center, Map map, ThingPlaceMode mode, Action<Thing, int> placedAction, Predicate<IntVec3> nearPlaceValidator, Rot4 rot, Pawn miner)
+		{
+			//Given that nearPlaceValidator will be null as it's a call from TrySpawnYield:
+
+			//(Good luck setting this up in ILCode so I'll do it here)
+			nearPlaceValidator = pos => {
+				return pos.GetRoom(miner.Map) == miner.GetRoom();
+			};
+
+			return GenPlace.TryPlaceThing(thing, center, map, mode, placedAction, nearPlaceValidator, rot);
+		}
+	}
 }
