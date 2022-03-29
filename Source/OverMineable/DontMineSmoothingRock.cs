@@ -12,8 +12,7 @@ using HarmonyLib;
 namespace Replace_Stuff.OverMineable
 {
 	//Smooth walls before replacing with other wall, don't mine them away and rebuild.
-	//TODO: Doesn't seem to work though.
-	//[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
+	[HarmonyPatch(typeof(GenConstruct), "HandleBlockingThingJob")]
 	static class DontMineSmoothingRock
 	{
 		//public static Job HandleBlockingThingJob(Thing constructible, Pawn worker, bool forced = false)
