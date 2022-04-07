@@ -81,7 +81,7 @@ namespace Replace_Stuff
 		{
 			//DrawHighlightIfMouseover(rect);
 			//TooltipHandler.TipRegion(rect, def.description);
-			GUI.BeginGroup(rect);
+			Widgets.BeginGroup(rect);
 			Rect rect2 = new Rect(0f, 0f, rect.height, rect.height);
 			if (iconMargin != 0f)
 			{
@@ -94,7 +94,7 @@ namespace Replace_Stuff
 			Widgets.Label(rect3, def.LabelCap);
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.WordWrap = true;
-			GUI.EndGroup();
+			Widgets.EndGroup();
 		}
 
 		public override void ExposeData()
