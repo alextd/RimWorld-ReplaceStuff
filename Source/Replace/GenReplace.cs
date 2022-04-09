@@ -69,14 +69,16 @@ namespace Replace_Stuff
 			AddReplaceFrames(false);
 		}
 		*/
+		public delegate void GiveShortHashDel(Def d, Type t);
+		public static GiveShortHashDel GiveShortHash = AccessTools.MethodDelegate<GiveShortHashDel>(AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash"));
 		public static void AddReplaceFrames(bool addShortHash = true)
 		{
-			IEnumerable<ThingDef> enumerable = ThingDefGenerator_ReplaceFrame.ImpliedReplaceFrameDefs();
-			var hashMethod = AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash");
-			foreach (ThingDef current in enumerable)
+			Type type = typeof(ThingDef);
+
+			foreach (ThingDef current in ThingDefGenerator_ReplaceFrame.ImpliedReplaceFrameDefs())
 			{
-				if(addShortHash)	//Wouldn't need this if other mods added defs earlier. Oh well.
-					hashMethod.Invoke(null, new object[] { current, typeof(ThingDef) }); ;
+				if (addShortHash)  //Wouldn't need this if other mods added defs earlier. Oh well.
+					GiveShortHash(current, type);
 				current.PostLoad();
 				DefDatabase<ThingDef>.Add(current);
 			}

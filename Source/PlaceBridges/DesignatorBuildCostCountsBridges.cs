@@ -14,10 +14,8 @@ namespace Replace_Stuff.PlaceBridges
 	[HarmonyPatch(typeof(Designator_Build), "DrawPlaceMouseAttachments")]
 	static class DesignatorBuildCostCountsBridges
 	{
-
-		public static FieldInfo placingRotInfo = AccessTools.Field(typeof(Designator_Build), "placingRot");
-		public static Rot4 PlacingRot(this Designator_Build designator) =>
-			(Rot4)placingRotInfo.GetValue(designator);
+		public static AccessTools.FieldRef<Designator_Build, Rot4> placingRot =
+			AccessTools.FieldRefAccess<Designator_Build, Rot4>("placingRot");
 
 		//protected override void DrawPlaceMouseAttachments(float curX, ref float curY)
 		public static void Postfix(Designator_Build __instance, float curX, ref float curY)
@@ -27,7 +25,7 @@ namespace Replace_Stuff.PlaceBridges
 			ThingDef stuff = __instance.StuffDef;
 			DesignationDragger dragger = Find.DesignatorManager.Dragger;
 			IEnumerable<IntVec3> cells = dragger.Dragging ? dragger.DragCells :
-				GenAdj.OccupiedRect(UI.MouseCell(), __instance.PlacingRot(), __instance.PlacingDef.Size).Cells;
+				GenAdj.OccupiedRect(UI.MouseCell(), placingRot(__instance), __instance.PlacingDef.Size).Cells;
 
 			foreach (IntVec3 dragPos in cells)
 				if (PlaceBridges.GetNeededBridge(__instance.PlacingDef, dragPos, __instance.Map, stuff) is TerrainDef tdef)

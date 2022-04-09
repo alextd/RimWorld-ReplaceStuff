@@ -142,11 +142,9 @@ namespace Replace_Stuff
 			}
 		}
 
-		public static MethodInfo CalcInfo = AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator");
-		public static Func<int, int> GetBuildingResourcesLeaveCalculator(Thing oldThing, DestroyMode mode)
-		{
-			return (Func<int, int>)CalcInfo.Invoke(null, new object[] { oldThing, mode });
-		}
+		public delegate Func<int, int> GetBuildingResourcesLeaveCalculatorDel(Thing oldThing, DestroyMode mode);
+		public static GetBuildingResourcesLeaveCalculatorDel GetBuildingResourcesLeaveCalculator =
+			AccessTools.MethodDelegate<GetBuildingResourcesLeaveCalculatorDel>(AccessTools.Method(typeof(GenLeaving), "GetBuildingResourcesLeaveCalculator"));
 
 		public static void DeconstructDropStuff(Thing oldThing)
 		{
@@ -263,6 +261,9 @@ namespace Replace_Stuff
 		}
 	}
 
+	/*
+	 * Pretty sure this is redundant since changing frames creates a new frame now 
+
 	[HarmonyPatch(typeof(Thing), "Notify_ColorChanged")]
 	public static class Virtualize_Notify_ColorChanged
 	{
@@ -279,4 +280,5 @@ namespace Replace_Stuff
 			}
 		}
 	}
+	*/
 }
