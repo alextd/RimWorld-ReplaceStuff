@@ -12,7 +12,7 @@ namespace Replace_Stuff.PlaceBridges
 	{
 		//If you have TerrainDef and need Affordance, you can build bridge from from TerrainDefs to get that affordance
 		//TODO: group terrains by affordances. eg different water types all have the same set of bridges that would work but are all handled separately
-		private static Dictionary<ValueTuple<TerrainDef, TerrainAffordanceDef>, HashSet<TerrainDef>> bridgesForTerrain;
+		private static Dictionary<(TerrainDef, TerrainAffordanceDef), HashSet<TerrainDef>> bridgesForTerrain;
 		public static List<TerrainDef> allBridgeTerrains;
 
 		private static bool IsFloorBase(this TerrainDef def)
@@ -34,7 +34,7 @@ namespace Replace_Stuff.PlaceBridges
 
 
 			//If you have Affordance 1 and need Affordance 2, you can build one of these TerrainDef
-			var affordanceBridges = new Dictionary<ValueTuple<TerrainAffordanceDef, TerrainAffordanceDef>, List<TerrainDef>>();
+			var affordanceBridges = new Dictionary<(TerrainAffordanceDef, TerrainAffordanceDef), List<TerrainDef>>();
 
 			//Find bridge terrains:
 			foreach (TerrainDef terdef in DefDatabase<TerrainDef>.AllDefs)
