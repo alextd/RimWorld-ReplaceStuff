@@ -186,6 +186,11 @@ namespace Replace_Stuff.NewThing
 
 		public static bool IsNewThingReplacement(this ThingDef newDef, IntVec3 pos, Rot4 rotation, Map map, out Thing oldThing)
 		{
+			if (map == null)
+			{
+				oldThing = null;
+				return false;
+			}
 			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(pos, rotation, newDef.Size))
 			{
 				foreach (Thing oThing in checkPos.GetThingList(map))
