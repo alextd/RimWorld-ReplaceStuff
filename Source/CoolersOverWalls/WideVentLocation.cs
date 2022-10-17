@@ -15,7 +15,7 @@ namespace Replace_Stuff.CoolersOverWalls
 	{
 		public static IEnumerable<CodeInstruction> TranspileNorthWith(IEnumerable<CodeInstruction> instructions, OpCode paramCode)
 		{
-			MethodInfo NorthInfo = AccessTools.Property(typeof(IntVec3), "North").GetGetMethod();
+			FieldInfo NorthInfo = AccessTools.Field(typeof(IntVec3), nameof(IntVec3.North));
 
 			MethodInfo DoubleItInfo = AccessTools.Method(typeof(WideVentLocationGhost), nameof(WideVentLocationGhost.DoubleIt));
 
@@ -23,7 +23,7 @@ namespace Replace_Stuff.CoolersOverWalls
 			{
 				yield return i;
 				//IL_0019: call         valuetype Verse.IntVec3 Verse.IntVec3::get_North()
-				if (i.Calls(NorthInfo))
+				if (i.LoadsField(NorthInfo))
 				{
 					yield return new CodeInstruction(paramCode);//def or thing
 					yield return new CodeInstruction(OpCodes.Call, DoubleItInfo);
@@ -61,7 +61,7 @@ namespace Replace_Stuff.CoolersOverWalls
 	{
 		public static void Postfix(Designator_Dropdown __instance)
 		{
-			__instance.order = 20f;
+			__instance.Order = 20f;
 		}
 	}
 }

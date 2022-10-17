@@ -60,7 +60,7 @@ namespace Replace_Stuff.OverMineable
 	}
 
 	//This should technically go inside Designator_Build.DesignateSingleCell, but this is easier.
-	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp))]
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild))]
 	class InterceptBlueprintOverMinable
 	{
 		//public static Blueprint_Build PlaceBlueprintForBuild(BuildableDef sourceDef, IntVec3 center, Map map, Rot4 rotation, Faction faction, ThingDef stuff)

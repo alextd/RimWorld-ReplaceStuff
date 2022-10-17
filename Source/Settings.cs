@@ -47,9 +47,10 @@ namespace Replace_Stuff
 			Rect globalDragRect = labelRect;
 			globalDragRect.position = GUIUtility.GUIToScreenPoint(globalDragRect.position);
 
-			int reorderID = ReorderableWidget.NewGroup_NewTemp(
+			int reorderID = ReorderableWidget.NewGroup(
 				BridgelikeTerrain.Reorder,
 				ReorderableDirection.Vertical,
+				reorderRect,
 				extraDraggedItemOnGUI: delegate (int index, Vector2 dragStartPos)
 				{
 					Rect dragRect = globalDragRect;//copy it in so multiple frames don't edit the same thing

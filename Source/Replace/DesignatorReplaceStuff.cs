@@ -138,9 +138,7 @@ namespace Replace_Stuff
 
 		protected virtual void DrawGhost(Color ghostCol)
 		{
-#pragma warning disable CS0618  
 			GhostDrawer.DrawGhostThing(UI.MouseCell(), Rot4.North, stuffDef, null, ghostCol, AltitudeLayer.Blueprint);
-#pragma warning restore CS0618
 		}
 
 		public override AcceptanceReport CanDesignateCell(IntVec3 cell)
@@ -236,7 +234,7 @@ namespace Replace_Stuff
 				oldBP.Destroy(DestroyMode.Cancel);
 				//Destroy before Place beacause GenSpawn.Spawn will wipe it
 
-				GenConstruct.PlaceBlueprintForBuild_NewTemp(oldBP.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
+				GenConstruct.PlaceBlueprintForBuild(oldBP.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
 			}
 			else if (thing is ReplaceFrame oldRF)
 			{
@@ -259,7 +257,7 @@ namespace Replace_Stuff
 			{
 				oldFrame.Destroy(DestroyMode.Cancel);
 
-				GenConstruct.PlaceBlueprintForBuild_NewTemp(oldFrame.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
+				GenConstruct.PlaceBlueprintForBuild(oldFrame.def.entityDefToBuild, pos, map, rot, Faction.OfPlayer, stuffDef);
 			}
 			else if (DebugSettings.godMode)
 			{

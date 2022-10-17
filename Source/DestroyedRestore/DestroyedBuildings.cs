@@ -17,7 +17,7 @@ namespace Replace_Stuff.DestroyedRestore
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			MethodInfo PlaceBlueprintForBuildInfo = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild));
-			MethodInfo PlaceBlueprintForBuildInfoNEWTMP = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild_NewTemp));
+			MethodInfo PlaceBlueprintForBuildInfoNEWTMP = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild));
 
 			foreach (CodeInstruction i in instructions)
 			{
