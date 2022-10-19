@@ -9,6 +9,7 @@ using Verse.AI;
 using RimWorld;
 using UnityEngine;
 using HarmonyLib;
+using Replace_Stuff.Utilities;
 
 
 namespace Replace_Stuff
@@ -174,6 +175,7 @@ namespace Replace_Stuff
 			DeconstructDropStuff(thing);
 
 			thing.SetStuffDirect(stuff);
+			thing.RemoveFromStatWorkerCaches();
 			thing.HitPoints = thing.MaxHitPoints; //Deconstruction/construction implicitly repairs
 			thing.Notify_ColorChanged();
 
