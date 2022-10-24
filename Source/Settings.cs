@@ -31,6 +31,7 @@ namespace Replace_Stuff
 			options.End();
 		}
 
+		private int reorderID = -1;
 		public void DoBridgeList(Listing_Standard options)
 		{
 			options.GapLine();
@@ -47,22 +48,25 @@ namespace Replace_Stuff
 			Rect globalDragRect = labelRect;
 			globalDragRect.position = GUIUtility.GUIToScreenPoint(globalDragRect.position);
 
-			int reorderID = ReorderableWidget.NewGroup(
-				BridgelikeTerrain.Reorder,
-				ReorderableDirection.Vertical,
-				reorderRect,
-				extraDraggedItemOnGUI: delegate (int index, Vector2 dragStartPos)
-				{
-					Rect dragRect = globalDragRect;//copy it in so multiple frames don't edit the same thing
-					dragRect.y += index * itemHeight;//i-th item
-					dragRect.position += Event.current.mousePosition - dragStartPos;//adjust for mouse vs starting point
+			if (Event.current.type == EventType.Repaint)
+			{
+				reorderID = ReorderableWidget.NewGroup(
+					BridgelikeTerrain.Reorder,
+					ReorderableDirection.Vertical,
+					reorderRect,
+					extraDraggedItemOnGUI: delegate (int index, Vector2 dragStartPos)
+					{
+						Rect dragRect = globalDragRect;//copy it in so multiple frames don't edit the same thing
+						dragRect.y += index * itemHeight;//i-th item
+						dragRect.position += Event.current.mousePosition - dragStartPos;//adjust for mouse vs starting point
 
-					//Same id 34003428 as GenUI.DrawMouseAttachment
-					Find.WindowStack.ImmediateWindow(34003428, dragRect, WindowLayer.Super, () =>
-						DefLabelWithIconButNoTooltipCmonReally(dragRect.AtZero(), BridgelikeTerrain.allBridgeTerrains[index], 0)
-					);
+						//Same id 34003428 as GenUI.DrawMouseAttachment
+						Find.WindowStack.ImmediateWindow(34003428, dragRect, WindowLayer.Super, () =>
+							DefLabelWithIconButNoTooltipCmonReally(dragRect.AtZero(), BridgelikeTerrain.allBridgeTerrains[index], 0)
+						);
 
-				});
+					});
+			}
 
 			foreach (TerrainDef terDef in BridgelikeTerrain.allBridgeTerrains)
 			{
