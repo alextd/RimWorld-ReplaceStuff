@@ -77,11 +77,32 @@ namespace Replace_Stuff.NewThing
 		}
 
 		public static List<Replacement> replacements;
+		public static Dictionary<Pair<ThingDef, ThingDef>, bool> replacementMemo = new Dictionary<Pair<ThingDef, ThingDef>, bool>();
 
 		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
 			newDef = GenConstruct.BuiltDefOf(newDef) as ThingDef;
-			return newDef != oldDef && replacements.Any(r => r.Matches(newDef, oldDef));
+			if (newDef == oldDef)
+			{
+				return false;
+			}
+
+			var pair = new Pair<ThingDef, ThingDef>(newDef, oldDef);
+			if (replacementMemo.TryGetValue(pair, out var result)) 
+			{
+				return result;
+			} 
+
+			for (int i = 0; i < replacements.Count; i++)
+			{
+				if (!replacements[i].Matches(newDef, oldDef)) continue;
+				
+				replacementMemo.Add(pair, true);
+				return true;
+			}
+
+			replacementMemo.Add(pair, false);
+			return false;
 		}
 
 		public static void FinalizeNewThingReplace(this Thing newThing, Thing oldThing)
@@ -191,13 +212,19 @@ namespace Replace_Stuff.NewThing
 				oldThing = null;
 				return false;
 			}
-			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(pos, rotation, newDef.Size))
+
+			var cells = GenAdj.OccupiedRect(pos, rotation, newDef.size).Cells.ToList();
+			
+			for(int j = 0; j < cells.Count; j++) 
 			{
-				foreach (Thing oThing in checkPos.GetThingList(map))
+				var tileThings = cells[j].GetThingList(map);
+
+				for (int i = 0; i < tileThings.Count; i++)
 				{
-					if (newDef.CanReplace(oThing.def))
+					var tileThing = tileThings[i];
+					if (newDef.CanReplace(tileThing.def))
 					{
-						oldThing = oThing;
+						oldThing = tileThing;
 						return true;
 					}
 				}
