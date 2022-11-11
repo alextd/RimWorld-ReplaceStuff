@@ -16,10 +16,21 @@ namespace Replace_Stuff.Replace
 	{
 		public static bool IsReplacing(Thing thing)
 		{
-			return thing != null && thing.Spawned &&
-				thing.Position.GetThingList(thing.Map)
-				.Any(t => (t is ReplaceFrame rf && rf.oldThing == thing && rf.workDone > 0)
-					|| (t is Frame f && f.CanReplace(thing) && f.workDone > 0));
+			if (thing is null || !thing.Spawned) return false;
+
+			var tileThings = thing.Position.GetThingList(thing.Map);
+			if (tileThings.Count <= 1) return false;
+
+			for (int i = 0; i < tileThings.Count; i++)
+			{
+				var tileThing = tileThings[i];
+				if (tileThing == thing) continue;
+
+				if (tileThing is ReplaceFrame rf && rf.workDone > 0 && rf.oldThing == thing) return true;
+				if (tileThing is Frame fr && fr.workDone > 0 && fr.CanReplace(thing)) return true;
+			}
+			
+			return false;
 		}
 	}
 
@@ -39,6 +50,11 @@ namespace Replace_Stuff.Replace
 		//public virtual bool UsableNow
 		public static void Postfix(ref bool __result, Building_WorkTable __instance)
 		{
+			if (!__result)
+			{
+				return;
+			}
+			
 			if (DisableThing.IsReplacing(__instance))
 			{
 				__result = false;
