@@ -5,6 +5,7 @@ using System.Text;
 using HarmonyLib;
 using Verse;
 using RimWorld;
+using UnityEngine;
 
 namespace Replace_Stuff
 {
@@ -115,6 +116,25 @@ namespace Replace_Stuff
 				}
 			}
 		}
+
+		private static Color DrawColor(ThingDef def)
+		{
+				if (def.MadeFromStuff)
+					return Color.white;
+				
+				var costList = def.entityDefToBuild.CostList;
+				if (costList == null) return new Color(0.6f, 0.6f, 0.6f);
+				
+				foreach (var costItem in costList)
+				{
+					var costDef = costItem.thingDef;
+					if (costDef.IsStuff && costDef.stuffProps.color != Color.white)
+						return def.GetColorForStuff(costDef);
+				}
+				
+				return new Color(0.6f, 0.6f, 0.6f);
+		}
+		
 		public static ThingDef NewReplaceFrameDef_Thing(ThingDef def)
 		{
 			ThingDef thingDef = ThingDefGenerator_ReplaceFrame.BaseFrameDef();
@@ -134,6 +154,18 @@ namespace Replace_Stuff
 			thingDef.clearBuildingArea = false;
 			thingDef.drawPlaceWorkersWhileSelected = def.drawPlaceWorkersWhileSelected;
 			thingDef.stuffCategories = def.stuffCategories;
+
+			if (def.size.x <= 4 && def.size.z <= 4)
+			{
+				thingDef.drawerType = DrawerType.MapMeshOnly;
+				thingDef.graphicData = new GraphicData();
+				thingDef.graphicData.graphicClass = typeof(Graphic_Single);
+				thingDef.graphicData.texPath = $"ReplaceStuffFrame/{def.size.x}x{def.size.z}";
+				thingDef.graphicData.drawSize = new Vector2(def.size.x, def.size.z);
+				thingDef.graphicData.drawOffset = def.graphicData.drawOffset;
+				thingDef.graphicData.shaderType = ShaderTypeDefOf.Transparent;
+				thingDef.graphicData.color = DrawColor(thingDef);
+			}
 
 			//Support QualityBuilder
 			if (QBTypes.compPropQBType!= null)
