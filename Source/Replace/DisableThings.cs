@@ -21,9 +21,8 @@ namespace Replace_Stuff.Replace
 			var tileThings = thing.Position.GetThingList(thing.Map);
 			if (tileThings.Count <= 1) return false;
 
-			for (int i = 0; i < tileThings.Count; i++)
-			{
-				var tileThing = tileThings[i];
+			foreach(Thing tileThing in tileThings)
+			{ 
 				if (tileThing == thing) continue;
 
 				if (tileThing is ReplaceFrame rf && rf.workDone > 0 && rf.oldThing == thing) return true;

@@ -77,7 +77,7 @@ namespace Replace_Stuff.NewThing
 		}
 
 		public static List<Replacement> replacements;
-		public static Dictionary<Pair<ThingDef, ThingDef>, bool> replacementMemo = new Dictionary<Pair<ThingDef, ThingDef>, bool>();
+		private static Dictionary<(ThingDef, ThingDef), bool> _replacementCache = new ();
 
 		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
@@ -87,21 +87,20 @@ namespace Replace_Stuff.NewThing
 				return false;
 			}
 
-			var pair = new Pair<ThingDef, ThingDef>(newDef, oldDef);
-			if (replacementMemo.TryGetValue(pair, out var result)) 
+			if (_replacementCache.TryGetValue((newDef, oldDef), out var result)) 
 			{
 				return result;
 			} 
 
-			for (int i = 0; i < replacements.Count; i++)
+			foreach (var r in replacements)
 			{
-				if (!replacements[i].Matches(newDef, oldDef)) continue;
+				if (!r.Matches(newDef, oldDef)) continue;
 				
-				replacementMemo.Add(pair, true);
+				_replacementCache.Add((newDef, oldDef), true);
 				return true;
 			}
 
-			replacementMemo.Add(pair, false);
+			_replacementCache.Add((newDef, oldDef), false);
 			return false;
 		}
 
@@ -213,18 +212,13 @@ namespace Replace_Stuff.NewThing
 				return false;
 			}
 
-			var cells = GenAdj.OccupiedRect(pos, rotation, newDef.size).Cells.ToList();
-			
-			for(int j = 0; j < cells.Count; j++) 
+			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(pos, rotation, newDef.Size))
 			{
-				var tileThings = cells[j].GetThingList(map);
-
-				for (int i = 0; i < tileThings.Count; i++)
+				foreach (Thing oThing in checkPos.GetThingList(map))
 				{
-					var tileThing = tileThings[i];
-					if (newDef.CanReplace(tileThing.def))
+					if (newDef.CanReplace(oThing.def))
 					{
-						oldThing = tileThing;
+						oldThing = oThing;
 						return true;
 					}
 				}
