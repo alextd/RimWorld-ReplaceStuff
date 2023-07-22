@@ -13,6 +13,7 @@
   <ItemGroup>
 		<ReleaseFiles Include="About\**;Defs\**;Patches\**;Languages\**;Sounds\**;Textures\**;News\**;LoadFolders.xml"
 									Exclude="About\About-Release.xml;About\About.xml"/>
+		<AboutFiles Include="About\About-Release.xml;About\About.xml"/>
   </ItemGroup>
   <Target Name="Clean" />
   <Target Name="Build">
