@@ -140,7 +140,10 @@ namespace Replace_Stuff.NewThing
 					newCooler.compTempControl.targetTemperature = oldCooler.compTempControl.targetTemperature;
 				}
 				));
-			replacements.Add(new Replacement(d => typeof(Building_Bed).IsAssignableFrom(d.thingClass),
+			bool isBed(ThingDef d) { return typeof(Building_Bed).IsAssignableFrom(d.thingClass); }
+			replacements.Add(new Replacement(
+				d => isBed(d) && d.GetStatValueAbstract(StatDefOf.WorkToBuild) > 0f,
+				isBed,
 				preAction: (n, o) =>
 				{
 					Building_Bed newBed = n as Building_Bed;
