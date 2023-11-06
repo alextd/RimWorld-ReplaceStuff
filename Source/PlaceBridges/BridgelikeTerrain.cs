@@ -124,10 +124,10 @@ namespace Replace_Stuff.PlaceBridges
 				foreach (TerrainDef bridge in allBridgeTerrains)
 					if (bridges.Contains(bridge))
 					{
-						if(backupBridge == null) backupBridge = bridge;	//First possible option
+						if (backupBridge == null) backupBridge = bridge;  //First possible option
 
 						ThingDefCount cost = bridge.CostList?.FirstOrDefault();
-						if (cost == null)	//Free bridge? Okay.
+						if (cost.ThingDef == null) //Free bridge? Okay. Or some mod's error. Not my fault.
 							return bridge;
 
 						int resourceCount = map.resourceCounter.GetCount(cost.ThingDef);
@@ -135,7 +135,7 @@ namespace Replace_Stuff.PlaceBridges
 						if (resourceCount > cost.Count * 10)
 							return bridge;//Plently. Use this.
 
-						if( resourceCount > 0 )
+						if (resourceCount > 0)
 							bestBridge = bridge;//Not enough but at least this will work.
 					}
 			}
