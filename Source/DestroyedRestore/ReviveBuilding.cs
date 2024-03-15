@@ -18,7 +18,7 @@ namespace Replace_Stuff.DestroyedRestore
 		{
 			//ThingMaker.MakeThing(thingDef, base.Stuff);
 			MethodInfo SpawnInfo = AccessTools.Method(typeof(GenSpawn), nameof(GenSpawn.Spawn), 
-				new Type[] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool)});
+				new Type[] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(Rot4), typeof(WipeMode), typeof(bool), typeof(bool)});
 			MethodInfo CheckForRevivalInfo = AccessTools.Method(typeof(ReviveBuilding), nameof(CheckForRevival));
 
 			int localMapIndex = mb.GetMethodBody().LocalVariables.FirstOrDefault(lv => lv.LocalType == typeof(Map)).LocalIndex;
@@ -34,11 +34,11 @@ namespace Replace_Stuff.DestroyedRestore
 			}
 		}
 
-		//public static Thing Spawn(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
-		public static Thing CheckForRevival(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false)
+		//public static Thing Spawn(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false, bool forbidLeavings = false)
+		public static Thing CheckForRevival(Thing newThing, IntVec3 loc, Map map, Rot4 rot, WipeMode wipeMode = WipeMode.Vanish, bool respawningAfterLoad = false, bool forbidLeavings = false)
 		{
 			Log.Message($"Checking {newThing} for revival");
-			Thing thing = GenSpawn.Spawn(newThing, loc, map, rot, wipeMode, respawningAfterLoad);
+			Thing thing = GenSpawn.Spawn(newThing, loc, map, rot, wipeMode, respawningAfterLoad, forbidLeavings);
 			DestroyedBuildings.ReviveBuilding(thing, loc, map);	//After spawn so SpawnSetup is called, comps created.
 			return thing;
 		}
