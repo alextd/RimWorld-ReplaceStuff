@@ -28,7 +28,7 @@ namespace Replace_Stuff.Replace
 
 			//Fix for door rotation so we find any rotation of doors
 			if (typeof(Building_Door).IsAssignableFrom(thingDef.thingClass))
-				___placingRot = Building_Door.DoorRotationAt(c, __instance.Map);
+				___placingRot = DoorUtility.DoorRotationAt(c, __instance.Map, thingDef.building.preferConnectingToFences);
 
 			List<Thing> replaceables = c.GetThingList(__instance.Map).FindAll(
 				t =>

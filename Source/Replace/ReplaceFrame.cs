@@ -10,6 +10,7 @@ using RimWorld;
 using UnityEngine;
 using HarmonyLib;
 using Replace_Stuff.Utilities;
+using Replace_Stuff.NewThing;
 
 
 namespace Replace_Stuff
@@ -89,6 +90,8 @@ namespace Replace_Stuff
 			return TotalStuffNeeded() - CountStuffHas();
 		}
 
+		// Pre 1.5, what was MaterialsNeeded is now TotalMaterialCost()/IsCompleted()/ThingCountNeeded()
+		/*
 		private List<ThingDefCountClass> cachedMaterialsNeeded = new List<ThingDefCountClass>();
 		public new List<ThingDefCountClass> MaterialsNeeded()
 		{
@@ -100,7 +103,21 @@ namespace Replace_Stuff
 				this.cachedMaterialsNeeded.Add(new ThingDefCountClass(Stuff, need));
 
 			return this.cachedMaterialsNeeded;
+		}*/
+
+		//TODO
+		//private static Dictionary<CostListCalculator.CostListPair, List<ThingDefCountClass>> cachedReplaceCosts = new Dictionary<CostListCalculator.CostListPair, List<ThingDefCountClass>>(FastCostListPairComparer.Instance);
+		// TotalMaterialCost provided as IConstructble
+
+		// Note that "new" might not normally be called but base TotalMaterialCost is patched below to act as virtual for this method
+		public new List<ThingDefCountClass> TotalMaterialCost()
+		{
+			return new () { new ThingDefCountClass(Stuff, TotalStuffNeeded()) };
 		}
+
+		// These two from Frame will work
+		// bool IsCompleted();
+		// int ThingCountNeeded(ThingDef stuff);
 
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
@@ -206,15 +223,15 @@ namespace Replace_Stuff
 
 
 	//VIRTUAL virtual methods
-	[HarmonyPatch(typeof(Frame), "MaterialsNeeded")]
-	public static class Virtualize_MaterialsNeeded
+	[HarmonyPatch(typeof(Frame), nameof(Frame.TotalMaterialCost))]
+	public static class Virtualize_TotalMaterialCost
 	{
-		//public List<ThingDefCountClass> MaterialsNeeded()
+		//public List<ThingDefCountClass> TotalMaterialCost()
 		public static bool Prefix(Frame __instance, ref List<ThingDefCountClass> __result)
 		{
 			if (__instance is ReplaceFrame replaceFrame)
 			{
-				__result = replaceFrame.MaterialsNeeded();
+				__result = replaceFrame.TotalMaterialCost();
 				return false;
 			}
 			return true;

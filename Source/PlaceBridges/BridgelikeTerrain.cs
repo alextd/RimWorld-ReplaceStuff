@@ -30,7 +30,11 @@ namespace Replace_Stuff.PlaceBridges
 		static BridgelikeTerrain()
 		{
 			//Ignore providing diggable because VFE's dirt can turn any terrain into diggable
-			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef> { TerrainAffordanceDefOf.Diggable, TerrainAffordanceDefOf.GrowSoil};
+			HashSet<TerrainAffordanceDef> ignoreAff = new HashSet<TerrainAffordanceDef>
+			{
+				DefDatabase<TerrainAffordanceDef>.GetNamed("Diggable"),
+				DefDatabase<TerrainAffordanceDef>.GetNamed("GrowSoil")
+			};
 
 
 			//If you have Affordance 1 and need Affordance 2, you can build one of these TerrainDef
