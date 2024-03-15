@@ -12,10 +12,13 @@ using HarmonyLib;
 using Replace_Stuff.Utilities;
 using Replace_Stuff.NewThing;
 
+using CostListPair = RimWorld.CostListCalculator.CostListPair;
+using FastCostListPairComparer = RimWorld.CostListCalculator.FastCostListPairComparer;
+
 
 namespace Replace_Stuff
 {
-	class ReplaceFrame : Frame, IConstructible
+	class ReplaceFrame : Frame
 	{
 		public Thing oldThing;
 		public ThingDef oldStuff;
@@ -90,6 +93,9 @@ namespace Replace_Stuff
 			return TotalStuffNeeded() - CountStuffHas();
 		}
 
+
+		// IConstructible methods
+
 		// Pre 1.5, what was MaterialsNeeded is now TotalMaterialCost()/IsCompleted()/ThingCountNeeded()
 		/*
 		private List<ThingDefCountClass> cachedMaterialsNeeded = new List<ThingDefCountClass>();
@@ -105,17 +111,26 @@ namespace Replace_Stuff
 			return this.cachedMaterialsNeeded;
 		}*/
 
-		//TODO
-		//private static Dictionary<CostListCalculator.CostListPair, List<ThingDefCountClass>> cachedReplaceCosts = new Dictionary<CostListCalculator.CostListPair, List<ThingDefCountClass>>(FastCostListPairComparer.Instance);
-		// TotalMaterialCost provided as IConstructble
+		private static readonly Dictionary<CostListPair, List<ThingDefCountClass>> cachedReplaceCosts = new(FastCostListPairComparer.Instance);
 
 		// Note that "new" might not normally be called but base TotalMaterialCost is patched below to act as virtual for this method
 		public new List<ThingDefCountClass> TotalMaterialCost()
 		{
-			return new () { new ThingDefCountClass(Stuff, TotalStuffNeeded()) };
+			// Basically CostListAdjusted, but ReplaceFrames only uses the Stuff so it's super short without error checks.
+			if (CostListCalculator.cachedDifficulty != Find.Storyteller.difficulty)
+			{
+				CostListCalculator.Reset();
+				CostListCalculator.cachedDifficulty = Find.Storyteller.difficulty;
+			}
+
+			if (!cachedReplaceCosts.TryGetValue(new (def.entityDefToBuild, Stuff), out var value))
+			{
+				value = new() { new (Stuff, TotalStuffNeeded()) };
+			}
+			return value;
 		}
 
-		// These two from Frame will work
+		// These two IConstructible from Frame will work
 		// bool IsCompleted();
 		// int ThingCountNeeded(ThingDef stuff);
 

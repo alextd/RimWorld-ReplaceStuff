@@ -62,6 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Krafs.Publicizer" Version="2.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**\*" />
   </ItemGroup>
   <ItemGroup>
