@@ -13,7 +13,7 @@ namespace Replace_Stuff.OverMineable
 {
 	//Include blueprints and frames in IsCornerTouchAllowed
 	//(Frames were included, but ReplaceStuff removes their 'edifice' status so they need to be re-included)
-	[HarmonyPatch(typeof(TouchPathEndModeUtility), nameof(TouchPathEndModeUtility.IsCornerTouchAllowed))]
+	[HarmonyPatch(typeof(TouchPathEndModeUtility), nameof(TouchPathEndModeUtility.IsCornerTouchAllowed_NewTemp))]
 	public static class IsCornerTouchAllowed
 	{
 		//public static bool IsCornerTouchAllowed(int cornerX, int cornerZ, int adjCardinal1X, int adjCardinal1Z, int adjCardinal2X, int adjCardinal2Z, PathingContext pc)
