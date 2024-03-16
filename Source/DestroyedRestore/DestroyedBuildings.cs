@@ -17,13 +17,11 @@ namespace Replace_Stuff.DestroyedRestore
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			MethodInfo PlaceBlueprintForBuildInfo = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild));
-			MethodInfo PlaceBlueprintForBuildInfoNEWTMP = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.PlaceBlueprintForBuild));
 
 			foreach (CodeInstruction i in instructions)
 			{
 				yield return i;
-				if (i.Calls(PlaceBlueprintForBuildInfo)
-					|| i.Calls(PlaceBlueprintForBuildInfoNEWTMP))
+				if (i.Calls(PlaceBlueprintForBuildInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//Thing thing
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map map
