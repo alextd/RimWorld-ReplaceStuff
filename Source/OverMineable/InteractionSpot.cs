@@ -10,6 +10,11 @@ using Verse;
 
 namespace Replace_Stuff.OverMineable
 {
+	/* 
+	 * 
+	 * since at least 1.5, this method doesn't check Traversability.Impassable. Is it supposed to be CanPlaceBlueprintOver?
+	 * Was canPlaceOverImpassablePlant added that made this obsolete?
+	 * What did this even do though heh
 	[HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
 	//public static AcceptanceReport CanPlaceBlueprintAt(BuildableDef entDef, IntVec3 center, Rot4 rot, Map map, bool godMode = false, Thing thingToIgnore = null)
 	static class InteractionSpot
@@ -28,6 +33,7 @@ namespace Replace_Stuff.OverMineable
 				//if (thingList2[index].def.passability == Traversability.Impassable && thingList2[index] is not rock)
 				if (inst.LoadsConstant(2) && !doneOnce)//Traversability.Impassable
 				{
+					Log.Message("Did this run?");
 					doneOnce = true;
 
 					yield return new CodeInstruction(list[i - 5].opcode, list[i - 5].operand);//thingList2, but no labels
@@ -45,4 +51,5 @@ namespace Replace_Stuff.OverMineable
 			return passibility == check && !blocker.IsMineableRock();
 		}
 	}
+	*/
 }
