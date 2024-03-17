@@ -12,39 +12,49 @@ using TD.Utilities;
 
 namespace Replace_Stuff.OverMineable
 {
-	//Still deliver resources to construction-blocked frames
-	[HarmonyPatch(typeof(WorkGiver_ConstructDeliverResources), "IsNewValidNearbyNeeder")]
+
+	// In CanConstruct, skip FirstBlockingThing if it's just a haul job
+	[HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.CanConstruct), [typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool), typeof(JobDef)])]
 	public static class DeliverUnderRock
 	{
-		//private bool IsNewValidNearbyNeeder(Thing t, HashSet<Thing> nearbyNeeders, IConstructible constructible, Pawn pawn)
+		//public static bool CanConstruct(Thing t, Pawn p, bool checkSkills = true, bool forced = false, JobDef jobForReservation = null)
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			//Replace
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
+			MethodInfo FirstBlockingThingInfo = AccessTools.Method(typeof(GenConstruct), nameof(GenConstruct.FirstBlockingThing));
 
 			//With
-			MethodInfo CanDeliverInfo = AccessTools.Method(typeof(DeliverUnderRock), "CanDeliver");
+			MethodInfo FirstBlockingThingNotHaulInfo = AccessTools.Method(typeof(DeliverUnderRock), nameof(FirstBlockingThingNotHaul));
 
-			return Transpilers.MethodReplacer(instructions, CanConstructInfo, CanDeliverInfo);
+			foreach (var inst in instructions)
+			{
+				if(inst.Calls(FirstBlockingThingInfo))
+				{
+					yield return new CodeInstruction(OpCodes.Ldarg_S, 4);//JobDef jobForReservation
+					yield return new CodeInstruction(OpCodes.Call, FirstBlockingThingNotHaulInfo);//JobDef jobForReservation
+				}
+				else
+				//JobDef jobForReservation
+					yield return inst;
+			}
 		}
 
-		//public static bool CanConstruct(Thing t, Pawn p, bool checkConstructionSkill = true, bool forced = false)
-		//but with less restrictions (remove GenConstruct.FirstBlockingThing)
-		public static bool CanDeliver(Thing t, Pawn p, bool checkConstructionSkill, bool forced)
+		//public static Thing FirstBlockingThing(Thing constructible, Pawn pawnToIgnore)
+		public static Thing FirstBlockingThingNotHaul(Thing constructible, Pawn pawnToIgnore, JobDef jobForReservation)
 		{
-			if (!p.CanReserveAndReach(t, PathEndMode.Touch, p.NormalMaxDanger()))
-			{
-				return false;
-			}
-			if (t.IsBurning())
-			{
-				return false;
-			}
-			return true;
+			if (jobForReservation == JobDefOf.HaulToContainer)
+				return null;
+
+			return GenConstruct.FirstBlockingThing(constructible, pawnToIgnore);
 		}
 	}
+	
 
 	//Haul job needs to deliver to frames even if construction blocked
+	/*
+	 // 1.5: JumpToCarryToNextContainerIfPossiblenow calls TryGetNextDestinationFromQueue
+	// but TryGetNextDestinationFromQueue no longer calls CanConstruct
+	// Presumably that is now checked when the queue was created.
 	[StaticConstructorOnStartup]
 	public static class HaulToBlueprintUnderRock
 	{
@@ -53,12 +63,11 @@ namespace Replace_Stuff.OverMineable
 			HarmonyMethod transpiler = new HarmonyMethod(typeof(DeliverUnderRock), nameof(DeliverUnderRock.Transpiler));
 			Harmony harmony = new Harmony("Uuugggg.rimworld.Replace_Stuff.main");
 
-			MethodInfo CanConstructInfo = AccessTools.Method(typeof(GenConstruct), "CanConstruct", new Type[] { typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool) });
 			Predicate<MethodInfo> check = m => m.Name.Contains("JumpToCarryToNextContainerIfPossible");
 
 			harmony.PatchGeneratedMethod(typeof(Toils_Haul), check, transpiler: transpiler);
 		}
-	}
+	}*/
 
 	//Blueprint can become a frame even if final thing would be blocked
 	[HarmonyPatch(typeof(Blueprint), "TryReplaceWithSolidThing")]
