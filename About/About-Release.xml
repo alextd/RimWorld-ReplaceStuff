@@ -33,4 +33,5 @@ Check Steam page for any updated info.</description>
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
 	</modDependencies>
+	<modIconPath IgnoreIfNoMatchingField="True">TDReplaceStuffIcon</modIconPath>
 </ModMetaData>
