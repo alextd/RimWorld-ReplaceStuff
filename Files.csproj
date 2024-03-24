@@ -16,6 +16,13 @@
 		<AboutFiles Include="About\About-Release.xml;About\About.xml"/>
   </ItemGroup>
   <Target Name="Clean" />
+	<Target Name="_IsProjectRestoreSupported"
+          Returns="@(_ValidProjectsForRestore)">
+    <ItemGroup>
+      <_ValidProjectsForRestore Include="$(MSBuildProjectFullPath)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="Restore" />
   <Target Name="Build">
     <Copy Condition=" '$(Configuration)' == 'Release' "
 					SourceFiles="About\About-Release.xml" 
