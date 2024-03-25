@@ -183,21 +183,6 @@ namespace Replace_Stuff.NewThing
 			//---------------------------------------------
 		}
 
-		public static bool WasReplacedByNewThing(this Thing oldThing, out Thing replacement) => WasReplacedByNewThing(oldThing, oldThing.Map, out replacement);
-		public static bool WasReplacedByNewThing(this Thing oldThing, Map map, out Thing replacement)
-		{
-			foreach (IntVec3 checkPos in GenAdj.OccupiedRect(oldThing.Position, oldThing.Rotation, oldThing.def.Size))
-				foreach (Thing newThing in checkPos.GetThingList(map))
-				if (newThing.def.CanReplace(oldThing.def))
-				{
-					replacement = newThing;
-					return true;
-				}
-
-			replacement = null;
-			return false;
-		}
-
 		public static bool IsNewThingReplacement(this Thing newThing, out Thing oldThing)
 		{
 			if (newThing.Spawned)
