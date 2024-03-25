@@ -40,7 +40,7 @@ namespace Replace_Stuff.NewThing
 
 			foreach (CodeInstruction i in instructions)
 			{
-				if (i.opcode == OpCodes.Ldc_I4_6)  //DestroyMode.Refund
+				if(i.LoadsConstant(DestroyMode.Refund))//DestroyMode.Refund
 					yield return new CodeInstruction(OpCodes.Call, DecideDestroyModeInfo);
 				else
 					yield return i;
