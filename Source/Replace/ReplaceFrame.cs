@@ -195,9 +195,7 @@ namespace Replace_Stuff
 				{
 					Thing leftThing = ThingMaker.MakeThing(stuffDef);
 					leftThing.stackCount = leaveCount;
-#pragma warning disable CS0618 // Type or member is obsolete
 					GenDrop.TryDropSpawn(leftThing, oldThing.Position, oldThing.Map, ThingPlaceMode.Near, out Thing dummyThing);
-#pragma warning restore CS0618 // Type or member is obsolete
 				}
 			}
 		}
