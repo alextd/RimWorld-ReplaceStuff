@@ -110,7 +110,9 @@ namespace Replace_Stuff
 
 		public static bool PlacingRotationDoesntMatter(BuildableDef entDef)
 		{
-			return entDef is ThingDef def && typeof(Building_Door).IsAssignableFrom(def.thingClass);
+			return entDef is ThingDef def &&
+				(!def.rotatable ||
+				typeof(Building_Door).IsAssignableFrom(def.thingClass));
 		}
 	}
 }
