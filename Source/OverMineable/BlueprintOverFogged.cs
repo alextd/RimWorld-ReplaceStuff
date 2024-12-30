@@ -68,12 +68,10 @@ namespace Replace_Stuff.OverMineable
 		}
 	}
 
-	//TL;DR: actually ignore the thingToIgnore argument
-	//This patch fixes a vanilla bug/oversight, that forgot to check thingToIgnore in conduit's placeworker.
-	//This wasn't a problem in vanilla, but with replace stuff, conduit blueprints would disappear when doors are opened
-	//Since revealing new areas now triggers re-checking blueprints, power conduit blueprints would check their tile.
-	//They'd find themselves, and determine they can't exist because there's already a power conduit there.
-	//The thingToIgnore arguments already exists, to, you know, ignore that. But it wasn't checked.
+
+	// Change Conduit PlaceWorker to allow conduits over conduits.
+	// Note: before, I fixed this to properly use the thingToIgnore argument.
+	// This is redundant now ... but vanilla is technically incorrect to not use that arg.
 	[HarmonyPatch(typeof(PlaceWorker_Conduit), "AllowsPlacing")]
 	public static class FixConduitPlaceWorker
 	{
@@ -112,15 +110,24 @@ namespace Replace_Stuff.OverMineable
 				{
 					foundLdLoc = true;
 
+					// At start of loop, insert:
+					// if(thingList[i].def.building.isPowerConduit)
+					//	continue;
+
 					yield return new CodeInstruction(OpCodes.Nop) { labels = i.labels };//start of loop label
 					i.labels = new List<Label>();
 					foreach (CodeInstruction ci in currentThing)
-						yield return new CodeInstruction(ci.opcode, ci.operand);//thingList[i]
-					yield return new CodeInstruction(OpCodes.Ldarg_S, 5);//thingToIgnore
-					yield return new CodeInstruction(OpCodes.Beq, continueLabel);//continue
+						yield return new CodeInstruction(ci.opcode, ci.operand);//thingList[i] (Thing)
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixConduitPlaceWorker), nameof(IsConduit)));
+					yield return new CodeInstruction(OpCodes.Brtrue, continueLabel);// if(thingList[i].IsConduit()) continue;
 				}
 				yield return i;
 			}
+		}
+
+		public static bool IsConduit(Thing t)
+		{
+			return (t.def.building?.isPowerConduit ?? false);
 		}
 	}
 	

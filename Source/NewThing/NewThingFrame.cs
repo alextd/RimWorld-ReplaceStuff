@@ -154,7 +154,7 @@ namespace Replace_Stuff.NewThing
 				}
 				));
 			DesignationCategoryDef fencesDef = DefDatabase<DesignationCategoryDef>.GetNamed("Fences", false);
-			if(fencesDef != null)
+			if (fencesDef != null)
 				replacements.Add(new Replacement(d => d.designationCategory == fencesDef));
 
 			Action<Thing, Thing> transferBills = (n, o) =>
@@ -172,13 +172,19 @@ namespace Replace_Stuff.NewThing
 
 			replacements.Add(new Replacement(d => d.IsTable));
 
-			replacements.Add(new Replacement(d => d.thingClass == FridgeCompat.fridgeType, 
+			replacements.Add(new Replacement(d => d.thingClass == FridgeCompat.fridgeType,
 				postAction: (n, o) =>
 				{
 					FridgeCompat.DesiredTempInfo.SetValue(n, FridgeCompat.DesiredTempInfo.GetValue(o));
 				}));
 
 			replacements.Add(new Replacement(d => d.building?.isSittable ?? false));
+
+			// Also requires PlaceWorker changes to match this
+			replacements.Add(new Replacement(d => 
+				(d.building?.isPowerConduit ?? false)
+				|| typeof(Building_PowerSwitch).IsAssignableFrom(d.thingClass),
+				o => o.building?.isPowerConduit ?? false));
 			//---------------------------------------------
 			//---------------------------------------------
 		}
