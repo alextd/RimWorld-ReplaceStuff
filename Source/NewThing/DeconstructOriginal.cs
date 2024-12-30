@@ -20,7 +20,7 @@ namespace Replace_Stuff.NewThing
 		}
 	}
 
-	[HarmonyPatch(typeof(GenSpawn), "Refund")]
+	[HarmonyPatch(typeof(GenSpawn), nameof(GenSpawn.Refund_NewTemp))]
 	//public static void Refund(Thing thing, Map map, CellRect avoidThisRect)
 	public static class RefundDeconstruct
 	{
