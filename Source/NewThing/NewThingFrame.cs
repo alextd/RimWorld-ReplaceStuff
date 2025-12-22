@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Reflection;
@@ -10,14 +11,6 @@ using Verse;
 
 namespace Replace_Stuff.NewThing
 {
-	[DefOf]
-	public static class NewThingDefOf
-	{
-		public static ThingDef ElectricStove;
-		public static ThingDef FueledStove;
-		public static ThingDef HandTailoringBench;
-		public static ThingDef ElectricTailoringBench;
-	}
 	[StaticConstructorOnStartup]
 	public static class FridgeCompat
 	{
@@ -74,13 +67,16 @@ namespace Replace_Stuff.NewThing
 					replaceAction(n, o);
 				}
 			}
-		}
+}
 
 		public static List<Replacement> replacements;
 		private static Dictionary<(ThingDef, ThingDef), bool> _replacementCache = new ();
 
 		public static bool CanReplace(this ThingDef newDef, ThingDef oldDef)
 		{
+			if (!oldDef.building?.deconstructible ?? false)
+				return false;
+
 			newDef = GenConstruct.BuiltDefOf(newDef) as ThingDef;
 			if (newDef == oldDef)
 			{
@@ -93,10 +89,22 @@ namespace Replace_Stuff.NewThing
 			} 
 
 			// 1.6 added some tags for replacement. Add them here so Replace Stuff does then in-place
-			if(GenConstruct.HasMatchingReplacementTag(newDef, oldDef))
+			try
 			{
-				_replacementCache.Add((newDef, oldDef), true);
-				return true;
+				if (newDef != null)
+				{
+					if (GenConstruct.HasMatchingReplacementTag(newDef, oldDef))
+					{
+						_replacementCache.Add((newDef, oldDef), true);
+						return true;
+					}
+				}
+			}
+#pragma warning disable CS0168 // Variable is declared but never used
+			catch (Exception ex)
+#pragma warning restore CS0168 // Variable is declared but never used
+			{
+				Debugger.Break();
 			}
 
 			foreach (var r in replacements)
@@ -113,6 +121,13 @@ namespace Replace_Stuff.NewThing
 
 		public static void FinalizeNewThingReplace(this Thing newThing, Thing oldThing)
 		{
+			if (_replacementCache.TryGetValue((newThing.def, oldThing.def), out var result))
+			{
+				TransferBills(newThing, oldThing);
+
+				TransferStorageSettings(newThing, oldThing);
+			}
+
 			replacements.ForEach(r =>
 			{
 				if (r.Matches(newThing.def, oldThing.def))
@@ -127,6 +142,26 @@ namespace Replace_Stuff.NewThing
 				if (r.Matches(newThing.def, oldThing.def))
 					r.PreReplace(newThing, oldThing);
 			});
+		}
+
+		private static void TransferBills(Thing n, Thing o)
+		{
+			if (n is not Building_WorkTable newTable || o is not Building_WorkTable oldTable)
+				return;
+
+			foreach (Bill bill in oldTable.BillStack)
+			{
+				newTable.BillStack.AddBill(bill);
+			}
+		}
+
+		private static void TransferStorageSettings(Thing n, Thing o)
+		{
+			if (n is not Building_Storage newStore || o is not Building_Storage oldStore)
+				return;
+
+			// There's some mods doing weird stuff with storage settings. Need to delay this for it to apply
+			TickScheduler.NextTick(() => newStore.settings.CopyFrom(oldStore.settings));
 		}
 
 
@@ -172,20 +207,6 @@ namespace Replace_Stuff.NewThing
 			if (fencesDef != null)
 				replacements.Add(new Replacement(d => d.designationCategory == fencesDef));
 
-			// Workbenches: fueld to electric
-			Action<Thing, Thing> transferBills = (n, o) =>
-				{
-					Building_WorkTable newTable = n as Building_WorkTable;
-					Building_WorkTable oldTable = o as Building_WorkTable;
-
-					foreach (Bill bill in oldTable.BillStack)
-					{
-						newTable.BillStack.AddBill(bill);
-					}
-				};
-			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricStove, old => old == NewThingDefOf.FueledStove, transferBills));
-			replacements.Add(new Replacement(d => d == NewThingDefOf.ElectricTailoringBench, old => old == NewThingDefOf.HandTailoringBench, transferBills));
-
 			// Just tables.
 			replacements.Add(new Replacement(d => d.IsTable));
 
@@ -196,15 +217,38 @@ namespace Replace_Stuff.NewThing
 					FridgeCompat.DesiredTempInfo.SetValue(n, FridgeCompat.DesiredTempInfo.GetValue(o));
 				}));
 
+			// Allow all "plant growable items" to replace each other, and when they do attempt to set the growing plant type
+			replacements.Add(new Replacement(
+				building => typeof(IPlantToGrowSettable).IsAssignableFrom(building.thingClass),
+				postAction: (newItem, oldItem) =>
+				{
+					((IPlantToGrowSettable)newItem).SetPlantDefToGrow(((IPlantToGrowSettable)oldItem).GetPlantDefToGrow());
+				}));
+
+			replacements.Add(new Replacement(
+				building => typeof(Building_Battery).IsAssignableFrom(building.thingClass)));
+
+			// We can use placeWorkers and comps to check what kind of power is being generated so that we don't have to worry
+			// about each item individually
+			replacements.Add(new Replacement(
+				building => building.placeWorkers?.Any(placeWorker =>
+					placeWorker == typeof(PlaceWorker_WatermillGenerator)) ?? false));
+			replacements.Add(new Replacement(
+				building => building.placeWorkers?.Any(placeWorker =>
+					placeWorker == typeof(PlaceWorker_WindTurbine)) ?? false));
+			replacements.Add(new Replacement(
+				building => building.placeWorkers?.Any(placeWorker =>
+					placeWorker == typeof(PlaceWorker_OnSteamGeyser)) ?? false));
+
 			/* 1.6 added these as replaceTags (handled in CanReplace):
 			replacements.Add(new Replacement(d => d.building?.isSittable ?? false));
 
 			// Also requires PlaceWorker changes to match this
-			replacements.Add(new Replacement(d => 
+			replacements.Add(new Replacement(d =>
 				(d.building?.isPowerConduit ?? false)
 				|| typeof(Building_PowerSwitch).IsAssignableFrom(d.thingClass),
 				o => o.building?.isPowerConduit ?? false));
-			*/ 
+			*/
 
 			//---------------------------------------------
 			//---------------------------------------------

@@ -1,0 +1,50 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="vanillaexpanded.vfecore">
+		<defName>ReplaceStuffModCompat_VanillaExpandedFurniture</defName>
+		<replaceLists>
+			<li>
+				<category>Dressers</category>
+				<items>
+					<li>Table_RoyalDresser</li>
+				</items>
+			</li>
+
+			<li>
+				<category>EndTables</category>
+				<items>
+					<li>Table_RoyalEndTable</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Wardrobes</category>
+				<items>
+					<li>Table_Wardrobe</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>Light_Streetlamp</li>
+					<li>VFE_RoyalLamp</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Campfire</category>
+				<items>
+					<li>Stone_Campfire</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Radio</category>
+				<items>
+					<li>Radio_Industrial</li>
+					<li>Radio_Spacer</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

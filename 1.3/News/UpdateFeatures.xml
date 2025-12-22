@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<HugsLib.UpdateFeatureDef Abstract="true" Name="UpdateFeatureBase">
+		<modNameReadable>Replace Stuff</modNameReadable>
+		<modIdentifier>Uuugggg.ReplaceStuff</modIdentifier>
+		<linkUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=1372003680</linkUrl>
+	</HugsLib.UpdateFeatureDef>
+	
+	<HugsLib.UpdateFeatureDef ParentName="UpdateFeatureBase">
+		<defName>Uuugggg_ReplaceStuff_1_1_0</defName>
+		<assemblyVersion>1.1.0</assemblyVersion>
+		<content>Replace Stuff now will place modded bridges when needed.
+You can set a preference of which bridge to build in the settings.
+(It will still prefer bridges you have resources for)</content>
+	</HugsLib.UpdateFeatureDef>
+</Defs>

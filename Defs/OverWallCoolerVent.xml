@@ -22,8 +22,6 @@
 		<building>
 			<canPlaceOverWall>false</canPlaceOverWall>
 			<isEdifice>false</isEdifice>
-			<canExchangeVacuum>false</canExchangeVacuum>
-			<isAirtight>false</isAirtight>
 		</building>
 		<designationHotKey>Misc6</designationHotKey>
 	</ThingDef>
@@ -54,8 +52,6 @@
 		<building>
 			<canPlaceOverWall>false</canPlaceOverWall>
 			<isEdifice>false</isEdifice>
-			<canExchangeVacuum>false</canExchangeVacuum>
-			<isAirtight>false</isAirtight>
 		</building>
 		<designationHotKey>Misc7</designationHotKey>
 	</ThingDef>

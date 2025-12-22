@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<DesignatorDropdownGroupDef>
+		<defName>OverWallCooler</defName>
+	</DesignatorDropdownGroupDef>
+
+	<DesignatorDropdownGroupDef>
+		<defName>OverWallVent</defName>
+	</DesignatorDropdownGroupDef>
+	
+	<ThingDef ParentName="Cooler" Name="Cooler_Over">
+		<defName>Cooler_Over</defName>
+		<label>over-wall cooler</label>
+		<designatorDropdown>OverWallCooler</designatorDropdown>
+		<graphicData>
+			<texPath>Cooler_Over</texPath>
+		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<blockWind>false</blockWind>
+		<fillPercent>.6</fillPercent>
+		<coversFloor>false</coversFloor>
+		<blockLight>false</blockLight>
+		<staticSunShadowHeight>.6</staticSunShadowHeight>
+		<building>
+			<canPlaceOverWall>false</canPlaceOverWall>
+			<isEdifice>false</isEdifice>
+			<canExchangeVacuum>false</canExchangeVacuum>
+			<isAirtight>false</isAirtight>
+		</building>
+		<designationHotKey>Misc6</designationHotKey>
+	</ThingDef>
+
+	<ThingDef ParentName="Cooler_Over">
+		<defName>Cooler_Over2W</defName>
+		<label>over-wall cooler (wide)</label>
+		<graphicData>
+			<texPath>Cooler_Over2W</texPath>
+			<drawSize>(1,2)</drawSize>
+		</graphicData>
+		<size>(1,2)</size>
+	</ThingDef>
+
+	<ThingDef ParentName="Vent" Name="Vent_Over">
+		<defName>Vent_Over</defName>
+		<label>over-wall vent</label>
+		<designatorDropdown>OverWallVent</designatorDropdown>
+		<graphicData>
+			<texPath>Vent_Over</texPath>
+		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<coversFloor>true</coversFloor>
+		<blockLight>false</blockLight>
+		<castEdgeShadows>false</castEdgeShadows>
+		<building>
+			<canPlaceOverWall>false</canPlaceOverWall>
+			<canExchangeVacuum>true</canExchangeVacuum>
+			<isAirtight>true</isAirtight>
+		</building>
+		<designationHotKey>Misc7</designationHotKey>
+	</ThingDef>
+	
+	<ThingDef ParentName="Vent_Over">
+		<defName>Vent_Over2W</defName>
+		<label>over-wall vent (wide)</label>
+		<graphicData>
+			<texPath>Vent_Over2W</texPath>
+			<drawSize>(1,2)</drawSize>
+		</graphicData>
+		<size>(1,2)</size>
+	</ThingDef>
+
+</Defs>

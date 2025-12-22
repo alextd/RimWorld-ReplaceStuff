@@ -1,0 +1,28 @@
+name: Download Steam Workshop Dependencies
+description: Downloads Steam Workshop items required for the project.
+inputs:
+  path:
+    required: false
+    default: ''
+    description: 'The path of the directory to be uploaded, relative to the repository root.'
+runs:
+  using: composite
+  steps:
+  - name: Download Steam Workshop Items with Docker
+    shell: bash
+    run: |
+      cd ${{ inputs.path }}
+      cp  ${{ github.action_path }}/setup.sh .
+      chmod +x setup.sh
+
+      # Seriously? Line endings?
+      sed -i 's/\r$//' setup.sh
+
+      docker run --rm \
+        -v $(pwd):/workspace \
+        -w /workspace \
+        --entrypoint ./setup.sh \
+        steamcmd/steamcmd:ubuntu-22
+
+      rm setup.sh
+        

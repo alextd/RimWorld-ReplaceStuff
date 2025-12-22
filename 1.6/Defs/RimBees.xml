@@ -1,0 +1,19 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="sarg.rimbees.disabledForGenetics">
+		<defName>ReplaceStuffModCompat_ArmourRacks</defName>
+		<replaceLists>
+			<li>
+				<items>
+					<li>RB_Beehouse</li>
+					<li>RB_ClimatizedBeehouse</li>
+					<li>RB_AdvancedBeehouse</li>
+					<li>RB_AdvancedClimatizedBeehouse</li>
+					<li>RB_SpacerBeehouse</li>
+				</items>
+				<comps>
+					<li>Replace_Stuff.Comps.TransferBees</li>
+				</comps>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

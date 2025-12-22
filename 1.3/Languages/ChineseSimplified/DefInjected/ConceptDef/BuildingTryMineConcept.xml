@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <BuildersTryMine.label>建筑工人将会尝试开采有价值的物块</BuildersTryMine.label>
+  <BuildersTryMine.helpText>注意：将建筑物放在有价值的物块上时，建筑工人将会开采目标物块，如果采矿技能过低，可能会造成浪费。如果你的建筑工人采矿技能不高，你可能会想终止他们丢人的采矿工作，并将其交给专业的矿工。</BuildersTryMine.helpText>
+
+
+</LanguageData>

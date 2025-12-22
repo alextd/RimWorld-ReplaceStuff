@@ -1,0 +1,81 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="kentington.saveourship2">
+		<defName>ReplaceStuffModCompat_SaveOurShip2</defName>
+		<replaceLists>
+			<li>
+				<category>Wall</category>
+				<items>
+					<li>HullFoamWall</li>
+					<li>Ship_Beam_Unpowered</li>
+					<li>Ship_Beam</li>
+					<li>Ship_BeamArchotech_Unpowered</li>
+					<li>Ship_BeamArchotech</li>
+					<li>ShipAirlock</li>
+					<li>ShipAirlockArchotech</li>
+					<li>Ship_Beam_Wrecked</li>
+					<li>Ship_Beam_Wrecked_Fake</li>
+					<li>Ship_Corner_OneOne</li>
+					<li>Ship_Corner_OneOneFlip</li>
+					<li>Ship_Corner_OneTwo</li>
+					<li>Ship_Corner_OneTwoFlip</li>
+					<li>Ship_Corner_OneThree</li>
+					<li>Ship_Corner_OneThreeFlip</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Wall</category>
+				<items>
+					<li>ShipInside_SolarGenerator</li>
+					<li>ShipInside_SolarGeneratorArchotech</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>ShipReactor</category>
+				<items>
+					<li>Ship_Reactor</li>
+					<li>ArchotechAntimatterReactor</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>ShipHeatsink</category>
+				<items>
+					<li>ShipHeatsink</li>
+					<li>ShipHeatManifold</li>
+					<li>ShipHeatsinkAntiEntropy</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Holodeck</category>
+				<items>
+					<li>Holodeck_Basic</li>
+					<li>Holodeck_Standard</li>
+					<li>Holodeck_AI</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>ShipShield</category>
+				<items>
+					<li>ShipCombatShieldGenerator</li>
+					<li>ArchotechShieldGenerator</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Wall</category>
+				<items>
+					<li>ShipInside_PassiveVent</li>
+					<li>ShipInside_PassiveVentArchotech</li>
+				</items>
+				<comps>
+					<li>Replace_Stuff.Comps.ReplaceTemperatureControl</li>
+					<li>Replace_Stuff.Comps.ShipVentHeatWithPower</li>
+				</comps>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

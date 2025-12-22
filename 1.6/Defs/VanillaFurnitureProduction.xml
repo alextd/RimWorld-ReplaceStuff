@@ -1,0 +1,69 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="vanillaexpanded.vfeproduction">
+		<defName>ReplaceStuffModCompat_VanillaFurnitureProduction</defName>
+		<replaceLists>
+			<li>
+				<category>Smelters</category>
+				<items>
+					<li>VFE_FueledSmelter</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Stonecutters</category>
+				<items>
+					<li>VFE_TableStonecutterElectric</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Butchers</category>
+				<items>
+					<li>VFE_TableButcherElectric</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>DrugLab</category>
+				<items>
+					<li>VFE_TableDrugLabElectric</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Smithys</category>
+				<items>
+					<li>VFE_TableSmithyLarge</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>MachiningTables</category>
+				<items>
+					<li>VFE_TableMachiningLarge</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Stoves</category>
+				<items>
+					<li>VFE_TableStoveLarge</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>TailoringBenches</category>
+				<items>
+					<li>VFE_TableTailorLarge</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Fabricators</category>
+				<items>
+					<li>VFE_ComponentFabricationBench</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

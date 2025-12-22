@@ -10,9 +10,15 @@ using Verse;
 
 namespace Replace_Stuff.CoolersOverWalls
 {
-	[HarmonyPatch(typeof(PlaceWorker_Cooler), "DrawGhost")]
+	[HarmonyPatch]
 	static class WideVentLocationGhost
 	{
+		static IEnumerable<MethodBase> TargetMethods()
+		{
+			yield return AccessTools.Method(typeof(PlaceWorker_Cooler), nameof(PlaceWorker_Cooler.DrawGhost));
+			yield return AccessTools.Method(typeof(PlaceWorker_Vent), nameof(PlaceWorker_Vent.DrawGhost));
+		}
+
 		public static IEnumerable<CodeInstruction> TranspileNorthWith(IEnumerable<CodeInstruction> instructions, OpCode paramCode)
 		{
 			FieldInfo NorthInfo = AccessTools.Field(typeof(IntVec3), nameof(IntVec3.North));
@@ -41,8 +47,13 @@ namespace Replace_Stuff.CoolersOverWalls
 		{
 			ThingDef thingDef = o as ThingDef ?? (o as Thing)?.def;
 
-			return thingDef == OverWallDef.Cooler_Over2W || 
-				thingDef.entityDefToBuild == OverWallDef.Cooler_Over2W ? v * 2 : v;
+
+			return 
+				thingDef == OverWallDef.Cooler_Over2W || 
+				thingDef.entityDefToBuild == OverWallDef.Cooler_Over2W ||
+				thingDef == OverWallDef.Vent_Over2W ||
+				thingDef.entityDefToBuild == OverWallDef.Vent_Over2W
+					? v * 2 : v;
 		}
 	}
 

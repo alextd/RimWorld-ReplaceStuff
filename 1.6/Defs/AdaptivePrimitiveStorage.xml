@@ -1,0 +1,37 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="adaptive.primitivestorage">
+		<defName>ReplaceStuffModCompat_AdaptivePrimitiveStorage</defName>
+		<replaceLists>
+			<li>
+				<category>ASF_LogPile</category>
+				<items>
+					<li>ASF_SmallLogPile</li>
+					<li>ASF_LargeLogPile</li>
+				</items>
+			</li>
+			<li>
+				<category>ASF_Cellar</category>
+				<items>
+					<li>ASF_StoragePit</li>
+					<li>ASF_CellarWood</li>
+					<li>ASF_CellarStone</li>
+				</items>
+			</li>
+			<li>
+				<category>ASF_ClayPot</category>
+				<items>
+					<li>ASF_UncoveredClayPot</li>
+					<li>ASF_CoveredClayPot</li>
+				</items>
+			</li>
+			<li>
+				<category>ASF_WovenBasket</category>
+				<items>
+					<li>ASF_WovenBasket</li>
+					<li>ASF_WovenBasketDouble</li>
+					<li>ASF_WovenBasketTriple</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

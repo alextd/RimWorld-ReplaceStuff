@@ -1,0 +1,13 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="kikohi.jewelry">
+		<defName>ReplaceStuffModCompat_Jewelry</defName>
+		<replaceLists>
+			<li>
+				<category>ArtTables</category>
+				<items>
+					<li>LaserTableSculpting</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

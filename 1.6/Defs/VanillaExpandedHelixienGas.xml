@@ -1,0 +1,64 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="vanillaexpanded.helixiengas">
+		<defName>ReplaceStuffModCompat_VanillaExpandedHelixien</defName>
+		<replaceLists>
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>VHGE_GasLamp</li>
+					<li>VHGE_GasFloodlight</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Sunlamps</category>
+				<items>
+					<li>VHGE_GasSunLamp</li>
+				</items>
+			</li>
+
+			<li>
+				<category>PoweredGenerators</category>
+				<items>
+					<li>VHGE_HelixienGenerator</li>
+					<li MayRequire="VanillaExpanded.VFEPower">VHGE_IndustrialHelixienGenerator</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Smelters</category>
+				<items>
+					<li>VHGE_GasPoweredSmelter</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Refineries</category>
+				<items>
+					<li>VHGE_GasPoweredRefinery</li>
+				</items>
+			</li>
+		
+			<li>
+				<category>Crematoriums</category>
+				<items>
+					<li>VHGE_GasPoweredCrematorium</li>
+				</items>
+			</li>
+		
+			<li>
+				<category>Smithys</category>
+				<items>
+					<li>VHGE_GasPoweredSmithy</li>
+				</items>
+			</li>
+		
+			<li>
+				<category>Stoves</category>
+				<items>
+					<li>VHGE_GasPoweredStove</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

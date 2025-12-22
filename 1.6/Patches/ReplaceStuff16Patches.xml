@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[defName="Door"]/building/relatedBuildCommands</xpath>
+		<nomatch Class="PatchOperationAdd">
+		  <xpath>Defs/ThingDef[defName="Door"]/building</xpath>
+		  <value>
+			<relatedBuildCommands />
+		  </value>
+		</nomatch>
+	  </Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="Door"]/building/relatedBuildCommands</xpath>
+		<value>
+			<li>Autodoor</li>
+		</value>
+	</Operation>
+</Patch>

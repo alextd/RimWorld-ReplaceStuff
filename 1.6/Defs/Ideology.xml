@@ -1,0 +1,14 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="Ludeon.RimWorld.Ideology">
+		<defName>ReplaceStuffModCompat_Ideology</defName>
+		<replaceLists>
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>Darktorch</li>
+					<li>DarktorchFungus</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

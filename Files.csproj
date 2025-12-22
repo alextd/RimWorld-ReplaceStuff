@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <BuildProject>false</BuildProject>
+  </PropertyGroup>
+  <PropertyGroup>
     <BaseIntermediateOutputPath>.vs\unused\</BaseIntermediateOutputPath>
     <ProjectGuid>{AA1EF112-E817-4ED1-849A-EE55B8DAF3C0}</ProjectGuid>
   </PropertyGroup>
@@ -8,30 +11,24 @@
     <OutputPath>.\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	<OutputPath>..\$(SolutionName) - Release\</OutputPath>
+    <OutputPath>..\$(SolutionName) - Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-		<ReleaseFiles Include="About\**;Defs\**;Patches\**;Languages\**;Sounds\**;Textures\**;News\**;LoadFolders.xml"
-									Exclude="About\About-Release.xml;About\About.xml"/>
-		<AboutFiles Include="About\About-Release.xml;About\About.xml"/>
+    <ReleaseFiles Include="About\**;Defs\**;Patches\**;Languages\**;Sounds\**;Textures\**;News\**;LoadFolders.xml" Exclude="About\About-Release.xml;About\About.xml" />
+    <AboutFiles Include="About\About.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".github\" />
   </ItemGroup>
   <Target Name="Clean" />
-	<Target Name="_IsProjectRestoreSupported"
-          Returns="@(_ValidProjectsForRestore)">
+  <Target Name="_IsProjectRestoreSupported" Returns="@(_ValidProjectsForRestore)">
     <ItemGroup>
       <_ValidProjectsForRestore Include="$(MSBuildProjectFullPath)" />
     </ItemGroup>
   </Target>
   <Target Name="Restore" />
   <Target Name="Build">
-    <Copy Condition=" '$(Configuration)' == 'Release' "
-					SourceFiles="About\About-Release.xml" 
-          DestinationFiles="$(OutputPath)About\About.xml" 
-          SkipUnchangedFiles="true" />
-    <Copy Condition=" '$(Configuration)' == 'Release' "
-					SourceFiles="@(ReleaseFiles)"
-					DestinationFiles="@(ReleaseFiles->'$(OutputPath)%(RelativeDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy Condition=" '$(Configuration)' == 'Release' " SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(OutputPath)%(RelativeDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="Rebuild" />
   <Target Name="PostBuild" AfterTargets="Build">

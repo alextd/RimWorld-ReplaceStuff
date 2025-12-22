@@ -102,6 +102,8 @@ namespace Replace_Stuff.PlaceBridges
 								bridgesForTerrain[(terDef, needDef)] = possibleBridges;
 							}
 							//Log.Message($"Adding {terDef} => {bridgeTerrains.ToStringSafeEnumerable()} for {affDef} => {needDef}");
+							if(ModsConfig.OdysseyActive)
+								bridgeTerrains?.RemoveAll(x => x.Equals(TerrainDefOf.Substructure));
 							possibleBridges.AddRange(bridgeTerrains);
 						}
 					}
@@ -125,7 +127,7 @@ namespace Replace_Stuff.PlaceBridges
 			TerrainDef backupBridge = null;
 			if (bridgesForTerrain.TryGetValue((tDef, needed), out var bridges))
 			{
-				foreach (TerrainDef bridge in allBridgeTerrains)
+				foreach (TerrainDef bridge in allBridgeTerrains.Where(x => x.IsResearchFinished))
 					if (bridges.Contains(bridge))
 					{
 						if (backupBridge == null) backupBridge = bridge;  //First possible option

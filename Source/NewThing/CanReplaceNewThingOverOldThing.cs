@@ -14,6 +14,13 @@ namespace Replace_Stuff.NewThing
 		// public static bool CanReplace(BuildableDef placing, BuildableDef existing, ThingDef placingStuff = null, ThingDef existingStuff = null)
 		public static void Postfix(ref bool __result, BuildableDef placing, BuildableDef existing)
 		{
+			if (((placing as ThingDef)?.IsNonDeconstructibleAttackableBuilding ?? false) || 
+			    ((existing as ThingDef)?.IsNonDeconstructibleAttackableBuilding ?? false))
+			{
+				__result = false;
+				return;
+			}
+
 			if (__result) return;
 			
 			if (!DesignatorContext.designating) return;

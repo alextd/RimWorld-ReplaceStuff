@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
+using System.Diagnostics;
+using System.Threading;
 using Verse;
 
 namespace Replace_Stuff.PlaceBridges
@@ -27,51 +29,50 @@ namespace Replace_Stuff.PlaceBridges
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase method)
 		{
 			LocalVariableInfo posInfo = method.GetMethodBody().LocalVariables.First(lv => lv.LocalType == typeof(IntVec3));
-			FieldInfo affordancesInfo = AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.affordances));
+			MethodInfo getAffordances = AccessTools.Method(typeof(GridsUtility), nameof(GridsUtility.GetAffordances));
+			MethodInfo listContains = AccessTools.Method(typeof(List<TerrainAffordanceDef>), nameof(List<TerrainAffordanceDef>.Contains));
 
 			bool firstOnly = true;
 			var instList = instructions.ToList();
 			for(int i=0;i<instList.Count();i++)
 			{
 				var inst = instList[i];
-				if(inst.LoadsField(affordancesInfo) && firstOnly)
+				
+				// Look for the pattern: c1.GetAffordances(map).Contains(terrainAffordanceNeed)
+				// This will be: ldloc (c1), ldarg (map), call GetAffordances, ldloc (terrainAffordanceNeed), callvirt Contains
+				if(inst.Calls(getAffordances) && firstOnly)
 				{
 					firstOnly = false;
 
-					//
-					// IL_0053: ldarg.2      // map
-					// IL_0054: ldfld        class Verse.TerrainGrid Verse.Map::terrainGrid
-					// IL_0059: ldloc.3      // c1
-					// IL_005a: callvirt     instance class Verse.TerrainDef Verse.TerrainGrid::TerrainAt(valuetype Verse.IntVec3)
-					// IL_005f: ldfld        class [mscorlib]System.Collections.Generic.List`1<class Verse.TerrainAffordanceDef> Verse.TerrainDef::affordances
-					// IL_0064: ldloc.0      // terrainAffordanceNeed
-					// IL_0065: callvirt     instance bool class [mscorlib]System.Collections.Generic.List`1<class Verse.TerrainAffordanceDef>::Contains(!0/*class Verse.TerrainAffordanceDef*/)
-					// IL_006a: brtrue.s     IL_0071
-
-					//Skip ldfld affordances, load terrainAffordanceNeed
+					// We found the GetAffordances call
+					// The stack at this point has: c1, map
+					// After GetAffordances call, stack will have: List<TerrainAffordanceDef>
+					yield return inst; // Keep the GetAffordances call
+					
+					// Next instruction should load terrainAffordanceNeed
 					i++;
 					yield return instList[i];
-
-					//skip call to Contains
+					
+					// Next instruction should be Contains call - replace it
 					i++;
-
-					//replace with TerrainOrBridgesCanDo (below)
+					
+					// Replace Contains call with our custom method
+					// Stack now has: List<TerrainAffordanceDef>, TerrainAffordanceDef
+					// We need to add: entDef, pos, map for our method
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//entDef
 					yield return new CodeInstruction(OpCodes.Ldloc, posInfo.LocalIndex);//IntVec3 pos
 					yield return new CodeInstruction(OpCodes.Ldarg_2);//Map
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CanPlaceBlueprint), nameof(TerrainOrBridgesCanDo)));
-
-					//and it'll continue with the brtrue
 				}
 				else
 					yield return inst;
 			}
 		}
 
-		public static bool TerrainOrBridgesCanDo(TerrainDef tDef, TerrainAffordanceDef neededDef, BuildableDef def, IntVec3 pos, Map map)
+		public static bool TerrainOrBridgesCanDo(List<TerrainAffordanceDef> affordances, TerrainAffordanceDef neededDef, BuildableDef def, IntVec3 pos, Map map)
 		{
 			//Code Used to be:
-			if (tDef.affordances.Contains(neededDef))
+			if (affordances.Contains(neededDef))
 				return true;
 
 			if (def is TerrainDef)
@@ -86,6 +87,7 @@ namespace Replace_Stuff.PlaceBridges
 				return true;
 
 			//Player not choosing to build and bridges possible: ok (elsewhere in code will place blueprints)
+			TerrainDef tDef = map.terrainGrid.TerrainAt(pos);
 			if (DesignatorContext.designating && BridgelikeTerrain.FindBridgeFor(tDef, neededDef, map) != null)
 				return true;
 
@@ -114,6 +116,9 @@ namespace Replace_Stuff.PlaceBridges
 			TerrainDef bridgeDef = PlaceBridges.GetNeededBridge(sourceDef, pos, map, stuff);
 
 			if (bridgeDef == null)
+				return;
+
+			if (!bridgeDef.IsResearchFinished)
 				return;
 
 			if (pos.GetThingList(map).Any(t => t.def.entityDefToBuild == bridgeDef))

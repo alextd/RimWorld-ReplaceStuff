@@ -1,0 +1,63 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>ReplaceStuffModCompat_Biotech</defName>
+		<replaceLists>
+			<li>
+				<category>Biotech_Deathrest_Accessories</category>
+				<items>
+					<li>PsychofluidPump</li>
+					<li>Hemopump</li>
+					<li>HemogenAmplifier</li>
+					<li>DeathrestAccelerator</li>
+					<li>GlucosoidPump</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_Gestators</category>
+				<items>
+					<li>MechGestator</li>
+					<li>LargeMechGestator</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_Rechargers</category>
+				<items>
+					<li>BasicRecharger</li>
+					<li>StandardRecharger</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_SubcoreScanner</category>
+				<items>
+					<li>SubcoreSoftscanner</li>
+					<li>SubcoreRipscanner</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_Antennas</category>
+				<items>
+					<li>BurnoutMechlinkBooster</li>
+					<li>MechbandDish</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_BandNodes</category>
+				<items>
+					<li>BandNode</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Biotech_Mech_Boosters</category>
+				<items>
+					<li>MechBooster</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

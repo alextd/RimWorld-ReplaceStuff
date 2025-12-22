@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<BuildersTryMine.label>建造者将会尝试开采有价值的东西</BuildersTryMine.label>
+	<BuildersTryMine.helpText>注：将待建物放置在有价值的矿石上将允许建造者开采矿石。如果建造者的开采技能不高，矿石可能会被浪费。因此，你可能需要先取消建筑任务，让熟练的矿工先把矿石挖掉。</BuildersTryMine.helpText>
+</LanguageData>

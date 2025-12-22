@@ -1,0 +1,26 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="dubwise.dubsbadhygiene.lite">
+		<defName>ReplaceStuffModCompat_BadHiegene</defName>
+		<replaceLists>
+			<li>
+				<category>Toilets</category>
+				<items>
+					<li>PitLatrine</li>
+					<li>ToiletStuff</li>
+					<li>ToiletAdvStuff</li>
+				</items>
+			</li>
+			
+			<li>
+				<category>Showers</category>
+				<items>
+					<li>WashBucket</li>
+					<li>BathtubStuff</li>
+					<li>ShowerSimple</li>
+					<li>ShowerStuff</li>
+					<li>ShowerAdvStuff</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+  <TD.Replace>Заменить</TD.Replace>
+  <TD.ReplaceDesc>Заменяет материал построек, например можно заменить все деревянные стены каменными</TD.ReplaceDesc>
+  <TD.ReplacingTag> (Заменяется)</TD.ReplacingTag>
+  <TD.ToggleBlueprintOverRock>Размещать проекты построек над скалами</TD.ToggleBlueprintOverRock>
+  <TD.SettingsNoOverwallCoolers>Скрыть настенные кондиционер и вентиляцию из меню «Температура»</TD.SettingsNoOverwallCoolers>
+  <TD.SettingsNoNormalCoolers>Скрыть оригинальный кондиционер и вентиляцию из меню «Температура»</TD.SettingsNoNormalCoolers>
+  <TD.SettingsCornerBuildable>Угловые клетки могут строится и добываться изнутри</TD.SettingsCornerBuildable>
+  <TD.SettingsCornerBuildableDesc>Иногда это может быть причиной странных проблемы с путями - отключите этот пункт, чтобы исправить их.</TD.SettingsCornerBuildableDesc>
+  <TD.IncapableOfSmoothing>Неподдающийся сглаживанию</TD.IncapableOfSmoothing>
+  <TD.FailedStuffBeingReplaced>Заменяемый материал</TD.FailedStuffBeingReplaced>
+
+</LanguageData>

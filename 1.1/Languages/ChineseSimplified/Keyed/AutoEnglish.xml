@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<LanguageData>
+		<TD.ReplaceStuff>替换材料</TD.ReplaceStuff>
+		<TD.Replace>替换</TD.Replace>
+		<TD.ReplaceDesc>更换物品的建造材料（如用石墙代替木墙）</TD.ReplaceDesc>
+		<TD.ReplacingTag>（正在替换建造材料）</TD.ReplacingTag>
+		<TD.ToggleBlueprintOverRock>把蓝图放在山岩上</TD.ToggleBlueprintOverRock>
+		<TD.SettingsNoOverwallCoolers>隐藏在“建筑”菜单中的那些特别轻巧的壁挂式冷却器</TD.SettingsNoOverwallCoolers>
+		<TD.SettingsNoNormalCoolers>隐藏在“建筑”菜单中的原版冷却器和通风口</TD.SettingsNoNormalCoolers>
+		<TD.SettingsCornerBuildable>允许在室内斜向采矿或建造墙角处的地砖</TD.SettingsCornerBuildable>
+		<TD.SettingsCornerBuildableDesc>这有时可能会导致奇怪的路径问题，这时请关闭这一设置。</TD.SettingsCornerBuildableDesc>
+		<TD.IncapableOfSmoothing>无法兼容</TD.IncapableOfSmoothing>
+		<TD.FailedStuffBeingReplaced>材料已被更换</TD.FailedStuffBeingReplaced>
+	</LanguageData>

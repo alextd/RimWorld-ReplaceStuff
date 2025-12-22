@@ -1,0 +1,61 @@
+name: Build and Deploy to Steam Workshop
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            path: 'mod'
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Download Steam Workshop Dependencies
+        uses: ./mod/.github/actions/download-steam-workshop
+        with: 
+          path: 'mod'
+
+      - name: Remove old binary
+        working-directory: mod/1.6/Assemblies/
+        run: |
+            rm -f Replace_Stuff.dll
+            rm -f Replace_Stuff.pdb
+
+      - name: Build with dotnet build
+        working-directory: mod
+        run: dotnet build "Source/Replace_Stuff.csproj" --configuration Release
+
+      - name: Cleanup
+        working-directory: mod
+        run: |
+            rm -rf .git
+            rm -rf .vs
+            rm -rf .github/workflows
+            rm -rf .github
+            rm -rf .gitignore
+            rm -rf .gitattributes
+            rm -rf README.md
+            sudo rm -rf Workshop
+            find . -type d -name "obj" -exec rm -rf {} +
+
+      - name: steam-workshop-upload
+        uses: m00nl1ght-dev/steam-workshop-deploy@v4
+        continue-on-error: true
+        with: 
+          appId: 294100 # Game's Steam App ID
+          publishedFileId: 3526354009 # Your mod's Steam Workshop ID
+          path: 'mod' # Path to your mod's folder from repository root
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf:  ${{ secrets.STEAM_CONFIG_VDF }}
+          changeNote: ${{ github.event.head_commit.message }}

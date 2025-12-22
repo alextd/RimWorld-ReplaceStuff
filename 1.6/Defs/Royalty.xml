@@ -1,0 +1,25 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems MayRequire="Ludeon.RimWorld.Royalty">
+		<defName>ReplaceStuffModCompat_Royalty</defName>
+		<replaceLists>
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>Brazier</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+
+	<Replace_Stuff.InterchangeableItems MayRequire="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Ideology">
+		<defName>ReplaceStuffModCompat_RoyaltyIdeo</defName>
+		<replaceLists>
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>DarklightBrazier</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.ReplaceStuff>Replace Stuff</TD.ReplaceStuff>
+	<TD.Replace>Replace</TD.Replace>
+	<TD.ReplaceDesc>Replace stuff of a thing, e.g. replace a wood wall with stone</TD.ReplaceDesc>
+	<TD.ReplacingTag> (Replacing)</TD.ReplacingTag>
+	<TD.ToggleBlueprintOverRock>Place blueprints over mountain rock</TD.ToggleBlueprintOverRock>
+	<TD.SettingsNoOverwallCoolers>Hide those super-nifty over-wall coolers from the build menu</TD.SettingsNoOverwallCoolers>
+	<TD.SettingsNoNormalCoolers>Hide the normal cooler and vent from the build menu</TD.SettingsNoNormalCoolers>
+	<TD.SettingsCornerBuildable>Corner tiles are buildable and mineable from inside</TD.SettingsCornerBuildable>
+	<TD.SettingsCornerBuildableDesc>This might sometime cause weird pathing issues - turn it off to maybe fix that.</TD.SettingsCornerBuildableDesc>
+	<TD.IncapableOfSmoothing>incapable of smoothing</TD.IncapableOfSmoothing>
+	<TD.FailedStuffBeingReplaced>stuff being replaced</TD.FailedStuffBeingReplaced>
+	<TD.SettingsPreferredBridge>Preferred Bridge order to place when needed:</TD.SettingsPreferredBridge>
+	<TD.SettingsBridgeResources>(First priority is bridges you have resources for ; Second priority is this list order - drag-and-drop to re-order)</TD.SettingsBridgeResources>
+	<TD.ReplacementAlreadyInProgess>Replacement already in progess.</TD.ReplacementAlreadyInProgess>
+	
+</LanguageData>

@@ -1,0 +1,192 @@
+﻿<Defs>
+	<Replace_Stuff.InterchangeableItems>
+		<defName>ReplaceStuffModCompat_Vanilla</defName>
+		<replaceLists>
+			<li>
+				<category>Dressers</category>
+				<items>
+					<li>Dresser</li>
+				</items>
+			</li>
+
+			<li>
+				<category>EndTables</category>
+				<items>
+					<li>EndTable</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Lights</category>
+				<items>
+					<li>TorchLamp</li>
+					<li>StandingLamp</li>
+					<li>FloodLight</li>
+				</items>
+			</li>
+
+			<li>
+				<category>WallLights</category>
+				<items>
+					<li>TorchWallLamp</li>
+					<li>WallLamp</li>
+				</items>
+			</li>
+
+			<li>
+				<category>ResearchBenches</category>
+				<items>
+					<li>SimpleResearchBench</li>
+					<li>HiTechResearchBench</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Sunlamps</category>
+				<items>
+					<li>SunLamp</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Columns</category>
+				<items>
+					<li>Column</li>
+				</items>
+			</li>
+
+			<li>
+				<category>PoweredGenerators</category>
+				<items>
+					<li>WoodFiredGenerator</li>
+					<li>ChemfuelPoweredGenerator</li>
+				</items>
+			</li>
+
+			<li>
+				<category>TVs</category>
+				<items>
+					<li>TubeTelevision</li>
+					<li>FlatscreenTelevision</li>
+					<li>MegascreenTelevision</li>
+				</items>
+			</li>
+
+			<li>
+				<category>SolarGenerators</category>
+				<items>
+					<li>SolarGenerator</li>
+				</items>
+			</li>
+
+			<li>
+				<category>PowerConduits</category>
+				<items>
+					<li>PowerConduit</li>
+					<li>WaterproofConduit</li>
+				</items>
+			</li>
+
+			<li>
+				<category>ArtTables</category>
+				<items>
+					<li>TableSculpting</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Smelters</category>
+				<items>
+					<li>ElectricSmelter</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Smithys</category>
+				<items>
+					<li>FueledSmithy</li>
+					<li>ElectricSmithy</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Stonecutters</category>
+				<items>
+					<li>TableStonecutter</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Butchers</category>
+				<items>
+					<li>TableButcher</li>
+				</items>
+			</li>
+
+			<li>
+				<category>DrugLab</category>
+				<items>
+					<li>DrugLab</li>
+				</items>
+			</li>
+
+			<li>
+				<category>MachiningTables</category>
+				<items>
+					<li>TableMachining</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Stoves</category>
+				<items>
+					<li>FueledStove</li>
+					<li>ElectricStove</li>
+				</items>
+			</li>
+
+			<li>
+				<category>TailoringBenches</category>
+				<items>
+					<li>HandTailoringBench</li>
+					<li>ElectricTailoringBench</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Fabricators</category>
+				<items>
+					<li>FabricationBench</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Campfire</category>
+				<items>
+					<li>Campfire</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Crematoriums</category>
+				<items>
+					<li>ElectricCrematorium</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Refineries</category>
+				<items>
+					<li>BiofuelRefinery</li>
+				</items>
+			</li>
+
+			<li>
+				<category>Shelves</category>
+				<items>
+					<li>Shelf</li>
+				</items>
+			</li>
+		</replaceLists>
+	</Replace_Stuff.InterchangeableItems>
+</Defs>
